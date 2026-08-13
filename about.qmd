@@ -4,7 +4,7 @@ title: "About Me"
 
 ::: {.profile-container}
 ::: {.profile-image}
-![](img/Cata.jpeg){.circle-image}
+![](img/daniels-headshot.jpeg){.circle-image}
 :::
 
 ::: {.profile-text}
