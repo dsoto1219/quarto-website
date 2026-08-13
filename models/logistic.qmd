@@ -1,0 +1,170 @@
+---
+title: "Logistic Regression"
+---
+
+
+Logistic regression is a statistical model that...
+
+### Model Overview
+
+Logistic regression is used when the dependent variable is binary (0/1, Yes/No, True/False). The model estimates the probability of the dependent variable being 1 given the independent variables.
+
+### Implementation
+
+```{r}
+#| label: setup
+#| output: false
+
+library(tidymodels)
+library(tidyverse)
+library(dissertationData)
+library(here)
+
+# Load and prepare the YRBS 2023 dataset
+
+```
+
+
+### Load the data
+
+```{r}
+#| label: load-data
+
+analysis_data <- readRDS(here("models", "data", "analysis_data.rds"))
+analysis_train <- readRDS(here("models", "data", "analysis_train.rds"))
+analysis_test <- readRDS(here("models", "data", "analysis_test.rds"))
+analysis_folds <- readRDS(here("models", "data", "analysis_folds.rds"))
+
+```
+### Recipe
+
+```{r}
+#| label: model-rec
+
+weapon_carry_recipe <- 
+  recipe(formula = WeaponCarryingSchool ~ ., data = analysis_data) |>
+  step_impute_mode(all_nominal_predictors()) |>
+  step_impute_mean(all_numeric_predictors()) |>
+  step_zv(all_predictors()) |> 
+  step_corr(all_numeric_predictors(), threshold = 0.7) 
+
+weapon_carry_recipe
+
+
+```
+
+### Bake 
+
+```{r}
+rec <- weapon_carry_recipe %>% 
+  prep() %>% 
+  bake(new_data = analysis_data) %>% glimpse()
+```
+
+
+
+### Model Specification
+
+```{r}
+#| label: model-spec
+
+weapon_carry_spec <- 
+  logistic_reg() %>% 
+  set_mode("classification") %>% 
+  set_engine("glm") 
+
+weapon_carry_spec
+```
+
+### Workflow
+
+```{r}
+#| label: model-workflow
+
+weapon_carry_workflow <- workflow() %>%
+  add_recipe(weapon_carry_recipe) %>%
+  add_model(weapon_carry_spec)
+
+
+weapon_carry_workflow
+
+```
+
+
+```{r}
+#| label: model-fit
+mod_1 <- 
+  fit(weapon_carry_workflow, data = analysis_train) 
+
+mod_1
+
+```
+
+```{r}
+#| label: tidy-model
+
+tidy_model <- 
+  mod_1 |>
+  tidy(exponentiate = TRUE,
+       conf.int = TRUE, 
+       conf.level = .95) |>
+  mutate(p.value = scales::pvalue(p.value))
+
+tidy_model
+
+```
+
+### Model Evaluation
+
+
+```{r}
+weapon_pred <- 
+  augment(mod_1, analysis_train) |> 
+  select(WeaponCarryingSchool, .pred_class, .pred_1, .pred_0)
+
+weapon_pred
+```
+
+
+```{r}
+roc_plot_training <- 
+  weapon_pred |> 
+  roc_curve(truth = WeaponCarryingSchool, .pred_1, event_level = "second") |> 
+  autoplot()
+
+roc_plot_training 
+```
+
+
+
+### Visualizations
+
+```{r}
+#| label: visualizations
+
+tidy_model |> 
+  filter(term != "(Intercept)") |> 
+  ggplot(aes(x = estimate, y = reorder(term, estimate))) +
+  geom_point(size = 3) +
+  geom_errorbarh(aes(xmin = conf.low, xmax = conf.high), height = 0.2) +
+  geom_vline(xintercept = 1, linetype = "dashed", color = "red") +
+  scale_x_log10() +
+  labs(
+    x = "Odds Ratio (log scale)",
+    y = "Predictors",
+    title = "Forest Plot of Logistic Regression Coefficients"
+  ) +
+  theme_minimal() +
+  theme(
+    axis.text.y = element_text(size = 10),
+    plot.title = element_text(hjust = 0.5)
+  )
+```
+
+
+### Results and Interpretation
+
+
+
+### Key Takeaways
+

@@ -1,0 +1,35 @@
+/* css styles */
+.profile-container {
+    display: flex;
+    align-items: start;
+    gap: 2rem;
+    margin-bottom: 2rem;
+  }
+  
+  .profile-image {
+    flex: 0 0 200px;
+  }
+  
+  .circle-image {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #f0f0f0;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  }
+  
+  .profile-text {
+    flex: 1;
+  }
+  
+  @media (max-width: 768px) {
+    .profile-container {
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .profile-image {
+      margin-bottom: 1rem;
+    }
+  }

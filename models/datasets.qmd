@@ -1,0 +1,130 @@
+---
+title: "Data and Research Question"
+editor_options: 
+  chunk_output_type: console
+---
+
+## Youth Risk Behavior Survey 2023
+
+The Youth Risk Behavior Survey (YRBS) is a national survey that monitors health-related behaviors among high school students, including weapon carrying and associated risk factors.
+
+### Dataset Overview
+
+-   **Source**: Centers for Disease Control and Prevention (CDC)
+-   **Year**: 2023
+-   **Target Population**: High school students
+-   **Sample Size**: Approximately 19,000 students nationwide
+
+### Research Question
+
+**How do logistic regression, lasso, k-nearest neighbors, and tree-based models compare in predicting school-based weapon carrying among adolescents based on risk and protective factors?**
+
+### Key Variables for the Research Question
+
+The dataset includes information on various health-related behaviors:
+
+1.  **Outcome**
+    -   Weapon Carrying (Carried a weapon on school property)
+
+2.  **Predictors**
+    -   Traumatic experiences
+    -   School Safety Perceptions
+    -   Bullying Experiences
+    -   Family Support
+    -   Social Media Use
+    -   Peer Relationships
+
+### Data Preprocessing
+
+```{r}
+#| label: data-prep
+#| output: false
+
+library(tidyverse)
+library(tidymodels)
+library(dissertationData)
+library(here)
+data(clean_yrbs_2023)
+# Add your data preprocessing code here
+```
+
+### Exploratory Data Analysis
+
+*We will do it in class...*
+```{r}
+#| label: eda
+
+```
+
+### Creation of the Dataset
+
+```{r}
+#| label: create-dataset
+#| eval: false
+
+# This is an example of how to create a dataset for a model.
+# You can use this as a template to create your own dataset.
+
+
+analysis_data <- clean_yrbs_2023 %>%
+    select(
+        WeaponCarryingSchool, AttackedInNeighborhood, Bullying,
+        SexualAbuseByOlderPerson, ParentalPhysicalAbuse, ParentSubstanceUse,
+        ParentIncarceration, SchoolConnectedness, ParentalMonitoring,
+        UnfairDisciplineAtSchool, Homelessness
+    ) |>
+    filter(!is.na(WeaponCarryingSchool)) %>%
+    mutate(across(
+        c(
+            ParentSubstanceUse, ParentIncarceration, SchoolConnectedness,
+            ParentalMonitoring, UnfairDisciplineAtSchool
+        ),
+        ~ as.numeric(.x) - 1
+    )) %>%
+    mutate(across(
+        c(
+            ParentSubstanceUse, ParentIncarceration, SchoolConnectedness,
+            ParentalMonitoring, UnfairDisciplineAtSchool
+        ),
+        ~ factor(.x)
+    ))
+
+
+
+```
+
+### Splitting the Dataset
+
+```{r}
+#| label: split-dataset
+#| include: false
+#| eval: false
+
+set.seed(1990)
+
+analysis_split <- initial_split(analysis_data,
+    strata = WeaponCarryingSchool
+)
+
+analysis_train <- training(analysis_split)
+analysis_test <- testing(analysis_split)
+
+analysis_split
+
+
+
+```
+
+### Cross-Validation
+
+```{r}
+#| label: cross-validation
+#| eval: false
+
+analysis_folds <- vfold_cv(analysis_train,
+    v = 5
+)
+analysis_folds
+
+
+```

@@ -1,0 +1,38 @@
+project:
+  type: website
+  output-dir: docs
+  resources:
+    - R/
+    - data/
+
+website:
+  title: "Machine Learning Notes"
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - href: about.qmd
+        text: About
+      - text: Models
+        menu:
+          - href: models/datasets.qmd
+            text: Data and Research Question
+          - href: models/logistic.qmd
+            text: Logistic Regression
+          - href: models/lasso.qmd
+            text: Lasso Regression
+          - href: models/trees.qmd
+            text: Decision Trees
+          - href: models/random-forest.qmd
+            text: Random Forest
+          - href: models/knn.qmd
+            text: K-Nearest Neighbors
+
+
+format:
+  html:
+    theme: flatly
+    css: styles.css
+    toc: true
+
+

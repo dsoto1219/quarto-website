@@ -1,0 +1,9 @@
+/.quarto/
+.Rproj.user
+
+**/*.quarto_ipynb
+.Rhistory
+.RData
+.httr-oauth
+.DS_Store
+.quarto

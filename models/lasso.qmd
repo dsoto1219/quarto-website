@@ -1,0 +1,275 @@
+---
+title: "Lasso Regression"
+editor_options: 
+  chunk_output_type: console
+---
+
+
+Lasso regression is a statistical model that combines linear/logistic regression with L1 regularization to perform both variable selection and regularization. The term "Lasso" stands for "Least Absolute Shrinkage and Selection Operator." This method is particularly useful when dealing with datasets that have many predictors, as it helps to:
+- Reduce overfitting by penalizing large coefficients
+- Perform automatic feature selection by shrinking some coefficients to exactly zero
+- Handle multicollinearity by selecting only one variable from a group of highly correlated predictors
+
+In this analysis, we'll use Lasso regression to predict weapon carrying behavior in schools, demonstrating how this method can help identify the most important predictors while maintaining model interpretability.
+
+## Setting Up the Environment
+
+First, we need to load the necessary packages for our analysis. We'll use `tidymodels` for modeling, `tidyverse` for data manipulation, and `here` for consistent file paths.
+
+```{r}
+#| label: packages
+#| output: false
+
+library(here)
+library(tidymodels)
+library(tidyverse)
+```
+
+## Loading the Data
+
+We'll work with pre-processed data sets that have been split into training and test sets, along with cross-validation folds. These files are stored in the `processed_data` directory.
+
+```{r}
+#| label: load-data
+
+analysis_data <- readRDS(here("models", "data", "analysis_data.rds"))
+analysis_train <- readRDS(here("models", "data", "analysis_train.rds"))
+analysis_test <- readRDS(here("models","data", "analysis_test.rds"))
+analysis_folds <- readRDS(here("models", "data", "analysis_folds.rds"))
+```
+
+## Data Preprocessing
+
+Before fitting our model, we need to preprocess the data. We'll create a recipe that:
+- Imputes missing values in categorical variables using the mode
+- Imputes missing values in numeric variables using the mean
+- Removes predictors with zero variance
+- Removes highly correlated predictors (correlation threshold = 0.7)
+- Creates dummy variables for categorical predictors
+
+```{r}
+#| label: model-rec
+
+weapon_carry_recipe <- 
+  recipe(formula = WeaponCarryingSchool ~ ., data = analysis_train) |>
+  step_impute_mode(all_nominal_predictors()) |>
+  step_impute_mean(all_numeric_predictors()) |>
+  step_zv(all_predictors()) |> 
+  step_corr(all_numeric_predictors(), threshold = 0.7) %>% 
+  step_dummy(all_nominal_predictors())
+
+weapon_carry_recipe
+```
+
+Let's apply our recipe to transform the data according to these preprocessing steps.
+
+```{r}
+weapon_carry_recipe %>% 
+  prep() %>% 
+  bake(new_data = analysis_data) 
+```
+
+## Model Specification
+
+We'll use a logistic regression model with Lasso regularization. The Lasso (Least Absolute Shrinkage and Selection Operator) helps with feature selection by penalizing the absolute size of coefficients. We set `mixture = 1` to specify a pure Lasso model, and we'll tune the penalty parameter to find the optimal level of regularization.
+
+```{r}
+#| label: model-spec
+
+weapon_carry_spec <-
+  logistic_reg(penalty = tune(), 
+               mixture = 1) |> 
+  set_engine('glmnet')
+
+weapon_carry_spec
+```
+
+## Creating the Workflow
+
+We'll combine our recipe and model specification into a single workflow. This ensures that all preprocessing steps are properly applied during both training and prediction.
+
+```{r}
+#| label: model-workflow
+
+weapon_carry_workflow <-
+  workflow() |>
+  add_recipe(weapon_carry_recipe) |>
+  add_model(weapon_carry_spec)
+
+weapon_carry_workflow
+```
+
+## Model Tuning
+
+To find the optimal penalty value, we'll create a grid of potential values to test. We'll use 50 different penalty values, evenly spaced on a logarithmic scale.
+
+```{r}
+lambda_grid <- grid_regular(penalty(), levels = 50)
+lambda_grid
+```
+
+Now, we'll perform cross-validation to find the best penalty value. This process is time-consuming, so we'll save the results for future use.
+
+```{r}
+#| eval: false
+
+set.seed(2023)
+
+lasso_tune <- 
+  tune_grid(
+  object = weapon_carry_workflow, 
+  resamples = analysis_folds,
+  grid = lambda_grid, 
+  control = control_resamples(event_level = "second")
+)
+```
+
+```{r}
+#| eval: false
+#| echo: false
+
+saveRDS(lasso_tune, here("model_outputs", "lasso_tune.rds"))
+```
+
+```{r}
+#| echo: false
+
+lasso_tune <- readRDS(here("models", "model_outputs", "lasso_tune.rds"))
+```
+
+Let's examine the performance metrics for different penalty values.
+
+```{r}
+lasso_tune %>% 
+  collect_metrics()
+```
+
+We can visualize how the model's performance changes with different penalty values.
+
+```{r}
+autoplot(lasso_tune)
+```
+
+## Selecting the Best Model
+
+We'll select the best model based on the ROC AUC metric, which measures the model's ability to distinguish between classes.
+
+```{r}
+best <- lasso_tune |> 
+  select_best(metric ="roc_auc")
+
+best
+```
+
+Now we'll create our final workflow with the best penalty value.
+
+```{r}
+final_wf <- finalize_workflow(weapon_carry_workflow, best)
+
+final_wf
+```
+
+## Fitting the Final Model
+
+We'll fit our final model on the training data. This process is also time-consuming, so we'll save the results.
+
+```{r}
+#| eval: false
+
+weapon_fit <- 
+  fit(final_wf, data = analysis_train)
+
+weapon_fit
+```
+
+```{r}
+#| eval: false
+#| echo: false
+
+saveRDS(weapon_fit, here("model_outputs", "weapon_fit.rds"))
+```
+
+```{r}
+#| echo: false
+
+weapon_fit <- readRDS(here("models","model_outputs", "weapon_fit.rds"))
+```
+
+## Model Evaluation
+
+Let's examine the model's predictions on the training data.
+
+```{r}
+weapon_pred <- 
+  augment(weapon_fit, analysis_train) |> 
+  select(WeaponCarryingSchool, .pred_class, .pred_1, .pred_0)
+
+weapon_pred
+```
+
+We can visualize the model's performance using an ROC curve.
+
+```{r}
+roc_plot_training <- 
+  weapon_pred |> 
+  roc_curve(truth = WeaponCarryingSchool, .pred_1, event_level = "second") |> 
+  autoplot()
+
+roc_plot_training 
+```
+
+Let's look at the model coefficients to understand which predictors are most important.
+
+```{r}
+weapon_fit |> 
+  extract_fit_parsnip() |> 
+  tidy()
+```
+
+## Cross-Validation Results
+
+We'll fit the model on each cross-validation fold to get a more robust estimate of its performance.
+
+```{r}
+#| eval: false
+
+weapon_fit_resamples <- 
+  fit_resamples(final_wf, resamples = analysis_folds)
+
+weapon_fit_resamples
+```
+
+```{r}
+#| eval: false
+#| echo: false
+
+saveRDS(weapon_fit_resamples, here("model_outputs", "weapon_fit_resamples.rds"))
+```
+
+```{r}
+#| echo: false
+weapon_fit_resamples <- readRDS(here("models","model_outputs", "weapon_fit_resamples.rds"))
+```
+
+Let's examine the cross-validation metrics.
+
+```{r}
+collect_metrics(weapon_fit_resamples)
+```
+
+## Variable Importance
+
+Finally, let's create a variable importance plot to identify the most influential predictors in our model.
+
+```{r}
+library(vip)
+
+weapon_fit |> 
+  extract_fit_engine() |> 
+  vip() 
+```
+
+## Results and Interpretation
+
+[Add your interpretation of the results here]
+

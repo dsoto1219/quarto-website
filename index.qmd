@@ -1,0 +1,17 @@
+---
+title: "Machine Learning Notebook 👀"
+---
+
+This website will be our Machine Learning course, where we explore various statistical and machine learning models using the Youth Risk Behavior Survey (YRBS) 2023 dataset. Through this course, I learned to implement and understand different modeling techniques using the `tidymodels` framework in R.
+
+### What You'll Find Here
+
+- **About Me**: A little bit about me and my research interests.
+- **The Dataset**: Information about my primary dataset and the research question I am trying to answer.
+-   **Model Implementations**: Hands-on examples of different models to answer the question:
+
+    -   Logistic Regression
+    -   Lasso Regression
+    -   Decision Trees
+    -   Random Forest
+    -   K-Nearest Neighbors (KNN)

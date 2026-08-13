@@ -1,0 +1,21 @@
+---
+title: "About Me"
+---
+
+::: {.profile-container}
+::: {.profile-image}
+![](img/Cata.jpeg){.circle-image}
+:::
+
+::: {.profile-text}
+### I am Catalina Canizares
+
+I am a researcher dedicated to preventing suicidal behaviors in adolescents. Currently, I am a `postdoctoral` researcher at `NYU` Steinhardt School of Culture, Education, and Human Development. My work spans several projects, including intervention programs for preventing suicide attempts and developing data structures to deepen our understanding of adolescent suicide attempts and ideation.
+
+I am deeply invested in `data science`, applying `machine learning` techniques to reveal insights and patterns in suicide-related data. As a primary user of R, I am committed to sharing my knowledge and experiences with the broader community.
+
+I am also dedicated to ensuring clarity and reproducibility in my work, using tools like `Quarto` and `RMarkdown`. This approach ensures that my research is trustworthy and easily followed by others.
+
+If I could describe myself using three emojis I would select: 🏝🇨🇴🐈
+:::
+:::
