@@ -60,11 +60,6 @@ data(clean_yrbs_2023)
 
 ```{r}
 #| label: create-dataset
-#| eval: false
-
-# This is an example of how to create a dataset for a model.
-# You can use this as a template to create your own dataset.
-
 
 analysis_data <- clean_yrbs_2023 %>%
     select(
@@ -97,8 +92,6 @@ analysis_data <- clean_yrbs_2023 %>%
 
 ```{r}
 #| label: split-dataset
-#| include: false
-#| eval: false
 
 set.seed(1990)
 
@@ -119,7 +112,6 @@ analysis_split
 
 ```{r}
 #| label: cross-validation
-#| eval: false
 
 analysis_folds <- vfold_cv(analysis_train,
     v = 5
