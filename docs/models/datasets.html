@@ -301,14 +301,41 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 <section id="splitting-the-dataset" class="level3">
 <h3 class="anchored" data-anchor-id="splitting-the-dataset">Splitting the Dataset</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1990</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>analysis_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(analysis_data,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">strata =</span> WeaponCarryingSchool</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>analysis_train <span class="ot">&lt;-</span> <span class="fu">training</span>(analysis_split)</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>analysis_test <span class="ot">&lt;-</span> <span class="fu">testing</span>(analysis_split)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>analysis_split</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>&lt;Training/Testing/Total&gt;
+&lt;14696/4899/19595&gt;</code></pre>
+</div>
+</div>
 </section>
 <section id="cross-validation" class="level3">
 <h3 class="anchored" data-anchor-id="cross-validation">Cross-Validation</h3>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>analysis_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(analysis_train,</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">v =</span> <span class="dv">5</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>analysis_folds</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>analysis_folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(analysis_train,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">v =</span> <span class="dv">5</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>analysis_folds</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>#  5-fold cross-validation 
+# A tibble: 5 × 2
+  splits               id   
+  &lt;list&gt;               &lt;chr&gt;
+1 &lt;split [11756/2940]&gt; Fold1
+2 &lt;split [11757/2939]&gt; Fold2
+3 &lt;split [11757/2939]&gt; Fold3
+4 &lt;split [11757/2939]&gt; Fold4
+5 &lt;split [11757/2939]&gt; Fold5</code></pre>
+</div>
 </div>
 
 
