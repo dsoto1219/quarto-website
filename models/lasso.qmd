@@ -271,5 +271,4 @@ weapon_fit |>
 
 ## Results and Interpretation
 
-[Add your interpretation of the results here]
-
+Weapon-carrying behavior was predicted most strongly by homelessness and direct exposure to violence or abuse. Homelessness was substantially more important than any other predictor, followed by neighborhood victimization and parental physical abuse. Parental monitoring, bullying, and sexual abuse also contributed meaningfully, whereas school-related factors, parental substance use, and parental incarceration had comparatively lower predictive importance. Variable importance reflects predictive contribution and should not be interpreted as indicating either the direction of association or causation.
