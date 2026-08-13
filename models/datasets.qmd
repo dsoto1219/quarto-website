@@ -34,7 +34,7 @@ The dataset includes information on various health-related behaviors:
     -   Social Media Use
     -   Peer Relationships
 
-### Data Preprocessing
+### Environment Setup
 
 ```{r}
 #| label: data-prep
