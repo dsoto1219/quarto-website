@@ -101,7 +101,9 @@ cv_alcohol <- vfold_cv(alcohol_train, v = 10, strata = UsedAlcohol)
 cv_alcohol
 ```
 
-## Recipe
+## Recipe (preprocessing)
+
+Trees don't need fancy preprocessing: no `step_normalize()`, as trees only care about *order*, not scale; no `step_dummy()`, as `rpart` handles factor predictors natively; and imputation is still useful, since `rpart` can't split on `NA`. 
 
 ```{r}
 alcohol_recipe <-
