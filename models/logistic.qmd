@@ -2,14 +2,23 @@
 title: "Logistic Regression"
 ---
 
+Logistic regression is a statistical modeling approach used to estimate the relationship between one or more predictors and a binary outcome. In this analysis, the outcome of interest is whether an adolescent reported carrying a weapon at school. Because the outcome has two possible categories, logistic regression provides a natural framework for estimating how demographic, behavioral, social, and other measured characteristics are associated with the probability of weapon-carrying behavior.
 
-Logistic regression is a statistical model that...
+Unlike ordinary linear regression, logistic regression does not model the outcome directly as a continuous value. Instead, it models the log-odds of the outcome and then converts those log-odds into a predicted probability between 0 and 1. This makes it possible to examine both the direction and magnitude of the association between each predictor and the likelihood of weapon carrying while accounting for the other predictors included in the model.
+
+The analysis below uses the 2023 Youth Risk Behavior Survey (YRBS) analytic data and the `tidymodels` framework in R. The workflow includes data preprocessing, model specification and fitting, coefficient estimation, model evaluation, and visualization of the resulting odds ratios.
 
 ### Model Overview
 
-Logistic regression is used when the dependent variable is binary (0/1, Yes/No, True/False). The model estimates the probability of the dependent variable being 1 given the independent variables.
+Logistic regression is appropriate when the dependent variable is binary, such as 0/1, Yes/No, or True/False. Here, `WeaponCarryingSchool` is treated as the binary response variable. The model estimates the probability that the outcome is in the event category given a set of predictor variables.
+
+Each regression coefficient represents the estimated change in the log-odds of the outcome associated with a one-unit change in the predictor, holding the other variables constant. Because log-odds are difficult to interpret directly, the coefficients are exponentiated later in the analysis and reported as **odds ratios**. An odds ratio greater than 1 indicates higher estimated odds of weapon carrying, whereas an odds ratio less than 1 indicates lower estimated odds. An odds ratio close to 1 suggests little association with the outcome after accounting for the remaining predictors.
+
+It is important to interpret these estimates as associations rather than causal effects. The YRBS data are observational, and the model cannot establish that any predictor causes an adolescent to carry a weapon at school.
 
 ### Implementation
+
+The analysis begins by loading the packages needed for data manipulation, model construction, evaluation, and file-path management. `tidymodels` supplies the modeling workflow, while `tidyverse` supports data manipulation and visualization. The dissertation data package and `here` are also loaded so that the analysis can access the prepared study data in a reproducible way.
 
 ```{r}
 #| label: setup
@@ -24,8 +33,11 @@ library(here)
 
 ```
 
-
 ### Load the data
+
+The analysis uses previously prepared data objects rather than repeating the full data-cleaning process here. The full analytic dataset is loaded along with a training set, a test set, and resampling folds. Separating these objects allows the modeling process to distinguish between data used to estimate the model and data reserved for evaluation or resampling.
+
+The training set is used below to fit the logistic regression model. The test set can be used for a more independent assessment of predictive performance, while the fold object supports cross-validation if resampling is incorporated into later model development.
 
 ```{r}
 #| label: load-data
@@ -36,7 +48,12 @@ analysis_test <- readRDS(here("models", "data", "analysis_test.rds"))
 analysis_folds <- readRDS(here("models", "data", "analysis_folds.rds"))
 
 ```
+
 ### Recipe
+
+A `recipe` defines the preprocessing steps that will be applied before the model is fit. This is useful because it keeps data preparation tied directly to the modeling workflow and ensures that the same transformations can be reproduced consistently.
+
+The recipe specifies `WeaponCarryingSchool` as the outcome and includes the remaining variables as predictors. Several preprocessing steps are then applied. Missing categorical values are imputed using the most common category, while missing numeric values are replaced with the corresponding mean. Predictors with zero variance are removed because they contain no information that can help distinguish between outcome categories. Finally, highly correlated numeric predictors are screened using a correlation threshold of 0.70. Removing one variable from strongly correlated pairs can reduce redundancy and improve the stability and interpretability of the fitted coefficients.
 
 ```{r}
 #| label: model-rec
@@ -53,7 +70,11 @@ weapon_carry_recipe
 
 ```
 
-### Bake 
+### Bake
+
+After defining the recipe, it is prepared and then applied to the analytic data. In `tidymodels`, preparing a recipe estimates any quantities needed for preprocessing, such as means for imputation or correlations among predictors. Baking then applies those learned preprocessing steps to a dataset.
+
+The `glimpse()` output provides a quick check of the resulting variables and their data types. This step is particularly useful for confirming that the recipe behaves as expected before the model is fit.
 
 ```{r}
 rec <- weapon_carry_recipe %>% 
@@ -61,9 +82,11 @@ rec <- weapon_carry_recipe %>%
   bake(new_data = analysis_data) %>% glimpse()
 ```
 
-
-
 ### Model Specification
+
+The model specification identifies the type of statistical model to be estimated. `logistic_reg()` defines a logistic regression model, and the classification mode indicates that the objective is to predict membership in one of two outcome categories. The `glm` engine uses R's generalized linear modeling framework to estimate the model.
+
+This is a standard, interpretable logistic regression rather than a heavily tuned machine-learning model. Its primary advantage in this context is that the estimated coefficients can be converted directly to odds ratios and used to describe the adjusted association between each predictor and weapon carrying at school.
 
 ```{r}
 #| label: model-spec
@@ -78,6 +101,8 @@ weapon_carry_spec
 
 ### Workflow
 
+The workflow combines the preprocessing recipe and logistic regression specification into a single modeling object. Keeping these steps together helps make the analysis reproducible and reduces the risk that preprocessing will be applied differently at different stages of the modeling process.
+
 ```{r}
 #| label: model-workflow
 
@@ -90,6 +115,7 @@ weapon_carry_workflow
 
 ```
 
+The model is then fit using the training data. During fitting, the preprocessing steps defined in the recipe are estimated from the training set and applied before the logistic regression coefficients are calculated. The fitted workflow therefore contains both the trained preprocessing procedure and the estimated regression model.
 
 ```{r}
 #| label: model-fit
@@ -99,6 +125,10 @@ mod_1 <-
 mod_1
 
 ```
+
+The fitted model coefficients are then converted into a tidy table. Setting `exponentiate = TRUE` transforms the coefficients from the log-odds scale to **odds ratios**, which are more intuitive to interpret. The output also includes 95% confidence intervals and p-values for the estimated associations.
+
+For a categorical predictor, an odds ratio compares a particular category with the reference category used by the model. For a numeric predictor, the odds ratio represents the multiplicative change in the odds associated with a one-unit increase in that predictor, unless the variable was transformed beforehand. Confidence intervals provide information about the precision of each estimate. When a 95% confidence interval includes 1, the data are compatible with no adjusted association at the conventional 0.05 significance level.
 
 ```{r}
 #| label: tidy-model
@@ -116,6 +146,9 @@ tidy_model
 
 ### Model Evaluation
 
+Model evaluation asks a different question from coefficient interpretation. The regression coefficients describe associations between individual predictors and the outcome, while predictive-performance measures assess how effectively the model distinguishes adolescents who reported weapon carrying at school from those who did not.
+
+The fitted model is first used to generate predictions for the training data. The augmented output includes the observed outcome, the predicted class, and the estimated probability of each outcome category. These probabilities can then be used to evaluate discrimination across different classification thresholds.
 
 ```{r}
 weapon_pred <- 
@@ -125,6 +158,11 @@ weapon_pred <-
 weapon_pred
 ```
 
+The receiver operating characteristic (ROC) curve summarizes the model's ability to rank observations according to their predicted probability of the event. The curve compares sensitivity with the false-positive rate across all possible probability thresholds. A model with little discriminatory ability will produce a curve close to the diagonal reference line, while a model with stronger discrimination will bow farther toward the upper-left corner.
+
+The corresponding area under the ROC curve, or AUC, can be interpreted as the probability that the model assigns a higher predicted risk to a randomly selected adolescent with the outcome than to a randomly selected adolescent without the outcome. Values closer to 1 indicate stronger discrimination, while a value near 0.5 indicates performance close to chance.
+
+Because the ROC curve below is calculated on the **training data**, it primarily describes how well the fitted model separates the observations it was trained on. Predictive performance should generally also be evaluated on the held-out test set or through cross-validation to obtain a less optimistic estimate of how the model is likely to perform on new data.
 
 ```{r}
 roc_plot_training <- 
@@ -135,9 +173,13 @@ roc_plot_training <-
 roc_plot_training 
 ```
 
-
-
 ### Visualizations
+
+A forest plot provides a compact visual summary of the adjusted odds ratios and their 95% confidence intervals. Each point represents an estimated odds ratio for one predictor, and the horizontal line around the point represents its confidence interval. The vertical dashed line at an odds ratio of 1 represents no association with the outcome.
+
+Predictors plotted to the right of 1 are associated with higher estimated odds of weapon carrying, whereas predictors plotted to the left of 1 are associated with lower estimated odds. The farther an estimate lies from 1, the larger the estimated association on the odds-ratio scale. Confidence intervals should be considered alongside the point estimates: wide intervals indicate greater uncertainty, and intervals that cross 1 do not clearly distinguish the estimated association from no association at the 95% confidence level.
+
+The x-axis is displayed on a logarithmic scale. This is appropriate for odds ratios because values below and above 1 are then represented more symmetrically. For example, an odds ratio of 0.5 and an odds ratio of 2 represent effects of comparable magnitude in opposite directions on the log-odds scale.
 
 ```{r}
 #| label: visualizations
@@ -161,10 +203,33 @@ tidy_model |>
   )
 ```
 
-
 ### Results and Interpretation
 
+The fitted logistic regression identified several factors that were independently associated with weapon carrying at school after adjustment for the other predictors included in the model. The forest plot shows considerable variation in both the magnitude and precision of these associations.
+
+**Homelessness showed the strongest association with weapon carrying.** The estimated odds ratio was approximately 3.2, indicating that adolescents in the category coded `1` for homelessness had more than three times the odds of reporting weapon carrying at school compared with the reference category, holding the other predictors constant. The 95% confidence interval remained well above 1, indicating a comparatively strong and statistically distinguishable association.
+
+Several measures of exposure to violence or adversity were also strongly associated with weapon carrying. Being **attacked in the neighborhood** was associated with approximately twice the odds of weapon carrying, as was **parental physical abuse**. Both estimates had confidence intervals entirely above 1. **Bullying** and **sexual abuse by an older person** were associated with more moderate increases in the odds of weapon carrying, but their confidence intervals likewise remained above the null value of 1.
+
+**Parental monitoring** also had an odds ratio substantially above 1. Because the direction of this association depends on how the variable was coded, the substantive interpretation should be made with reference to the original coding of the measure. If the category coded `1` represents *lower* parental monitoring, for example, the result would indicate that reduced monitoring is associated with greater odds of weapon carrying. This coding should be confirmed before assigning a substantive direction to the association.
+
+Two predictors had odds ratios close enough to 1 that their 95% confidence intervals crossed the null value. **Parent incarceration** showed only a small positive estimated association, while **parent substance use** showed an estimated odds ratio below 1. In both cases, however, the confidence intervals included 1. These results therefore provide insufficient evidence of an independent association with weapon carrying after adjustment for the other predictors in this model.
+
+At the other end of the distribution, **school connectedness** had one of the lowest odds ratios in the model, with its confidence interval entirely below 1. The category coded `1` was therefore associated with substantially lower odds of weapon carrying than the reference category. **Unfair discipline at school** also had an odds ratio below 1 with a confidence interval that appears to remain below 1. As with parental monitoring, however, the coding of these variables should be verified before describing them substantively as protective or risk factors. The statistical model establishes the direction of the association between the coded categories, not necessarily the direction implied by the variable's name.
+
+Taken together, the results suggest that experiences involving **housing instability, interpersonal violence, and victimization** are among the strongest correlates of adolescent weapon carrying in this model. Homelessness stands out in particular, while neighborhood violence, parental physical abuse, bullying, and sexual abuse also retain meaningful associations after simultaneous adjustment for the other included factors.
+
+These estimates should be interpreted as **conditional associations rather than causal effects**. The analysis shows that these factors are associated with weapon carrying after adjustment for the other measured predictors, but it does not establish that any one factor causes weapon-carrying behavior. Unmeasured confounding, the coding and measurement of survey variables, self-report bias, and the observational nature of the YRBS data should all be considered when interpreting the findings.
+
+The ROC analysis addresses a separate question: how well the predictors collectively distinguish adolescents who reported weapon carrying from those who did not. Accordingly, the coefficient results describe which variables are most strongly associated with the outcome, whereas the ROC curve evaluates the discriminatory performance of the model as a whole.
 
 
 ### Key Takeaways
 
+The logistic regression framework allows the relationship between multiple predictors and adolescent weapon carrying at school to be examined simultaneously. The preprocessing recipe addresses missing data, removes predictors that contain no variation, and reduces redundancy among highly correlated numeric variables before model fitting.
+
+The exponentiated model coefficients are interpreted as adjusted odds ratios. Values above 1 indicate higher odds of weapon carrying and values below 1 indicate lower odds, with 95% confidence intervals communicating the uncertainty around those estimates. The forest plot makes these relationships easier to compare visually and helps distinguish large, precise associations from estimates that are smaller or more uncertain.
+
+The ROC analysis provides a separate assessment of the model's ability to distinguish between adolescents who did and did not report weapon carrying at school. Because the ROC curve shown here is based on the training data, it should be viewed as an in-sample assessment. Evaluation with the held-out test data or cross-validation would provide stronger evidence about the model's performance on new observations.
+
+Taken together, the analysis is best used to identify and compare factors associated with weapon-carrying behavior and to assess how well those factors collectively discriminate the outcome. The results should not be interpreted as demonstrating that any individual predictor causes weapon carrying.
