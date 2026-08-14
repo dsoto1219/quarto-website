@@ -32,7 +32,9 @@ library(here)
 
 ### Load the data
 
-The analysis uses previously prepared data objects rather than repeating the full data-cleaning process here. The full analytic dataset is loaded along with a training set, a test set, and resampling folds. Separating these objects allows the modeling process to distinguish between data used to estimate the model and data reserved for evaluation or resampling.
+The analysis uses data objects previously prepared in the "Data and Research Question" section of this site. 
+The full analytic dataset is loaded along with a training set, a test set, and resampling folds. 
+Separating these objects allows the modeling process to distinguish between data used to estimate the model and data reserved for evaluation or resampling.
 
 The training set is used below to fit the logistic regression model. The test set can be used for a more independent assessment of predictive performance, while the fold object supports cross-validation if resampling is incorporated into later model development.
 
