@@ -123,11 +123,11 @@ Note that `levels` can be set to `3` for faster turnaround.
 ```{r}
 #| label: tuning-grid
 
-tree_grid <- grid_regular(
-    cost_complexity(),
-    tree_depth(c(2, 5)),
-    min_n(),
-    levels = 4
+tree_grid <- grid_space_filling(
+    cost_complexity(range = c(-6, -1)),
+    tree_depth(c(2, 10)),
+    min_n(c(5, 150)),
+    size = 60
 )
 
 tree_grid
