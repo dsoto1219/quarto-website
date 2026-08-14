@@ -78,7 +78,8 @@ The `glimpse()` output provides a quick check of the resulting variables and the
 ```{r}
 rec <- weapon_carry_recipe %>% 
   prep() %>% 
-  bake(new_data = analysis_data) %>% glimpse()
+  bake(new_data = analysis_data) %>% 
+  glimpse()
 ```
 
 ### Model Specification
