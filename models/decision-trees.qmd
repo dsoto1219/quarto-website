@@ -1,0 +1,54 @@
+---
+title: "Decision Trees"
+author: "Daniel Soto"
+---
+
+```{r}
+#| label: packages
+#| output: false
+
+library(tidyverse)
+library(tidymodels)
+library(MLearnYRBSS)
+library(janitor)
+library(skimr)
+library(vip)
+library(rpart.plot)
+library(here)
+library(rio)
+
+riskyBehaviors <- import(here("models", "data", "yrbs_2021.sav"))
+```
+
+```{r}
+data(riskyBehaviors)
+
+riskyBehaviors_analysis <-
+    riskyBehaviors |>
+    mutate(
+        UsedAlcohol = case_when(
+            AgeFirstAlcohol == 1 ~ 0,
+            AgeFirstAlcohol %in% c(2, 3, 4, 5, 6, 7) ~ 1,
+            .default = NA
+        ),
+        UsedAlcohol = factor(UsedAlcohol)
+    ) |>
+    drop_na(UsedAlcohol) |>
+    select(-c(AgeFirstAlcohol, DaysAlcohol, BingeDrinking,
+              LargestNumberOfDrinks, SourceAlcohol))
+```
+
+```{r}
+set.seed(2023)
+
+alcohol_split <- initial_split(
+    riskyBehaviors_analysis,
+    strata = UsedAlcohol
+)
+
+alcohol_train <- training(alcohol_split)
+alcohol_test <- testing(alcohol_split)
+
+alcohol_split
+```
+
