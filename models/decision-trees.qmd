@@ -71,3 +71,44 @@ alcohol_split
 
 We use `strata = ` to keep the proportion of `UsedAlcohol` roughly equal in the train and test sets. 
 We use the same logic in the Lasso training.
+To make sure this worked, we check the class balance:
+```{r}
+#| label: class-balance-check
+
+alcohol_train |>
+    tabyl(UsedAlcohol) |>
+    adorn_pct_formatting(0) |>
+    adorn_totals()
+
+alcohol_test |>
+    tabyl(UsedAlcohol) |>
+    adorn_pct_formatting(0) |>
+    adorn_totals()
+```
+Both sets show the same proportions, meaning `strata =` did its job.
+
+### Cross-validation folds
+
+`v = 10` folds of the training set. 
+Every candidate tree we try will be evaluated on all 10 — the test set stays untouched until the very end.
+
+```{r}
+#| label: cv-folds
+
+set.seed(2023)
+
+cv_alcohol <- vfold_cv(alcohol_train, v = 10, strata = UsedAlcohol)
+cv_alcohol
+```
+
+## Recipe
+
+```{r}
+alcohol_recipe <-
+    recipe(UsedAlcohol ~ ., data = alcohol_train) |>
+    step_impute_mode(all_nominal_predictors()) |>
+    step_impute_mean(all_numeric_predictors())
+
+alcohol_recipe
+```
+
