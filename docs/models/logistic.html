@@ -153,7 +153,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Lasso Regression</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../models/trees.qmd">
+    <a class="dropdown-item" href="../models/trees.html">
  <span class="dropdown-text">Decision Trees</span></a>
   </li>  
         <li>
@@ -234,14 +234,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dissertationData)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Load and prepare the YRBS 2023 dataset</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="load-the-data" class="level3">
 <h3 class="anchored" data-anchor-id="load-the-data">Load the data</h3>
-<p>The analysis uses previously prepared data objects rather than repeating the full data-cleaning process here. The full analytic dataset is loaded along with a training set, a test set, and resampling folds. Separating these objects allows the modeling process to distinguish between data used to estimate the model and data reserved for evaluation or resampling.</p>
+<p>The analysis uses data objects previously prepared in the “Data and Research Question” section of this site. The full analytic dataset is loaded along with a training set, a test set, and resampling folds. Separating these objects allows the modeling process to distinguish between data used to estimate the model and data reserved for evaluation or resampling.</p>
 <p>The training set is used below to fit the logistic regression model. The test set can be used for a more independent assessment of predictive performance, while the fold object supports cross-validation if resampling is incorporated into later model development.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>analysis_data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"data"</span>, <span class="st">"analysis_data.rds"</span>))</span>
@@ -309,7 +307,8 @@ predictor: 10</code></pre>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>rec <span class="ot">&lt;-</span> weapon_carry_recipe <span class="sc">%&gt;%</span> </span>
 <span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">prep</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bake</span>(<span class="at">new_data =</span> analysis_data) <span class="sc">%&gt;%</span> <span class="fu">glimpse</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bake</span>(<span class="at">new_data =</span> analysis_data) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">glimpse</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Rows: 19,595
 Columns: 11
@@ -330,7 +329,7 @@ $ WeaponCarryingSchool     &lt;fct&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 <section id="model-specification" class="level3">
 <h3 class="anchored" data-anchor-id="model-specification">Model Specification</h3>
 <p>The model specification identifies the type of statistical model to be estimated. <code>logistic_reg()</code> defines a logistic regression model, and the classification mode indicates that the objective is to predict membership in one of two outcome categories. The <code>glm</code> engine uses R’s generalized linear modeling framework to estimate the model.</p>
-<p>This is a standard, interpretable logistic regression rather than a heavily tuned machine-learning model. Its primary advantage in this context is that the estimated coefficients can be converted directly to odds ratios and used to describe the adjusted association between each predictor and weapon carrying at school.</p>
+<p>The primary advantage of logistic regression in this context is that the estimated coefficients can be converted directly to odds ratios and used to describe the adjusted association between each predictor and weapon carrying at school.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>weapon_carry_spec <span class="ot">&lt;-</span> </span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">logistic_reg</span>() <span class="sc">%&gt;%</span> </span>
@@ -416,8 +415,9 @@ Null Deviance:      5238
 Residual Deviance: 4872     AIC: 4894</code></pre>
 </div>
 </div>
-<p>The fitted model coefficients are then converted into a tidy table. Setting <code>exponentiate = TRUE</code> transforms the coefficients from the log-odds scale to <strong>odds ratios</strong>, which are more intuitive to interpret. The output also includes 95% confidence intervals and p-values for the estimated associations.</p>
-<p>For a categorical predictor, an odds ratio compares a particular category with the reference category used by the model. For a numeric predictor, the odds ratio represents the multiplicative change in the odds associated with a one-unit increase in that predictor, unless the variable was transformed beforehand. Confidence intervals provide information about the precision of each estimate. When a 95% confidence interval includes 1, the data are compatible with no adjusted association at the conventional 0.05 significance level.</p>
+<p>The fitted model coefficients are then converted into a tidy table. Setting exponentiate = TRUE transforms the coefficients from the log-odds scale to odds ratios, which are more intuitive to interpret. The output also reports 95% confidence intervals and p-values for each estimated association.</p>
+<p>For a categorical predictor, the odds ratio compares the category shown with the model’s reference category. An odds ratio greater than 1 indicates higher adjusted odds of weapon carrying, while an odds ratio below 1 indicates lower adjusted odds. Confidence intervals provide information about the precision of each estimate. When a 95% confidence interval includes 1, the estimated association is not statistically distinguishable from no association at the conventional 0.05 level.</p>
+<p>In the fitted model, eight of the ten substantive predictors have 95% confidence intervals that exclude 1. The confidence intervals for ParentSubstanceUse1 and ParentIncarceration1 include 1, corresponding to p-values of 0.151 and 0.575, respectively. The intercept is retained in the model output but is not treated as a substantive predictor and is omitted from the forest plot. The magnitude and direction of the individual associations are examined in greater detail below.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>tidy_model <span class="ot">&lt;-</span> </span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  mod_1 <span class="sc">|&gt;</span></span>
@@ -472,7 +472,8 @@ Residual Deviance: 4872     AIC: 4894</code></pre>
 # ℹ 14,686 more rows</code></pre>
 </div>
 </div>
-<p>The receiver operating characteristic (ROC) curve summarizes the model’s ability to rank observations according to their predicted probability of the event. The curve compares sensitivity with the false-positive rate across all possible probability thresholds. A model with little discriminatory ability will produce a curve close to the diagonal reference line, while a model with stronger discrimination will bow farther toward the upper-left corner.</p>
+<p>For each student, <code>.pred_1</code> represents the estimated probability of reporting weapon carrying at school, while <code>.pred_0</code> represents the estimated probability of not reporting weapon carrying. The <code>.pred_class</code> column converts these probabilities into a binary prediction using the classifier’s decision threshold. Because the outcome may be relatively uncommon, the continuous predicted probabilities are more informative for evaluating model performance than the resulting class labels. The upcoming ROC analysis therefore uses <code>.pred_1</code> rather than .pred_class to evaluate how well the model distinguishes students who reported weapon carrying from those who did not.</p>
+<p>Next, the receiver operating characteristic (ROC) curve summarizes the model’s ability to rank observations according to their predicted probability of the event. The curve compares sensitivity with the false-positive rate across all possible probability thresholds. A model with little discriminatory ability will produce a curve close to the diagonal reference line, while a model with stronger discrimination will bow farther toward the upper-left corner.</p>
 <p>The corresponding area under the ROC curve, or AUC, can be interpreted as the probability that the model assigns a higher predicted risk to a randomly selected adolescent with the outcome than to a randomly selected adolescent without the outcome. Values closer to 1 indicate stronger discrimination, while a value near 0.5 indicates performance close to chance.</p>
 <p>Because the ROC curve below is calculated on the <strong>training data</strong>, it primarily describes how well the fitted model separates the observations it was trained on. Predictive performance should generally also be evaluated on the held-out test set or through cross-validation to obtain a less optimistic estimate of how the model is likely to perform on new data.</p>
 <div class="cell">
@@ -490,6 +491,7 @@ Residual Deviance: 4872     AIC: 4894</code></pre>
 </div>
 </div>
 </div>
+<p>This ROC curve indicates that the fitted model has meaningful, though moderate, ability to discriminate between students who reported carrying a weapon at school and those who did not. The curve remains above the diagonal reference line, indicating performance better than random classification. The shape of the curve also demonstrates a substantial sensitivity-specificity tradeoff: achieving greater sensitivity requires accepting a considerable increase in the false-positive rate.</p>
 </section>
 <section id="visualizations" class="level3">
 <h3 class="anchored" data-anchor-id="visualizations">Visualizations</h3>
@@ -540,7 +542,6 @@ Residual Deviance: 4872     AIC: 4894</code></pre>
 <p>At the other end of the distribution, <strong>school connectedness</strong> had one of the lowest odds ratios in the model, with its confidence interval entirely below 1. The category coded <code>1</code> was therefore associated with substantially lower odds of weapon carrying than the reference category. <strong>Unfair discipline at school</strong> also had an odds ratio below 1 with a confidence interval that appears to remain below 1. As with parental monitoring, however, the coding of these variables should be verified before describing them substantively as protective or risk factors. The statistical model establishes the direction of the association between the coded categories, not necessarily the direction implied by the variable’s name.</p>
 <p>Taken together, the results suggest that experiences involving <strong>housing instability, interpersonal violence, and victimization</strong> are among the strongest correlates of adolescent weapon carrying in this model. Homelessness stands out in particular, while neighborhood violence, parental physical abuse, bullying, and sexual abuse also retain meaningful associations after simultaneous adjustment for the other included factors.</p>
 <p>These estimates should be interpreted as <strong>conditional associations rather than causal effects</strong>. The analysis shows that these factors are associated with weapon carrying after adjustment for the other measured predictors, but it does not establish that any one factor causes weapon-carrying behavior. Unmeasured confounding, the coding and measurement of survey variables, self-report bias, and the observational nature of the YRBS data should all be considered when interpreting the findings.</p>
-<p>The ROC analysis addresses a separate question: how well the predictors collectively distinguish adolescents who reported weapon carrying from those who did not. Accordingly, the coefficient results describe which variables are most strongly associated with the outcome, whereas the ROC curve evaluates the discriminatory performance of the model as a whole.</p>
 </section>
 <section id="key-takeaways" class="level3">
 <h3 class="anchored" data-anchor-id="key-takeaways">Key Takeaways</h3>

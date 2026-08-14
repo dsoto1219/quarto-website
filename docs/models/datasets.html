@@ -153,7 +153,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Lasso Regression</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../models/trees.qmd">
+    <a class="dropdown-item" href="../models/trees.html">
  <span class="dropdown-text">Decision Trees</span></a>
   </li>  
         <li>
@@ -192,6 +192,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#splitting-the-dataset" id="toc-splitting-the-dataset" class="nav-link" data-scroll-target="#splitting-the-dataset">Splitting the Dataset</a></li>
   <li><a href="#cross-validation" id="toc-cross-validation" class="nav-link" data-scroll-target="#cross-validation">Cross-Validation</a></li>
   </ul></li>
+  <li><a href="#save-everything" id="toc-save-everything" class="nav-link" data-scroll-target="#save-everything">Save everything</a></li>
   </ul>
 </nav>
     </div>
@@ -327,9 +328,20 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 5 &lt;split [11757/2939]&gt; Fold5</code></pre>
 </div>
 </div>
-
-
 </section>
+</section>
+<section id="save-everything" class="level2">
+<h2 class="anchored" data-anchor-id="save-everything">Save everything</h2>
+<p>We use <code>saveRDS</code> to save everything locally.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(analysis_split, <span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"data"</span>, <span class="st">"analysis_split.rds"</span>))</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(analysis_data, <span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"data"</span>, <span class="st">"analysis_data.rds"</span>))</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(analysis_train, <span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"data"</span>, <span class="st">"analysis_train.rds"</span>))</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(analysis_test, <span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"data"</span>, <span class="st">"analysis_test.rds"</span>))</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(analysis_folds, <span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"data"</span>, <span class="st">"analysis_folds.rds"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+
+
 </section>
 
 </main> <!-- /main -->
