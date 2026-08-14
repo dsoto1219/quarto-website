@@ -185,7 +185,6 @@ Let's use our `last_fit()` function.
 ```{r}
 #| label: weapon-last-fit
 
-options(yardstick.event_level = 'second') # Set this so that "1" (weapon-carrying) is the positive/event class
 
 weapon_last_fit <-
     last_fit(
