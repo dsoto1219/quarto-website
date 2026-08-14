@@ -185,16 +185,22 @@ Let's use our `last_fit()` function.
 ```{r}
 #| label: weapon-last-fit
 
+# Set each such that they read the second event_level, "1", as the positive
+sens_1 <- metric_tweak("sens_1", sensitivity, event_level = "second")
+spec_1 <- metric_tweak("spec_1", specificity, event_level = "second" )
+roc_auc_1 <- metric_tweak("roc_auc_1", roc_auc, event_level = "second")
 
 weapon_last_fit <-
     last_fit(
         final_wf,
         split   = analysis_split,
-        metrics = metric_set(accuracy, kap, roc_auc, sensitivity, specificity)
+        metrics = metric_set(accuracy, kap, roc_auc_1, sens_1, spec_1)
     )
 
 weapon_last_fit
 ```
+
+
 
 ### Test-set metrics
 
@@ -207,6 +213,10 @@ collect_metrics(weapon_last_fit)
 ```
 
 These look similar to the CV of our best ranger workflow.
+Accuracy = 0.957, but this is misleading because the outcome is highly imbalanced. 
+At the default classification threshold, the random forest predicts every student as a non-carrier, producing sensitivity of 0 and specificity of 1. 
+Cohen’s kappa is 0, indicating that the hard classifications provide no improvement over a trivial majority-class prediction. 
+Nevertheless, the ROC AUC of approximately 0.715 shows that the predicted probabilities contain meaningful discriminatory information.
 
 ## Test-set predictions
 

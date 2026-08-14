@@ -309,7 +309,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
                 Total 4899       -</code></pre>
 </div>
 </div>
-<p>Both sets show similar proportions, meaning <code>strata = WeaponCarryingSchool</code> did its job when we defined the train/test split previously. However, we note that there is a significant difference in proportion between those who carry weapons (0) and those who do not (1): we will need to address this in the specification section.</p>
+<p>Both sets show similar proportions, meaning <code>strata = WeaponCarryingSchool</code> did its job when we defined the train/test split previously.</p>
 </section>
 </section>
 <section id="workflow" class="level2">
@@ -363,8 +363,6 @@ predictor: 10</code></pre>
 </section>
 <section id="specification" class="level3">
 <h3 class="anchored" data-anchor-id="specification">Specification</h3>
-<p>We do the specification as follows.</p>
-<p>As a result of the proportions of weapon-carrying being very unequal, when we set the <code>rpart</code> engine, we add the parameter <code>parms = list(prior = c(0.5, 0.5))</code>. This tells the <code>rpart</code> engine to treat each class equally, despite the proportional class imbalance.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>cart_spec <span class="ot">&lt;-</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">decision_tree</span>(</span>
@@ -496,11 +494,11 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 5 × 9
   cost_complexity tree_depth min_n .metric .estimator  mean     n std_err
             &lt;dbl&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
-1      0.0000104           5   145 roc_auc binary     0.668    10  0.0156
-2      0.00245             5   108 roc_auc binary     0.667    10  0.0152
-3      0.00363             5    41 roc_auc binary     0.665    10  0.0153
-4      0.00000218          7   122 roc_auc binary     0.664    10  0.0165
-5      0.00000579          9   125 roc_auc binary     0.663    10  0.0176
+1      0.0000187           7    59 roc_auc binary     0.673    10  0.0135
+2      0.000001            7    81 roc_auc binary     0.669    10  0.0135
+3      0.00000218          7   122 roc_auc binary     0.669    10  0.0154
+4      0.0000154           5    12 roc_auc binary     0.667    10  0.0117
+5      0.000236            6    29 roc_auc binary     0.666    10  0.0131
 # ℹ 1 more variable: .config &lt;chr&gt;</code></pre>
 </div>
 </div>
@@ -530,7 +528,7 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 1 × 4
   cost_complexity tree_depth min_n .config         
             &lt;dbl&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;           
-1       0.0000104          5   145 pre0_mod13_post0</code></pre>
+1       0.0000187          7    59 pre0_mod16_post0</code></pre>
 </div>
 </div>
 <p>But we don’t commit yet: we want to check how this performs first.</p>
@@ -548,9 +546,9 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 3 × 6
   .metric     .estimator  mean     n std_err .config        
   &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;          
-1 accuracy    binary     0.687    10 0.0119  pre0_mod0_post0
-2 brier_class binary     0.221    10 0.00139 pre0_mod0_post0
-3 roc_auc     binary     0.668    10 0.0156  pre0_mod0_post0</code></pre>
+1 accuracy    binary     0.708    10 0.00595 pre0_mod0_post0
+2 brier_class binary     0.210    10 0.00122 pre0_mod0_post0
+3 roc_auc     binary     0.673    10 0.0135  pre0_mod0_post0</code></pre>
 </div>
 </div>
 <p>Looks good, time to lock it in.</p>
@@ -574,9 +572,9 @@ Model: decision_tree()
 Decision Tree Model Specification (classification)
 
 Main Arguments:
-  cost_complexity = 1.03979841848149e-05
-  tree_depth = 5
-  min_n = 145
+  cost_complexity = 1.86718109129192e-05
+  tree_depth = 7
+  min_n = 59
 
 Engine-Specific Arguments:
   parms = list(prior = c(0.5, 0.5))
@@ -590,18 +588,14 @@ Computational engine: rpart </code></pre>
 <h2 class="anchored" data-anchor-id="evaluate-on-the-test-set">Evaluate on the Test Set</h2>
 <p>We use <code>last_fit()</code> to fit <strong>all</strong> training data to predit on the <strong>test</strong> set. It computes metrics once, and honestly, with no accidental cheating possible.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>roc_auc_1 <span class="ot">&lt;-</span> <span class="fu">metric_tweak</span>( <span class="st">"roc_auc_1"</span>, roc_auc, <span class="at">event_level =</span> <span class="st">"second"</span> )</span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>sens_1    <span class="ot">&lt;-</span> <span class="fu">metric_tweak</span>( <span class="st">"sens_1"</span>, sensitivity, <span class="at">event_level =</span> <span class="st">"second"</span> )</span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>spec_1    <span class="ot">&lt;-</span> <span class="fu">metric_tweak</span>( <span class="st">"spec_1"</span>, specificity, <span class="at">event_level =</span> <span class="st">"second"</span> )</span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>cart_last_fit <span class="ot">&lt;-</span></span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">last_fit</span>(</span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>        cart_final_wf,</span>
-<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>        <span class="at">split   =</span> analysis_split,</span>
-<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a>        <span class="at">metrics =</span> <span class="fu">metric_set</span>(accuracy, kap, roc_auc_1, sens_1, spec_1)</span>
-<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a>cart_last_fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>cart_last_fit <span class="ot">&lt;-</span></span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">last_fit</span>(</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>        cart_final_wf,</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>        <span class="at">split   =</span> analysis_split,</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>        <span class="at">metrics =</span> <span class="fu">metric_set</span>(accuracy, kap, roc_auc, sensitivity, specificity)</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>cart_last_fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># Resampling results
 # Manual resampling 
@@ -618,13 +612,13 @@ Computational engine: rpart </code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(cart_last_fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 5 × 4
-  .metric   .estimator .estimate .config        
-  &lt;chr&gt;     &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          
-1 accuracy  binary        0.663  pre0_mod0_post0
-2 kap       binary        0.0738 pre0_mod0_post0
-3 sens_1    binary        0.660  pre0_mod0_post0
-4 spec_1    binary        0.664  pre0_mod0_post0
-5 roc_auc_1 binary        0.324  pre0_mod0_post0</code></pre>
+  .metric     .estimator .estimate .config        
+  &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          
+1 accuracy    binary        0.700  pre0_mod0_post0
+2 kap         binary        0.0708 pre0_mod0_post0
+3 sensitivity binary        0.706  pre0_mod0_post0
+4 specificity binary        0.571  pre0_mod0_post0
+5 roc_auc     binary        0.685  pre0_mod0_post0</code></pre>
 </div>
 </div>
 <p>Comparing these to the CV metrics from the sanity-check section, we see they are in about the same ballpark. Thus, the model generalizes.</p>
@@ -642,16 +636,16 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 4,899 × 4
    WeaponCarryingSchool .pred_class .pred_1 .pred_0
    &lt;fct&gt;                &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt;
- 1 0                    0             0.353   0.647
- 2 0                    1             0.604   0.396
- 3 0                    0             0.353   0.647
- 4 0                    0             0.353   0.647
- 5 0                    0             0.353   0.647
- 6 0                    1             0.524   0.476
- 7 0                    1             0.695   0.305
- 8 1                    1             0.695   0.305
+ 1 0                    0             0.341   0.659
+ 2 0                    0             0.470   0.530
+ 3 0                    0             0.341   0.659
+ 4 0                    0             0.341   0.659
+ 5 0                    0             0.341   0.659
+ 6 0                    1             0.521   0.479
+ 7 0                    1             0.538   0.462
+ 8 1                    1             0.893   0.107
  9 0                    1             0.734   0.266
-10 0                    1             0.524   0.476
+10 0                    1             0.521   0.479
 # ℹ 4,889 more rows</code></pre>
 </div>
 </div>
