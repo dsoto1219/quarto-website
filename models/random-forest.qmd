@@ -20,10 +20,11 @@ library(here)
 ### Load cached data
 
 ```{r}
+analysis_split <- readRDS(here("models", "data", "analysis_split.rds"))
 analysis_data <- readRDS(here("models", "data", "analysis_data.rds"))
 analysis_train <- readRDS(here("models", "data", "analysis_train.rds"))
 analysis_test <- readRDS(here("models","data", "analysis_test.rds"))
-analysis_folds <-  readRDS(here("models","data", "analysis_folds.rds"))
+analysis_folds <- readRDS(here("models","data", "analysis_folds.rds"))
 ```
 
 ### Sanity check: class balance
