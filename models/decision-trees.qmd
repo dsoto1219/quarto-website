@@ -150,3 +150,101 @@ cart_workflow <-
 cart_workflow
 ```
 
+## Tree tuning
+
+### Tuning grid
+
+We first set up the tuning grid. 
+
+```{r}
+#| label: tuning-grid
+
+tree_grid <- grid_regular(
+    cost_complexity(),
+    tree_depth(c(2, 5)),
+    min_n(),
+    levels = 4
+)
+
+tree_grid
+```
+
+### Run the tuning
+
+Note for those following along that this part can be slow:
+
+- 4 × 4 × 4 = **64 candidates**
+- × 10 folds = **640 model fits**
+- We’ll use `doParallel` to speed it up.
+
+`levels` can be set to `3` for faster turnaround.
+We use ROC AUC as the tuning metric — robust to class imbalance, and the same one we used for Lasso. 
+
+```{r}
+#| label: run-tuning
+
+doParallel::registerDoParallel()
+
+cart_tune <-
+    cart_workflow |>
+    tune_grid(
+        resamples = cv_alcohol,
+        grid = tree_grid,
+        metrics = metric_set(roc_auc),
+        control = control_grid(save_pred = TRUE)
+    )
+
+doParallel::stopImplicitCluster()
+```
+
+### Show the best candidates
+
+The top 5 hyperparameter combos, ranked by mean ROC AUC across the 10 folds.
+
+```{r}
+show_best(cart_tune, metric = "roc_auc")
+```
+
+### Visualize the tuning results
+
+In this visualization, each panel shows how the metric changes as one knob varies — colored by the others. 
+We look for the sweet spot.
+
+```{r}
+autoplot(cart_tune)
+```
+
+### Picking the best combination
+
+We select one row as the winner candidate:
+
+```{r}
+best_cart <- select_best(cart_tune, metric = "roc_auc")
+
+best_cart
+```
+
+But we don't commit yet: we want to check how this performs first.
+
+## How does our chosen candidate actually do?
+
+Here, we get an honest, CV-estimated performance for our single chosen combo.
+
+```{r}
+cart_workflow |>
+    finalize_workflow(best_cart) |>
+    fit_resamples(resamples = cv_alcohol) |>
+    collect_metrics()
+```
+
+Looks good, time to lock it in.
+
+```{r}
+cart_final_wf <- finalize_workflow(cart_workflow, best_cart)
+
+cart_final_wf
+```
+
+finalize_workflow() swaps the tune() placeholders for the actual best values. 
+Now we’re committed.
+
