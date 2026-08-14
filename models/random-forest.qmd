@@ -1,0 +1,211 @@
+---
+title: "Random Forests"
+author: "Daniel Soto"
+---
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(MLearnYRBSS)
+library(janitor)
+library(skimr)
+library(vip)
+
+library(rio)
+library(here)
+
+riskyBehaviors <- import(here("models", "data", "yrbs_2021.sav"))
+```
+
+### Recode the outcome
+
+```{r}
+riskyBehaviors_analysis <- riskyBehaviors |> 
+  drop_na(EverHallucinogenicDrugs)
+
+riskyBehaviors_analysis$EverHallucinogenicDrugs <- as.factor(
+  riskyBehaviors_analysis$EverHallucinogenicDrugs)
+```
+
+### Train/test Split — Stratified
+
+```{r}
+set.seed(2023)
+
+hallucinogenic_split <- initial_split(
+    riskyBehaviors_analysis,
+    strata = EverHallucinogenicDrugs
+)
+
+hallucinogenic_train <- training(hallucinogenic_split)
+hallucinogenic_test  <- testing(hallucinogenic_split)
+
+hallucinogenic_split
+```
+### Sanity Check — class balance
+
+#### Train
+
+```{r}
+hallucinogenic_train |>
+    tabyl(EverHallucinogenicDrugs) |>
+    adorn_pct_formatting(0) |>
+    adorn_totals()
+```
+#### Test
+
+```{r}
+hallucinogenic_test |>
+    tabyl(EverHallucinogenicDrugs) |>
+    adorn_pct_formatting(0) |>
+    adorn_totals()
+```
+Both sets have the same proportions.
+
+### Cross-Validation Folds
+
+```{r}
+set.seed(2023)
+
+cv_hallucinogenic <- vfold_cv(hallucinogenic_train, v = 5, 
+                              strata = EverHallucinogenicDrugs)
+cv_hallucinogenic
+```
+
+### Recipe (Preprocessing)
+
+```{r}
+hallucinogenic_recipe <-
+    recipe(EverHallucinogenicDrugs ~ ., data = hallucinogenic_train) |>
+    step_impute_mode(all_nominal_predictors()) |>
+    step_impute_mean(all_numeric_predictors()) |>
+    step_dummy(all_nominal_predictors())
+
+hallucinogenic_recipe
+```
+
+### Random Forest Spec - `ranger`
+
+```{r}
+ranger_spec <-
+    rand_forest(
+        mtry  = tune(),     # ⬅️ # of predictors sampled at each split
+        min_n = tune(),     # ⬅️ minimum rows to keep splitting
+        trees = 100         # forest size (fixed, not tuned)
+    ) |>
+    set_mode("classification") |>
+    set_engine("ranger",
+               importance = "permutation")  # ⬅️ for vip() later
+
+ranger_spec
+```
+### Workflow
+
+```{r}
+ranger_workflow <-
+    workflow() |>
+    add_recipe(hallucinogenic_recipe) |>
+    add_model(ranger_spec)
+
+ranger_workflow
+```
+### Tuning
+
+```{r}
+doParallel::registerDoParallel()
+
+set.seed(46257)
+
+ranger_tune <-
+    tune_grid(
+        ranger_workflow,
+        resamples = cv_hallucinogenic,
+        grid = 11    # ⬅️ tidymodels picks 11 sensible combos for us
+    )
+
+doParallel::stopImplicitCluster()
+```
+
+### Show the best candidates
+
+```{r}
+show_best(ranger_tune, metric = "roc_auc")
+
+autoplot(ranger_tune)
+```
+
+### Pick the best combo 
+
+```{r}
+best_rf <- select_best(ranger_tune, metric = "roc_auc")
+
+best_rf
+```
+
+### Ranking the performance of our chosen combo
+
+```{r}
+ranger_workflow |>
+    finalize_workflow(best_rf) |>
+    fit_resamples(resamples = cv_hallucinogenic) |>
+    collect_metrics()
+```
+### Looks good - locking in
+
+```{r}
+final_wf <- finalize_workflow(ranger_workflow, best_rf)
+
+final_wf
+```
+### Evaluate the last test set
+
+```{r}
+hallucinogenic_last_fit <-
+    last_fit(
+        final_wf,
+        split   = hallucinogenic_split,
+        metrics = metric_set(accuracy, kap, roc_auc, sensitivity, specificity)
+    )
+
+hallucinogenic_last_fit
+collect_metrics(hallucinogenic_last_fit)
+```
+
+### Test-set predictions
+
+```{r}
+predictions_testing <-
+    hallucinogenic_last_fit |>
+    collect_predictions() |>
+    select(-.config, -.row)
+
+predictions_testing
+```
+
+### Confusion matrix
+
+```{r}
+predictions_testing |>
+   conf_mat(truth = EverHallucinogenicDrugs, estimate = .pred_class) |>
+    autoplot(type = "heatmap")
+```
+
+### ROC curve on the test set
+
+```{r}
+predictions_testing |>
+    roc_curve(truth = EverHallucinogenicDrugs, .pred_1, event_level = "second") |>
+    autoplot()
+```
+
+### Variable Importance
+
+```{r}
+hallucinogenic_last_fit |>
+    extract_fit_parsnip() |>
+    vi() |>
+    slice_max(Importance, n = 10) |>
+    ggplot(aes(Importance, fct_reorder(Variable, Importance))) +
+    geom_col(fill = "forestgreen") +
+    labs(y = NULL, title = "Top 10 predictors of Usedhallucinogenic")
+```
