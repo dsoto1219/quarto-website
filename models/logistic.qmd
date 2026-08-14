@@ -86,7 +86,7 @@ rec <- weapon_carry_recipe %>%
 
 The model specification identifies the type of statistical model to be estimated. `logistic_reg()` defines a logistic regression model, and the classification mode indicates that the objective is to predict membership in one of two outcome categories. The `glm` engine uses R's generalized linear modeling framework to estimate the model.
 
-This is a standard, interpretable logistic regression rather than a heavily tuned machine-learning model. Its primary advantage in this context is that the estimated coefficients can be converted directly to odds ratios and used to describe the adjusted association between each predictor and weapon carrying at school.
+The primary advantage of logistic regression in this context is that the estimated coefficients can be converted directly to odds ratios and used to describe the adjusted association between each predictor and weapon carrying at school.
 
 ```{r}
 #| label: model-spec
