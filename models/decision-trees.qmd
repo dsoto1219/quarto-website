@@ -155,6 +155,7 @@ cart_workflow
 ### Tuning grid
 
 We first set up the tuning grid. 
+Note that `levels` can be set to `3` for faster turnaround.
 
 ```{r}
 #| label: tuning-grid
@@ -171,14 +172,13 @@ tree_grid
 
 ### Run the tuning
 
-Note for those following along that this part can be slow:
+Note for those following along that this part can be slow, as there are:
 
 - 4 × 4 × 4 = **64 candidates**
 - × 10 folds = **640 model fits**
-- We’ll use `doParallel` to speed it up.
 
-`levels` can be set to `3` for faster turnaround.
-We use ROC AUC as the tuning metric — robust to class imbalance, and the same one we used for Lasso. 
+We’ll use `doParallel` to speed it up.
+Also, we use ROC AUC as the tuning metric — robust to class imbalance, and the same one we used for Lasso. 
 
 ```{r}
 #| label: run-tuning
@@ -245,6 +245,96 @@ cart_final_wf <- finalize_workflow(cart_workflow, best_cart)
 cart_final_wf
 ```
 
-finalize_workflow() swaps the tune() placeholders for the actual best values. 
+`finalize_workflow()` swaps the `tune()` placeholders for the actual best values. 
 Now we’re committed.
 
+## Evaluate on the Test Set
+
+We use `last_fit()` to fit **all** training data to predit on the **test** set.
+It computes metrics once, and honestly, with no accidental cheating possible.
+
+```{r}
+#| label: last-fit
+
+cart_last_fit <-
+    last_fit(
+        cart_final_wf,
+        split   = alcohol_split,
+        metrics = metric_set(accuracy, kap, roc_auc, sensitivity, specificity)
+    )
+
+cart_last_fit
+```
+
+### Test-set metrics
+
+Finally, we obtain our metrics:
+
+```{r}
+#| label: test-set-metrics
+
+collect_metrics(cart_last_fit)
+```
+
+Comparing these to the CV metrics from the sanity-check slide, we see they are in about the same ballpark.
+Thus, the model generalizes.
+
+### Test-set predictions
+
+```{r}
+#| label: test-set-predictions
+
+tree_pred <-
+    cart_last_fit |>
+    collect_predictions() |>
+    select(UsedAlcohol, .pred_class, .pred_1, .pred_0)
+
+tree_pred
+```
+
+### Confusion Matrix
+
+```{r}
+#| label: confusion-matrix
+
+tree_pred |>
+    conf_mat(truth = UsedAlcohol, estimate = .pred_class) |>
+    autoplot(type = "heatmap")
+```
+
+### ROC curve on the test set
+
+```{r}
+#| label: ROC-curve
+
+tree_pred |>
+    roc_curve(truth = UsedAlcohol, .pred_1, event_level = "second") |>
+    autoplot()
+```
+
+We see the ROC curve hugs the top-left corner, which is excellent and means the model is not randomly guessing.
+
+## Visualizing the final tree
+
+This is the superpower of trees: it is a model your collaborator (or PI, or grandma) can read without a stats degree.
+
+```{r}
+#| label: tree-visualization
+
+cart_last_fit |>
+    extract_fit_engine() |>
+    rpart.plot(roundint = FALSE, type = 4, extra = 104)
+```
+## Variable importance with `vip`
+
+Each bar in the variable importance plot (VIP) indicates how much that predictor reduced impurity across all splits.
+Predictors not shown were never useful enough to make the tree.
+This makes for a free feature ranking for your manuscript.
+
+```{r}
+#| label: vip
+
+cart_last_fit |>
+    extract_fit_parsnip() |>
+    vip(num_features = 15)
+```
