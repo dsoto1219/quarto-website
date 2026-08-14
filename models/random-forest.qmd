@@ -219,6 +219,7 @@ predictions_testing |>
     roc_curve(truth = WeaponCarryingSchool, .pred_1, event_level = "second") |>
     autoplot()
 ```
+Looks good! We're hugging the top-left hand side.
 
 ### Variable Importance
 
