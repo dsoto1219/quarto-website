@@ -3,6 +3,8 @@ title: "Random Forests"
 author: "Daniel Soto"
 ---
 
+In this note, we use random forests to predict teen weapon-carrying behavior in schools.
+
 ## Setup
 
 ```{r}
@@ -12,6 +14,7 @@ library(MLearnYRBSS)
 library(janitor)
 library(skimr)
 library(vip)
+library(here)
 ```
 
 ### Load cached data
@@ -44,19 +47,27 @@ Both sets have the same proportions, as before.
 
 ### Recipe (Preprocessing)
 
+The usual preprocessing step:
+
 ```{r}
-hallucinogenic_recipe <-
-    recipe(EverHallucinogenicDrugs ~ ., data = hallucinogenic_train) |>
+#| label: recipe
+
+weapon_carry_recipe <-
+    recipe(WeaponCarryingSchool ~ ., data = analysis_train) |>
     step_impute_mode(all_nominal_predictors()) |>
     step_impute_mean(all_numeric_predictors()) |>
     step_dummy(all_nominal_predictors())
 
-hallucinogenic_recipe
+weapon_carry_recipe
 ```
+
+No `step_normalize()` — like single trees, ensembles only care about order, not scale.
 
 ### Random Forest Spec - `ranger`
 
 ```{r}
+#| label: ranger-spec
+
 ranger_spec <-
     rand_forest(
         mtry  = tune(),     # ⬅️ # of predictors sampled at each split
@@ -69,17 +80,26 @@ ranger_spec <-
 
 ranger_spec
 ```
-### Workflow
+
+We put these together in the workflow:
 
 ```{r}
 ranger_workflow <-
     workflow() |>
-    add_recipe(hallucinogenic_recipe) |>
+    add_recipe(weapon_carry_recipe) |>
     add_model(ranger_spec)
 
 ranger_workflow
 ```
+
 ### Tuning
+
+We are tuning two main knobs:
+
+- `mtry` = how many predictors to consider at each split. Small `mtry` leads to more decorrelation between trees, meaning lower variance.
+- `min_n` = minimum rows needed to split a node. Larger `min_n` leads to shallower trees, thus less overfitting.
+
+`trees` is **fixed** at 100, more trees rarely hurt, but it just makes the process slower.
 
 ```{r}
 doParallel::registerDoParallel()
@@ -89,7 +109,7 @@ set.seed(46257)
 ranger_tune <-
     tune_grid(
         ranger_workflow,
-        resamples = cv_hallucinogenic,
+        resamples = analysis_folds,
         grid = 11    # ⬅️ tidymodels picks 11 sensible combos for us
     )
 
@@ -98,13 +118,18 @@ doParallel::stopImplicitCluster()
 
 ### Show the best candidates
 
+Top 5 hyperparameter combos, ranked by mean ROC AUC across the 5 folds.
+
 ```{r}
 show_best(ranger_tune, metric = "roc_auc")
 
-autoplot(ranger_tune)
+# Visualize the tuning results
+autoplot(ranger_tune) 
 ```
 
 ### Pick the best combo 
+
+Our winning candidate:
 
 ```{r}
 best_rf <- select_best(ranger_tune, metric = "roc_auc")
@@ -112,40 +137,67 @@ best_rf <- select_best(ranger_tune, metric = "roc_auc")
 best_rf
 ```
 
+But we won't commit this to the testing set yet — let's check it first.
+
+## Sanity-Check Before Committing
+
 ### Ranking the performance of our chosen combo
 
+An honest, CV-estimated performance for our single chosen Random Forest.
+
 ```{r}
+#| label: best-ranger-workflow
+
 ranger_workflow |>
     finalize_workflow(best_rf) |>
-    fit_resamples(resamples = cv_hallucinogenic) |>
+    fit_resamples(resamples = analysis_folds) |>
     collect_metrics()
 ```
-### Looks good - locking in
+Looks good - locking in.
+
+### Evaluate the last test set
+
+`finalize_workflow()` plugs the winning `mtry` and `min_n` into the workflow. 
+We are now committed.
 
 ```{r}
 final_wf <- finalize_workflow(ranger_workflow, best_rf)
 
 final_wf
 ```
-### Evaluate the last test set
+
+Let's use our `last_fit()` function.
 
 ```{r}
-hallucinogenic_last_fit <-
+#| label: weapon-last-fit
+
+weapon_last_fit <-
     last_fit(
         final_wf,
-        split   = hallucinogenic_split,
+        split   = analysis_split,
         metrics = metric_set(accuracy, kap, roc_auc, sensitivity, specificity)
     )
 
-hallucinogenic_last_fit
-collect_metrics(hallucinogenic_last_fit)
+weapon_last_fit
 ```
 
-### Test-set predictions
+### Test-set metrics
+
+We now collect our metrics.
+
+```{r}
+collect_metrics(weapon_last_fit)
+```
+
+These look similar to the CV of our best ranger workflow.
+
+## Test-set predictions
+
+Let us now test out predictions!
 
 ```{r}
 predictions_testing <-
-    hallucinogenic_last_fit |>
+    weapon_last_fit |>
     collect_predictions() |>
     select(-.config, -.row)
 
@@ -156,22 +208,22 @@ predictions_testing
 
 ```{r}
 predictions_testing |>
-   conf_mat(truth = EverHallucinogenicDrugs, estimate = .pred_class) |>
-    autoplot(type = "heatmap")
+   conf_mat(truth = WeaponCarryingSchool, estimate = .pred_class) |>
+   autoplot(type = "heatmap")
 ```
 
 ### ROC curve on the test set
 
 ```{r}
 predictions_testing |>
-    roc_curve(truth = EverHallucinogenicDrugs, .pred_1, event_level = "second") |>
+    roc_curve(truth = WeaponCarryingSchool, .pred_1, event_level = "second") |>
     autoplot()
 ```
 
 ### Variable Importance
 
 ```{r}
-hallucinogenic_last_fit |>
+weapon_last_fit |>
     extract_fit_parsnip() |>
     vi() |>
     slice_max(Importance, n = 10) |>
