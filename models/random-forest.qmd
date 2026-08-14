@@ -3,6 +3,8 @@ title: "Random Forests"
 author: "Daniel Soto"
 ---
 
+## Setup
+
 ```{r}
 library(tidyverse)
 library(tidymodels)
@@ -10,67 +12,35 @@ library(MLearnYRBSS)
 library(janitor)
 library(skimr)
 library(vip)
-
-library(rio)
-library(here)
-
-riskyBehaviors <- import(here("models", "data", "yrbs_2021.sav"))
 ```
 
-### Recode the outcome
+### Load cached data
 
 ```{r}
-riskyBehaviors_analysis <- riskyBehaviors |> 
-  drop_na(EverHallucinogenicDrugs)
-
-riskyBehaviors_analysis$EverHallucinogenicDrugs <- as.factor(
-  riskyBehaviors_analysis$EverHallucinogenicDrugs)
+analysis_data <- readRDS(here("models", "data", "analysis_data.rds"))
+analysis_train <- readRDS(here("models", "data", "analysis_train.rds"))
+analysis_test <- readRDS(here("models","data", "analysis_test.rds"))
+analysis_folds <-  readRDS(here("models","data", "analysis_folds.rds"))
 ```
 
-### Train/test Split — Stratified
+### Sanity check: class balance
 
 ```{r}
-set.seed(2023)
+#| label: sanity-check
 
-hallucinogenic_split <- initial_split(
-    riskyBehaviors_analysis,
-    strata = EverHallucinogenicDrugs
-)
+analysis_train |>
+    tabyl(WeaponCarryingSchool) |>
+    adorn_pct_formatting(0) |>
+    adorn_totals()
 
-hallucinogenic_train <- training(hallucinogenic_split)
-hallucinogenic_test  <- testing(hallucinogenic_split)
-
-hallucinogenic_split
-```
-### Sanity Check — class balance
-
-#### Train
-
-```{r}
-hallucinogenic_train |>
-    tabyl(EverHallucinogenicDrugs) |>
+analysis_test |>
+    tabyl(WeaponCarryingSchool) |>
     adorn_pct_formatting(0) |>
     adorn_totals()
 ```
-#### Test
+Both sets have the same proportions, as before.
 
-```{r}
-hallucinogenic_test |>
-    tabyl(EverHallucinogenicDrugs) |>
-    adorn_pct_formatting(0) |>
-    adorn_totals()
-```
-Both sets have the same proportions.
-
-### Cross-Validation Folds
-
-```{r}
-set.seed(2023)
-
-cv_hallucinogenic <- vfold_cv(hallucinogenic_train, v = 5, 
-                              strata = EverHallucinogenicDrugs)
-cv_hallucinogenic
-```
+## Workflow
 
 ### Recipe (Preprocessing)
 
