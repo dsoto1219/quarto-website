@@ -88,6 +88,8 @@ ranger_spec
 We put these together in the workflow:
 
 ```{r}
+#| label: ranger-workflow
+
 ranger_workflow <-
     workflow() |>
     add_recipe(weapon_carry_recipe) |>
@@ -106,6 +108,8 @@ We are tuning two main knobs:
 `trees` is **fixed** at 100, more trees rarely hurt, but it just makes the process slower.
 
 ```{r}
+#| label: ranger-tune
+
 doParallel::registerDoParallel()
 
 set.seed(46257)
@@ -125,6 +129,8 @@ doParallel::stopImplicitCluster()
 Top 5 hyperparameter combos, ranked by mean ROC AUC across the 5 folds.
 
 ```{r}
+#| label: show-best
+
 show_best(ranger_tune, metric = "roc_auc")
 
 # Visualize the tuning results
@@ -136,6 +142,8 @@ autoplot(ranger_tune)
 Our winning candidate:
 
 ```{r}
+#| label: best-candidate
+
 best_rf <- select_best(ranger_tune, metric = "roc_auc")
 
 best_rf
@@ -165,6 +173,8 @@ Looks good - locking in.
 We are now committed.
 
 ```{r}
+#| label: final-workflow
+
 final_wf <- finalize_workflow(ranger_workflow, best_rf)
 
 final_wf
@@ -192,6 +202,8 @@ weapon_last_fit
 We now collect our metrics.
 
 ```{r}
+#| label: collect-metrics 
+
 collect_metrics(weapon_last_fit)
 ```
 
@@ -202,6 +214,8 @@ These look similar to the CV of our best ranger workflow.
 Let us now test out predictions!
 
 ```{r}
+#| label: test-set-predictions
+
 predictions_testing <-
     weapon_last_fit |>
     collect_predictions() |>
@@ -213,6 +227,8 @@ predictions_testing
 ### Confusion matrix
 
 ```{r}
+#| label: confusion-matrix
+
 predictions_testing |>
    conf_mat(truth = WeaponCarryingSchool, estimate = .pred_class) |>
    autoplot(type = "heatmap")
@@ -221,6 +237,8 @@ predictions_testing |>
 ### ROC curve on the test set
 
 ```{r}
+#| label: roc-curve
+
 predictions_testing |>
     roc_curve(truth = WeaponCarryingSchool, .pred_1, event_level = "second") |>
     autoplot()
@@ -230,6 +248,8 @@ Looks good! We're hugging the top-left hand side.
 ### Variable Importance
 
 ```{r}
+#| label: vip-plot
+
 weapon_last_fit |>
     extract_fit_parsnip() |>
     vi() |>
