@@ -8,6 +8,9 @@ In this note, we use random forests to predict teen weapon-carrying behavior in 
 ## Setup
 
 ```{r}
+#| label: libraries
+#| output: false
+
 library(tidyverse)
 library(tidymodels)
 library(MLearnYRBSS)
