@@ -126,9 +126,11 @@ mod_1
 
 ```
 
-The fitted model coefficients are then converted into a tidy table. Setting `exponentiate = TRUE` transforms the coefficients from the log-odds scale to **odds ratios**, which are more intuitive to interpret. The output also includes 95% confidence intervals and p-values for the estimated associations.
+The fitted model coefficients are then converted into a tidy table. Setting exponentiate = TRUE transforms the coefficients from the log-odds scale to odds ratios, which are more intuitive to interpret. The output also reports 95% confidence intervals and p-values for each estimated association.
 
-For a categorical predictor, an odds ratio compares a particular category with the reference category used by the model. For a numeric predictor, the odds ratio represents the multiplicative change in the odds associated with a one-unit increase in that predictor, unless the variable was transformed beforehand. Confidence intervals provide information about the precision of each estimate. When a 95% confidence interval includes 1, the data are compatible with no adjusted association at the conventional 0.05 significance level.
+For a categorical predictor, the odds ratio compares the category shown with the model's reference category. An odds ratio greater than 1 indicates higher adjusted odds of weapon carrying, while an odds ratio below 1 indicates lower adjusted odds. Confidence intervals provide information about the precision of each estimate. When a 95% confidence interval includes 1, the estimated association is not statistically distinguishable from no association at the conventional 0.05 level.
+
+In the fitted model, eight of the ten substantive predictors have 95% confidence intervals that exclude 1. The confidence intervals for ParentSubstanceUse1 and ParentIncarceration1 include 1, corresponding to p-values of 0.151 and 0.575, respectively. The intercept is retained in the model output but is not treated as a substantive predictor and is omitted from the forest plot. The magnitude and direction of the individual associations are examined in greater detail below.
 
 ```{r}
 #| label: tidy-model
