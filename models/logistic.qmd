@@ -28,9 +28,6 @@ library(tidymodels)
 library(tidyverse)
 library(dissertationData)
 library(here)
-
-# Load and prepare the YRBS 2023 dataset
-
 ```
 
 ### Load the data
