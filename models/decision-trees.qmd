@@ -106,6 +106,8 @@ cv_alcohol
 Trees don't need fancy preprocessing: no `step_normalize()`, as trees only care about *order*, not scale; no `step_dummy()`, as `rpart` handles factor predictors natively; and imputation is still useful, since `rpart` can't split on `NA`. 
 
 ```{r}
+#| label: recipe
+
 alcohol_recipe <-
     recipe(UsedAlcohol ~ ., data = alcohol_train) |>
     step_impute_mode(all_nominal_predictors()) |>
