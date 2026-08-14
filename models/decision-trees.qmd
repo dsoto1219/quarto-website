@@ -135,3 +135,18 @@ cart_spec <-
 cart_spec
 ```
 
+### Workflow
+
+Bundle it! This is the recipe and specification, neatly packaged.
+
+```{r}
+#| label: workflow
+
+cart_workflow <-
+    workflow() |>
+    add_recipe(alcohol_recipe) |>
+    add_model(cart_spec)
+
+cart_workflow
+```
+
