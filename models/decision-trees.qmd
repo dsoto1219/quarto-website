@@ -3,6 +3,12 @@ title: "Decision Trees"
 author: "Daniel Soto"
 ---
 
+In this note, we check whether a decision tree can predict whether a teen has ever consumed alcohol.
+
+## Setup
+
+Like before we load the packages necessary for the analysis.
+
 ```{r}
 #| label: packages
 #| output: false
@@ -14,14 +20,16 @@ library(janitor)
 library(skimr)
 library(vip)
 library(rpart.plot)
-library(here)
-library(rio)
 
-riskyBehaviors <- import(here("models", "data", "yrbs_2021.sav"))
+data("riskyBehaviors")
 ```
 
+## Recode the outcome
+
+We encode our outcome variable, `UseAlcohol`, so that it is 0 if a given teen has never used alcohol and 1 if they have used alcohol.
+
 ```{r}
-data(riskyBehaviors)
+#| label: outcome-encoding
 
 riskyBehaviors_analysis <-
     riskyBehaviors |>
@@ -38,7 +46,16 @@ riskyBehaviors_analysis <-
               LargestNumberOfDrinks, SourceAlcohol))
 ```
 
+We drop `AgeFirstAlcohol`, `DaysAlcohol`, `BingeDrinking`, `LargestNumberOfDrinks`, and `SourceAlcohol` because they are all about alcohol use. 
+If we left them in, the tree would just memorize the answer.
+
+## Split + Resample
+
+Here, we stratify the train/test split.
+
 ```{r}
+#| label: train-test-stratification
+
 set.seed(2023)
 
 alcohol_split <- initial_split(
@@ -52,3 +69,5 @@ alcohol_test <- testing(alcohol_split)
 alcohol_split
 ```
 
+We use `strata = ` to keep the proportion of `UsedAlcohol` roughly equal in the train and test sets. 
+We use the same logic in the Lasso training.
