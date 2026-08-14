@@ -179,6 +179,9 @@ roc_plot_training <-
 roc_plot_training 
 ```
 
+This ROC curve indicates that the fitted model has meaningful, though moderate, ability to discriminate between students who reported carrying a weapon at school and those who did not. The curve remains above the diagonal reference line, indicating performance better than random classification. 
+The shape of the curve also demonstrates a substantial sensitivity-specificity tradeoff: achieving greater sensitivity requires accepting a considerable increase in the false-positive rate. 
+
 ### Visualizations
 
 A forest plot provides a compact visual summary of the adjusted odds ratios and their 95% confidence intervals. Each point represents an estimated odds ratio for one predictor, and the horizontal line around the point represents its confidence interval. The vertical dashed line at an odds ratio of 1 represents no association with the outcome.
@@ -226,9 +229,6 @@ At the other end of the distribution, **school connectedness** had one of the lo
 Taken together, the results suggest that experiences involving **housing instability, interpersonal violence, and victimization** are among the strongest correlates of adolescent weapon carrying in this model. Homelessness stands out in particular, while neighborhood violence, parental physical abuse, bullying, and sexual abuse also retain meaningful associations after simultaneous adjustment for the other included factors.
 
 These estimates should be interpreted as **conditional associations rather than causal effects**. The analysis shows that these factors are associated with weapon carrying after adjustment for the other measured predictors, but it does not establish that any one factor causes weapon-carrying behavior. Unmeasured confounding, the coding and measurement of survey variables, self-report bias, and the observational nature of the YRBS data should all be considered when interpreting the findings.
-
-The ROC analysis addresses a separate question: how well the predictors collectively distinguish adolescents who reported weapon carrying from those who did not. Accordingly, the coefficient results describe which variables are most strongly associated with the outcome, whereas the ROC curve evaluates the discriminatory performance of the model as a whole.
-
 
 ### Key Takeaways
 
