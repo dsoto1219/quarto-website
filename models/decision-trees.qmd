@@ -101,7 +101,9 @@ cv_alcohol <- vfold_cv(alcohol_train, v = 10, strata = UsedAlcohol)
 cv_alcohol
 ```
 
-## Recipe (preprocessing)
+## Workflow
+
+### Recipe (preprocessing)
 
 Trees don't need fancy preprocessing: no `step_normalize()`, as trees only care about *order*, not scale; no `step_dummy()`, as `rpart` handles factor predictors natively; and imputation is still useful, since `rpart` can't split on `NA`. 
 
@@ -114,5 +116,22 @@ alcohol_recipe <-
     step_impute_mean(all_numeric_predictors())
 
 alcohol_recipe
+```
+
+### Specification
+
+```{r}
+#| label: cart-spec
+
+cart_spec <-
+    decision_tree(
+        cost_complexity = tune(), # ⬅️ tune
+        tree_depth = tune(),      # ⬅️ tune
+        min_n = tune()            # ⬅️ tune
+    ) |>
+    set_engine("rpart") |>
+    set_mode("classification")
+
+cart_spec
 ```
 
