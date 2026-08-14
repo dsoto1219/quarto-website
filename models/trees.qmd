@@ -76,8 +76,7 @@ weapon_carry_recipe <-
   recipe(formula = WeaponCarryingSchool ~ ., data = analysis_train) |>
   step_impute_mode(all_nominal_predictors()) |>
   step_impute_mean(all_numeric_predictors()) |>
-  step_zv(all_predictors()) |> 
-  step_corr(all_numeric_predictors(), threshold = 0.7)
+  step_zv(all_predictors())
 
 weapon_carry_recipe
 ```
