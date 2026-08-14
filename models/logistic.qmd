@@ -160,7 +160,11 @@ weapon_pred <-
 weapon_pred
 ```
 
-The receiver operating characteristic (ROC) curve summarizes the model's ability to rank observations according to their predicted probability of the event. The curve compares sensitivity with the false-positive rate across all possible probability thresholds. A model with little discriminatory ability will produce a curve close to the diagonal reference line, while a model with stronger discrimination will bow farther toward the upper-left corner.
+For each student, `.pred_1` represents the estimated probability of reporting weapon carrying at school, while `.pred_0` represents the estimated probability of not reporting weapon carrying. The `.pred_class` column converts these probabilities into a binary prediction using the classifier's decision threshold. 
+Because the outcome may be relatively uncommon, the continuous predicted probabilities are more informative for evaluating model performance than the resulting class labels. 
+The upcoming ROC analysis therefore uses `.pred_1` rather than .pred_class to evaluate how well the model distinguishes students who reported weapon carrying from those who did not.
+
+Next, the receiver operating characteristic (ROC) curve summarizes the model's ability to rank observations according to their predicted probability of the event. The curve compares sensitivity with the false-positive rate across all possible probability thresholds. A model with little discriminatory ability will produce a curve close to the diagonal reference line, while a model with stronger discrimination will bow farther toward the upper-left corner.
 
 The corresponding area under the ROC curve, or AUC, can be interpreted as the probability that the model assigns a higher predicted risk to a randomly selected adolescent with the outcome than to a randomly selected adolescent without the outcome. Values closer to 1 indicate stronger discrimination, while a value near 0.5 indicates performance close to chance.
 
