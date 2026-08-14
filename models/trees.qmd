@@ -62,6 +62,7 @@ analysis_test |>
     adorn_totals()
 ```
 Both sets show similar proportions, meaning `strata = WeaponCarryingSchool` did its job when we defined the train/test split previously.
+However, we note that there is a significant difference in proportion between those who carry weapons (0) and those who do not (1): we will need to address this in the specification section.
 
 ## Workflow
 
@@ -83,16 +84,24 @@ weapon_carry_recipe
 
 ### Specification
 
+We do the specification as follows.
+
+As a result of the proportions of weapon-carrying being very unequal, when we set the `rpart` engine, we add the parameter `parms = list(prior = c(0.5, 0.5))`.
+This tells the `rpart` engine to treat each class equally, despite the proportional class imbalance.
+
 ```{r}
 #| label: cart-spec
 
 cart_spec <-
     decision_tree(
-        cost_complexity = tune(), # ⬅️ tune
-        tree_depth = tune(),      # ⬅️ tune
-        min_n = tune()            # ⬅️ tune
+        cost_complexity = tune(),
+        tree_depth = tune(),
+        min_n = tune()
     ) |>
-    set_engine("rpart") |>
+    set_engine(
+        "rpart",
+        parms = list(prior = c(0.5, 0.5))
+    ) |>
     set_mode("classification")
 
 cart_spec
