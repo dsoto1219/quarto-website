@@ -108,6 +108,17 @@ analysis_folds <- vfold_cv(analysis_train,
     v = 5
 )
 analysis_folds
-
-
 ```
+
+## Save everything
+
+We use `saveRDS` to save everything locally.
+
+```{r}
+saveRDS(analysis_split, here("models", "data", "analysis_split.rds"))
+saveRDS(analysis_data, here("models", "data", "analysis_data.rds"))
+saveRDS(analysis_train, here("models", "data", "analysis_train.rds"))
+saveRDS(analysis_test, here("models", "data", "analysis_test.rds"))
+saveRDS(analysis_folds, here("models", "data", "analysis_folds.rds"))
+```
+
