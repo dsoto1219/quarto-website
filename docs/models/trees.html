@@ -158,11 +158,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Decision Trees</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../models/random-forest.qmd">
+    <a class="dropdown-item" href="../models/random-forest.html">
  <span class="dropdown-text">Random Forest</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../models/knn.qmd">
+    <a class="dropdown-item" href="../models/knn.html">
  <span class="dropdown-text">K-Nearest Neighbors</span></a>
   </li>  
     </ul>
@@ -309,7 +309,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
                 Total 4899       -</code></pre>
 </div>
 </div>
-<p>Both sets show similar proportions, meaning <code>strata = WeaponCarryingSchool</code> did its job when we defined the train/test split previously.</p>
+<p>Both sets show similar proportions, meaning <code>strata = WeaponCarryingSchool</code> did its job when we defined the train/test split previously. However, we note that there is a significant difference in proportion between those who carry weapons (0) and those who do not (1): we will need to address this in the specification section.</p>
 </section>
 </section>
 <section id="workflow" class="level2">
@@ -363,6 +363,8 @@ predictor: 10</code></pre>
 </section>
 <section id="specification" class="level3">
 <h3 class="anchored" data-anchor-id="specification">Specification</h3>
+<p>We do the specification as follows.</p>
+<p>As a result of the proportions of weapon-carrying being very unequal, when we set the <code>rpart</code> engine, we add the parameter <code>parms = list(prior = c(0.5, 0.5))</code>. This tells the <code>rpart</code> engine to treat each class equally, despite the proportional class imbalance.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>cart_spec <span class="ot">&lt;-</span></span>
 <span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">decision_tree</span>(</span>
@@ -494,11 +496,11 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 5 × 9
   cost_complexity tree_depth min_n .metric .estimator  mean     n std_err
             &lt;dbl&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
-1      0.0000187           7    59 roc_auc binary     0.673    10  0.0135
-2      0.000001            7    81 roc_auc binary     0.669    10  0.0135
-3      0.00000218          7   122 roc_auc binary     0.669    10  0.0154
-4      0.0000154           5    12 roc_auc binary     0.667    10  0.0117
-5      0.000236            6    29 roc_auc binary     0.666    10  0.0131
+1      0.00000322          9    83 roc_auc binary     0.663    10  0.0136
+2      0.0000602           8    98 roc_auc binary     0.663    10  0.0141
+3      0.00000218          7   122 roc_auc binary     0.663    10  0.0130
+4      0.00000579          9   125 roc_auc binary     0.663    10  0.0135
+5      0.000001            7    81 roc_auc binary     0.662    10  0.0147
 # ℹ 1 more variable: .config &lt;chr&gt;</code></pre>
 </div>
 </div>
@@ -528,7 +530,7 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 1 × 4
   cost_complexity tree_depth min_n .config         
             &lt;dbl&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;           
-1       0.0000187          7    59 pre0_mod16_post0</code></pre>
+1      0.00000322          9    83 pre0_mod07_post0</code></pre>
 </div>
 </div>
 <p>But we don’t commit yet: we want to check how this performs first.</p>
@@ -546,9 +548,9 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 3 × 6
   .metric     .estimator  mean     n std_err .config        
   &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;          
-1 accuracy    binary     0.708    10 0.00595 pre0_mod0_post0
-2 brier_class binary     0.210    10 0.00122 pre0_mod0_post0
-3 roc_auc     binary     0.673    10 0.0135  pre0_mod0_post0</code></pre>
+1 accuracy    binary     0.708    10 0.00676 pre0_mod0_post0
+2 brier_class binary     0.210    10 0.00191 pre0_mod0_post0
+3 roc_auc     binary     0.663    10 0.0136  pre0_mod0_post0</code></pre>
 </div>
 </div>
 <p>Looks good, time to lock it in.</p>
@@ -572,9 +574,9 @@ Model: decision_tree()
 Decision Tree Model Specification (classification)
 
 Main Arguments:
-  cost_complexity = 1.86718109129192e-05
-  tree_depth = 7
-  min_n = 59
+  cost_complexity = 3.2245905452964e-06
+  tree_depth = 9
+  min_n = 83
 
 Engine-Specific Arguments:
   parms = list(prior = c(0.5, 0.5))
@@ -614,11 +616,11 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 5 × 4
   .metric     .estimator .estimate .config        
   &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          
-1 accuracy    binary        0.700  pre0_mod0_post0
-2 kap         binary        0.0708 pre0_mod0_post0
-3 sensitivity binary        0.706  pre0_mod0_post0
-4 specificity binary        0.571  pre0_mod0_post0
-5 roc_auc     binary        0.685  pre0_mod0_post0</code></pre>
+1 accuracy    binary        0.693  pre0_mod0_post0
+2 kap         binary        0.0719 pre0_mod0_post0
+3 sensitivity binary        0.698  pre0_mod0_post0
+4 specificity binary        0.590  pre0_mod0_post0
+5 roc_auc     binary        0.671  pre0_mod0_post0</code></pre>
 </div>
 </div>
 <p>Comparing these to the CV metrics from the sanity-check section, we see they are in about the same ballpark. Thus, the model generalizes.</p>
@@ -636,13 +638,13 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 4,899 × 4
    WeaponCarryingSchool .pred_class .pred_1 .pred_0
    &lt;fct&gt;                &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt;
- 1 0                    0             0.341   0.659
- 2 0                    0             0.470   0.530
- 3 0                    0             0.341   0.659
- 4 0                    0             0.341   0.659
- 5 0                    0             0.341   0.659
+ 1 0                    0             0.339   0.661
+ 2 0                    1             0.530   0.470
+ 3 0                    0             0.339   0.661
+ 4 0                    0             0.339   0.661
+ 5 0                    0             0.339   0.661
  6 0                    1             0.521   0.479
- 7 0                    1             0.538   0.462
+ 7 0                    0             0.394   0.606
  8 1                    1             0.893   0.107
  9 0                    1             0.734   0.266
 10 0                    1             0.521   0.479
@@ -689,6 +691,9 @@ Computational engine: rpart </code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>cart_last_fit <span class="sc">|&gt;</span></span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span></span>
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rpart.plot</span>(<span class="at">roundint =</span> <span class="cn">FALSE</span>, <span class="at">type =</span> <span class="dv">4</span>, <span class="at">extra =</span> <span class="dv">104</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: labs do not fit even at cex 0.15, there may be some overplotting</code></pre>
+</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -702,9 +707,9 @@ Computational engine: rpart </code></pre>
 <h2 class="anchored" data-anchor-id="variable-importance-with-vip">Variable importance with <code>vip</code></h2>
 <p>Each bar in the variable importance plot (VIP) indicates how much that predictor reduced impurity across all splits. Predictors not shown were never useful enough to make the tree. This makes for a free feature ranking for your manuscript.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>cart_last_fit <span class="sc">|&gt;</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">extract_fit_parsnip</span>() <span class="sc">|&gt;</span></span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">vip</span>(<span class="at">num_features =</span> <span class="dv">15</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>cart_last_fit <span class="sc">|&gt;</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">extract_fit_parsnip</span>() <span class="sc">|&gt;</span></span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">vip</span>(<span class="at">num_features =</span> <span class="dv">15</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">

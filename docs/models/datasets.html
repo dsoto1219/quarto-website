@@ -157,11 +157,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="dropdown-text">Decision Trees</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../models/random-forest.qmd">
+    <a class="dropdown-item" href="../models/random-forest.html">
  <span class="dropdown-text">Random Forest</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="../models/knn.qmd">
+    <a class="dropdown-item" href="../models/knn.html">
  <span class="dropdown-text">K-Nearest Neighbors</span></a>
   </li>  
     </ul>
@@ -191,8 +191,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#creation-of-the-dataset" id="toc-creation-of-the-dataset" class="nav-link" data-scroll-target="#creation-of-the-dataset">Creation of the Dataset</a></li>
   <li><a href="#splitting-the-dataset" id="toc-splitting-the-dataset" class="nav-link" data-scroll-target="#splitting-the-dataset">Splitting the Dataset</a></li>
   <li><a href="#cross-validation" id="toc-cross-validation" class="nav-link" data-scroll-target="#cross-validation">Cross-Validation</a></li>
-  </ul></li>
   <li><a href="#save-everything" id="toc-save-everything" class="nav-link" data-scroll-target="#save-everything">Save everything</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -329,9 +329,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-</section>
-<section id="save-everything" class="level2">
-<h2 class="anchored" data-anchor-id="save-everything">Save everything</h2>
+<section id="save-everything" class="level3">
+<h3 class="anchored" data-anchor-id="save-everything">Save everything</h3>
 <p>We use <code>saveRDS</code> to save everything locally.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(analysis_split, <span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"data"</span>, <span class="st">"analysis_split.rds"</span>))</span>
@@ -342,6 +341,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

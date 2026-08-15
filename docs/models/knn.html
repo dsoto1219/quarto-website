@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Daniel Soto">
 
-<title>knn – Machine Learning Notes</title>
+<title>K-Nearest Neighbors – Machine Learning Notes</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -22,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   width: 0.8em;
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 </style>
 
@@ -142,17 +178,505 @@ ul.task-list li input[type="checkbox"] {
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
 <!-- sidebar -->
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#setup" id="toc-setup" class="nav-link active" data-scroll-target="#setup">Setup</a>
+  <ul class="collapse">
+  <li><a href="#sanity-check-class-balance" id="toc-sanity-check-class-balance" class="nav-link" data-scroll-target="#sanity-check-class-balance">Sanity check: class balance</a></li>
+  </ul></li>
+  <li><a href="#workflow" id="toc-workflow" class="nav-link" data-scroll-target="#workflow">Workflow</a>
+  <ul class="collapse">
+  <li><a href="#recipe" id="toc-recipe" class="nav-link" data-scroll-target="#recipe">Recipe</a></li>
+  <li><a href="#spec-kknn" id="toc-spec-kknn" class="nav-link" data-scroll-target="#spec-kknn">Spec — <code>kknn</code></a></li>
+  <li><a href="#the-workflow" id="toc-the-workflow" class="nav-link" data-scroll-target="#the-workflow">The workflow</a></li>
+  </ul></li>
+  <li><a href="#tuning-k" id="toc-tuning-k" class="nav-link" data-scroll-target="#tuning-k">Tuning <code>K</code></a>
+  <ul class="collapse">
+  <li><a href="#build-the-tuning-grid" id="toc-build-the-tuning-grid" class="nav-link" data-scroll-target="#build-the-tuning-grid">Build the tuning grid</a></li>
+  <li><a href="#run-the-tuning" id="toc-run-the-tuning" class="nav-link" data-scroll-target="#run-the-tuning">Run the tuning</a></li>
+  <li><a href="#show-the-best-k" id="toc-show-the-best-k" class="nav-link" data-scroll-target="#show-the-best-k">Show the best <code>K</code></a></li>
+  <li><a href="#visualize-the-tuning-results" id="toc-visualize-the-tuning-results" class="nav-link" data-scroll-target="#visualize-the-tuning-results">Visualize the tuning results</a></li>
+  <li><a href="#pick-the-best-k" id="toc-pick-the-best-k" class="nav-link" data-scroll-target="#pick-the-best-k">Pick the best <code>K</code></a></li>
+  </ul></li>
+  <li><a href="#sanity-check-before-committing" id="toc-sanity-check-before-committing" class="nav-link" data-scroll-target="#sanity-check-before-committing">Sanity-Check Before Committing</a>
+  <ul class="collapse">
+  <li><a href="#locking-in-our-final-workflow" id="toc-locking-in-our-final-workflow" class="nav-link" data-scroll-target="#locking-in-our-final-workflow">Locking in our Final Workflow</a></li>
+  </ul></li>
+  <li><a href="#evaluate-on-the-test-set" id="toc-evaluate-on-the-test-set" class="nav-link" data-scroll-target="#evaluate-on-the-test-set">Evaluate on the Test Set</a></li>
+  <li><a href="#test-set-predictions" id="toc-test-set-predictions" class="nav-link" data-scroll-target="#test-set-predictions">Test-set Predictions</a>
+  <ul class="collapse">
+  <li><a href="#confusion-matrix" id="toc-confusion-matrix" class="nav-link" data-scroll-target="#confusion-matrix">Confusion matrix</a></li>
+  <li><a href="#roc-curve-on-the-test-set" id="toc-roc-curve-on-the-test-set" class="nav-link" data-scroll-target="#roc-curve-on-the-test-set">ROC curve on the test set</a></li>
+  <li><a href="#making-sure-our-metrics-are-interpretable" id="toc-making-sure-our-metrics-are-interpretable" class="nav-link" data-scroll-target="#making-sure-our-metrics-are-interpretable">Making sure our metrics are Interpretable</a></li>
+  </ul></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
-<main class="content" id="quarto-document-content"><header id="title-block-header" class="quarto-title-block"></header>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">K-Nearest Neighbors</h1>
+</div>
 
 
 
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Daniel Soto </p>
+          </div>
+  </div>
+    
+  
+    
+  </div>
+  
 
 
+</header>
 
+
+<p>In this note, we use K-Nearest Neighbors to predict whether teens will bring weapons to school.</p>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<p>We load our usual packages.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidymodels)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(MLearnYRBSS)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(themis)        <span class="co"># &lt;- for step_downsample()</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(kknn)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(janitor)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Then we get our cached data.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>analysis_split <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"data"</span>, <span class="st">"analysis_split.rds"</span>))</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>analysis_data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"data"</span>, <span class="st">"analysis_data.rds"</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>analysis_train <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"models"</span>, <span class="st">"data"</span>, <span class="st">"analysis_train.rds"</span>))</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>analysis_test <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"models"</span>,<span class="st">"data"</span>, <span class="st">"analysis_test.rds"</span>))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>analysis_folds <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="fu">here</span>(<span class="st">"models"</span>,<span class="st">"data"</span>, <span class="st">"analysis_folds.rds"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="sanity-check-class-balance" class="level3">
+<h3 class="anchored" data-anchor-id="sanity-check-class-balance">Sanity check: class balance</h3>
+<p>As usual, we check the class balance.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>analysis_train <span class="sc">|&gt;</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tabyl</span>(WeaponCarryingSchool) <span class="sc">|&gt;</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">adorn_pct_formatting</span>(<span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">adorn_totals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> WeaponCarryingSchool     n percent
+                    0 14060     96%
+                    1   636      4%
+                Total 14696       -</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>analysis_test <span class="sc">|&gt;</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">tabyl</span>(WeaponCarryingSchool) <span class="sc">|&gt;</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">adorn_pct_formatting</span>(<span class="dv">0</span>) <span class="sc">|&gt;</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">adorn_totals</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> WeaponCarryingSchool    n percent
+                    0 4687     96%
+                    1  212      4%
+                Total 4899       -</code></pre>
+</div>
+</div>
+<p>Though the 0/1 split is the same in the training and testing samples, we see that it is especially uneven. KNN is quite sensitive to this — it will just keep predicting the majority class. We will fix this in the recipe with <code>step_downsample()</code>.</p>
+</section>
+</section>
+<section id="workflow" class="level2">
+<h2 class="anchored" data-anchor-id="workflow">Workflow</h2>
+<section id="recipe" class="level3">
+<h3 class="anchored" data-anchor-id="recipe">Recipe</h3>
+<p>Our recipe is as follows:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>weapon_recipe <span class="ot">&lt;-</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">recipe</span>(WeaponCarryingSchool <span class="sc">~</span> ., <span class="at">data =</span> analysis_train) <span class="sc">|&gt;</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">step_downsample</span>(WeaponCarryingSchool, <span class="at">under_ratio =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">step_zv</span>(<span class="fu">all_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">step_normalize</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">step_impute_mode</span>(<span class="fu">all_nominal_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">step_impute_mean</span>(<span class="fu">all_numeric_predictors</span>()) <span class="sc">|&gt;</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">step_dummy</span>(<span class="fu">all_nominal_predictors</span>())</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>weapon_recipe</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Recipe ──────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Inputs </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Number of variables by role</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>outcome:    1
+predictor: 10</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code></code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Operations </code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Down-sampling based on: WeaponCarryingSchool</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Zero variance filter on: all_predictors()</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Centering and scaling for: all_numeric_predictors()</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Mode imputation for: all_nominal_predictors()</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Mean imputation for: all_numeric_predictors()</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>• Dummy variables from: all_nominal_predictors()</code></pre>
+</div>
+</div>
+<p>Here,</p>
+<ul>
+<li><code>step_downsample()</code> — randomly drops rows from the majority class to fix imbalance. (Critical for KNN.)</li>
+<li><code>step_zv()</code> — drops zero-variance predictors (no info, just noise).</li>
+<li><code>step_normalize()</code> — mandatory for KNN. Without it, predictors with bigger units dominate the distance.</li>
+<li><code>step_impute_*()</code> — KNN can’t compute distance with <code>NA</code>s.</li>
+<li><code>step_dummy()</code> — <code>kknn</code> needs numeric predictors only.</li>
+</ul>
+</section>
+<section id="spec-kknn" class="level3">
+<h3 class="anchored" data-anchor-id="spec-kknn">Spec — <code>kknn</code></h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>kknn_spec <span class="ot">&lt;-</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">nearest_neighbor</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>        <span class="at">neighbors =</span> <span class="fu">tune</span>()    <span class="co"># ⬅️ we'll tune K</span></span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">|&gt;</span></span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_mode</span>(<span class="st">"classification"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">set_engine</span>(<span class="st">"kknn"</span>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a>kknn_spec</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>K-Nearest Neighbor Model Specification (classification)
+
+Main Arguments:
+  neighbors = tune()
+
+Computational engine: kknn </code></pre>
+</div>
+</div>
+</section>
+<section id="the-workflow" class="level3">
+<h3 class="anchored" data-anchor-id="the-workflow">The workflow</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>kknn_workflow <span class="ot">&lt;-</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">workflow</span>() <span class="sc">|&gt;</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_recipe</span>(weapon_recipe) <span class="sc">|&gt;</span></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">add_model</span>(kknn_spec)</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>kknn_workflow</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: nearest_neighbor()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+6 Recipe Steps
+
+• step_downsample()
+• step_zv()
+• step_normalize()
+• step_impute_mode()
+• step_impute_mean()
+• step_dummy()
+
+── Model ───────────────────────────────────────────────────────────────────────
+K-Nearest Neighbor Model Specification (classification)
+
+Main Arguments:
+  neighbors = tune()
+
+Computational engine: kknn </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="tuning-k" class="level2">
+<h2 class="anchored" data-anchor-id="tuning-k">Tuning <code>K</code></h2>
+<section id="build-the-tuning-grid" class="level3">
+<h3 class="anchored" data-anchor-id="build-the-tuning-grid">Build the tuning grid</h3>
+<p>We build a tuning grid with odd numbers. This is because with binary classification and odd <code>K</code>, we can never get a “tie vote.”</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>neighbor_grid <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">neighbors =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">7</span>, <span class="dv">11</span>, <span class="dv">15</span>, <span class="dv">21</span>, <span class="dv">31</span>, <span class="dv">51</span>))</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>neighbor_grid</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 1
+  neighbors
+      &lt;dbl&gt;
+1         1
+2         3
+3         5
+4         7
+5        11
+6        15
+7        21
+8        31
+9        51</code></pre>
+</div>
+</div>
+</section>
+<section id="run-the-tuning" class="level3">
+<h3 class="anchored" data-anchor-id="run-the-tuning">Run the tuning</h3>
+<p>KNN tuning is fast — no model is actually trained, just distances are computed.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>doParallel<span class="sc">::</span><span class="fu">registerDoParallel</span>()</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2023</span>)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>knn_tune <span class="ot">&lt;-</span> <span class="fu">tune_grid</span>(</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    kknn_workflow,</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">resamples =</span> analysis_folds,</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">grid      =</span> neighbor_grid,</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">metrics   =</span> <span class="fu">metric_set</span>(roc_auc, accuracy)</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>doParallel<span class="sc">::</span><span class="fu">stopImplicitCluster</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="show-the-best-k" class="level3">
+<h3 class="anchored" data-anchor-id="show-the-best-k">Show the best <code>K</code></h3>
+<p>Top 5 <code>K</code> values, ranked by mean ROC AUC across the 5 folds.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_best</span>(knn_tune, <span class="at">metric =</span> <span class="st">"roc_auc"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 7
+  neighbors .metric .estimator  mean     n std_err .config        
+      &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;          
+1        51 roc_auc binary     0.671     5 0.00866 pre0_mod9_post0
+2        31 roc_auc binary     0.665     5 0.00729 pre0_mod8_post0
+3        21 roc_auc binary     0.658     5 0.00806 pre0_mod7_post0
+4        15 roc_auc binary     0.649     5 0.00736 pre0_mod6_post0
+5        11 roc_auc binary     0.645     5 0.00830 pre0_mod5_post0</code></pre>
+</div>
+</div>
+</section>
+<section id="visualize-the-tuning-results" class="level3">
+<h3 class="anchored" data-anchor-id="visualize-the-tuning-results">Visualize the tuning results</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(knn_tune)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="knn_files/figure-html/tuning-visualization-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="pick-the-best-k" class="level3">
+<h3 class="anchored" data-anchor-id="pick-the-best-k">Pick the best <code>K</code></h3>
+<p>We pick one number as our “winning” <code>K</code> value:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>best_k <span class="ot">&lt;-</span> <span class="fu">select_best</span>(knn_tune, <span class="at">metric =</span> <span class="st">"roc_auc"</span>)</span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>best_k</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  neighbors .config        
+      &lt;dbl&gt; &lt;chr&gt;          
+1        51 pre0_mod9_post0</code></pre>
+</div>
+</div>
+<p>But we don’t commit to this yet. Instead, we check it first.</p>
+</section>
+</section>
+<section id="sanity-check-before-committing" class="level2">
+<h2 class="anchored" data-anchor-id="sanity-check-before-committing">Sanity-Check Before Committing</h2>
+<p>How does our chosen <code>K</code> actually do? Let us see:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>kknn_workflow <span class="sc">|&gt;</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">finalize_workflow</span>(best_k) <span class="sc">|&gt;</span></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">fit_resamples</span>(<span class="at">resamples =</span> analysis_folds) <span class="sc">|&gt;</span></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">collect_metrics</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 6
+  .metric     .estimator  mean     n std_err .config        
+  &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;          
+1 accuracy    binary     0.820     5 0.00563 pre0_mod0_post0
+2 brier_class binary     0.117     5 0.00189 pre0_mod0_post0
+3 roc_auc     binary     0.671     5 0.00866 pre0_mod0_post0</code></pre>
+</div>
+</div>
+<p>This is an honest, CV-estimated performance for our single chosen <code>K</code>. Our metrics look good, so we’ll lock in and evaluate this <code>K</code> on our test set.</p>
+<section id="locking-in-our-final-workflow" class="level3">
+<h3 class="anchored" data-anchor-id="locking-in-our-final-workflow">Locking in our Final Workflow</h3>
+<p>Plugging in our best <code>K</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>final_wf <span class="ot">&lt;-</span> <span class="fu">finalize_workflow</span>(kknn_workflow, best_k)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>final_wf</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: nearest_neighbor()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+6 Recipe Steps
+
+• step_downsample()
+• step_zv()
+• step_normalize()
+• step_impute_mode()
+• step_impute_mean()
+• step_dummy()
+
+── Model ───────────────────────────────────────────────────────────────────────
+K-Nearest Neighbor Model Specification (classification)
+
+Main Arguments:
+  neighbors = 51
+
+Computational engine: kknn </code></pre>
+</div>
+</div>
+<p>We are now ready for the test set.</p>
+</section>
+</section>
+<section id="evaluate-on-the-test-set" class="level2">
+<h2 class="anchored" data-anchor-id="evaluate-on-the-test-set">Evaluate on the Test Set</h2>
+<p>Like usual, we use <code>last_fit()</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>weapon_last_fit <span class="ot">&lt;-</span> <span class="fu">last_fit</span>(</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>    final_wf,</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">split   =</span> analysis_split,</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">metrics =</span> <span class="fu">metric_set</span>(accuracy, kap, roc_auc, sensitivity, specificity)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>weapon_last_fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Resampling results
+# Manual resampling 
+# A tibble: 1 × 6
+  splits               id              .metrics .notes   .predictions .workflow 
+  &lt;list&gt;               &lt;chr&gt;           &lt;list&gt;   &lt;list&gt;   &lt;list&gt;       &lt;list&gt;    
+1 &lt;split [14696/4899]&gt; train/test spl… &lt;tibble&gt; &lt;tibble&gt; &lt;tibble&gt;     &lt;workflow&gt;</code></pre>
+</div>
+</div>
+<p>And our metrics are as follows:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(weapon_last_fit)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 4
+  .metric     .estimator .estimate .config        
+  &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          
+1 accuracy    binary         0.836 pre0_mod0_post0
+2 kap         binary         0.122 pre0_mod0_post0
+3 sensitivity binary         0.855 pre0_mod0_post0
+4 specificity binary         0.420 pre0_mod0_post0
+5 roc_auc     binary         0.709 pre0_mod0_post0</code></pre>
+</div>
+</div>
+<p>These metrics are not too different from our CV sanity-check metrics, so we can say our KNN generalizes.</p>
+</section>
+<section id="test-set-predictions" class="level2">
+<h2 class="anchored" data-anchor-id="test-set-predictions">Test-set Predictions</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>predictions_testing <span class="ot">&lt;-</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  weapon_last_fit <span class="sc">|&gt;</span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_predictions</span>() <span class="sc">|&gt;</span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span>.row, <span class="sc">-</span>.config)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>predictions_testing</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4,899 × 5
+   .pred_class .pred_0 .pred_1 id               WeaponCarryingSchool
+   &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;            &lt;fct&gt;               
+ 1 0             1     0       train/test split 0                   
+ 2 0             0.619 0.381   train/test split 0                   
+ 3 0             0.991 0.00858 train/test split 0                   
+ 4 0             0.991 0.00858 train/test split 0                   
+ 5 0             1     0       train/test split 0                   
+ 6 0             0.831 0.169   train/test split 0                   
+ 7 0             0.768 0.232   train/test split 0                   
+ 8 1             0.129 0.871   train/test split 1                   
+ 9 1             0.105 0.895   train/test split 0                   
+10 1             0.482 0.518   train/test split 0                   
+# ℹ 4,889 more rows</code></pre>
+</div>
+</div>
+<section id="confusion-matrix" class="level3">
+<h3 class="anchored" data-anchor-id="confusion-matrix">Confusion matrix</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>predictions_testing <span class="sc">|&gt;</span></span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">conf_mat</span>(<span class="at">truth =</span> WeaponCarryingSchool, <span class="at">estimate =</span> .pred_class) <span class="sc">|&gt;</span></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">autoplot</span>(<span class="at">type =</span> <span class="st">"heatmap"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="knn_files/figure-html/confusion-matrix-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>According to the confusion matrix, it seems the most common mistake our KNN model makes is <em>false positives</em>.</p>
+</section>
+<section id="roc-curve-on-the-test-set" class="level3">
+<h3 class="anchored" data-anchor-id="roc-curve-on-the-test-set">ROC curve on the test set</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>predictions_testing <span class="sc">|&gt;</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">roc_curve</span>(<span class="at">truth =</span> WeaponCarryingSchool, .pred_1, <span class="at">event_level =</span> <span class="st">"second"</span>) <span class="sc">|&gt;</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">autoplot</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="knn_files/figure-html/roc-curve-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Not bad! It hugs the top-left corner.</p>
+</section>
+<section id="making-sure-our-metrics-are-interpretable" class="level3">
+<h3 class="anchored" data-anchor-id="making-sure-our-metrics-are-interpretable">Making sure our metrics are Interpretable</h3>
+<p>Of course, with imbalanced outcomes, we cannot trust accuracy alone. Sensitivity and specificity tell the real story.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>multi_metric <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(sensitivity, specificity, accuracy, kap)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a><span class="fu">multi_metric</span>(</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    predictions_testing,</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">truth =</span> WeaponCarryingSchool,</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">estimate =</span> .pred_class,</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">event_level =</span> <span class="st">"second"</span></span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+  .metric     .estimator .estimate
+  &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt;
+1 sensitivity binary         0.420
+2 specificity binary         0.855
+3 accuracy    binary         0.836
+4 kap         binary         0.122</code></pre>
+</div>
+</div>
+
+
+</section>
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
