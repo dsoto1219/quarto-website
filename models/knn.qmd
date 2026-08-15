@@ -2,3 +2,48 @@
 title: "K-Nearest Neighbors"
 author: "Daniel Soto"
 ---
+
+In this note, we use K-Nearest Neighbors to predict whether teens will bring weapons to school.
+
+## Setup
+
+We load our usual packages.
+
+```{r}
+#| label: libraries
+#| output: false
+
+library(tidyverse)
+library(tidymodels)
+library(MLearnYRBSS)
+library(themis)        # <- for step_downsample()
+library(kknn)
+library(janitor)
+```
+Then we get our cached data.
+
+```{r}
+#| label: cached-data
+
+analysis_split <- readRDS(here("models", "data", "analysis_split.rds"))
+analysis_data <- readRDS(here("models", "data", "analysis_data.rds"))
+analysis_train <- readRDS(here("models", "data", "analysis_train.rds"))
+analysis_test <- readRDS(here("models","data", "analysis_test.rds"))
+analysis_folds <- readRDS(here("models","data", "analysis_folds.rds"))
+```
+
+### Sanity check: class balance
+
+```{r}
+#| label: sanity-check
+
+analysis_train |>
+    tabyl(WeaponCarryingSchool) |>
+    adorn_pct_formatting(0) |>
+    adorn_totals()
+
+analysis_test |>
+    tabyl(WeaponCarryingSchool) |>
+    adorn_pct_formatting(0) |>
+    adorn_totals()
+```
