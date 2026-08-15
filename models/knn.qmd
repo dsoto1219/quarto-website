@@ -34,6 +34,8 @@ analysis_folds <- readRDS(here("models","data", "analysis_folds.rds"))
 
 ### Sanity check: class balance
 
+As usual, we check the class balance.
+
 ```{r}
 #| label: sanity-check
 
@@ -47,3 +49,64 @@ analysis_test |>
     adorn_pct_formatting(0) |>
     adorn_totals()
 ```
+Though the 0/1 split is the same in the training and testing samples, we see that it is especially uneven.
+KNN is quite sensitive to this — it will just keep predicting the majority class.
+We will fix this in the recipe with `step_downsample()`.
+
+## Workflow
+
+### Recipe
+
+Our recipe is as follows:
+
+```{r}
+#| label: recipe
+
+weapon_recipe <-
+    recipe(WeaponCarryingSchool ~ ., data = analysis_train) |>
+    step_downsample(WeaponCarryingSchool, under_ratio = 1) |>
+    step_zv(all_predictors()) |>
+    step_normalize(all_numeric_predictors()) |>
+    step_impute_mode(all_nominal_predictors()) |>
+    step_impute_mean(all_numeric_predictors()) |>
+    step_dummy(all_nominal_predictors())
+
+weapon_recipe
+```
+Here, 
+
+- `step_downsample()` — randomly drops rows from the majority class to fix imbalance. (Critical for KNN.)
+- `step_zv()` — drops zero-variance predictors (no info, just noise).
+- `step_normalize()` — mandatory for KNN. Without it, predictors with bigger units dominate the distance.
+- `step_impute_*()` — KNN can’t compute distance with `NA`s.
+- `step_dummy()` — `kknn` needs numeric predictors only.
+
+### Spec — `kknn`
+
+```{r}
+#| label: kknn-spec
+
+kknn_spec <-
+    nearest_neighbor(
+        neighbors = tune()    # ⬅️ we'll tune K
+    ) |>
+    set_mode("classification") |>
+    set_engine("kknn")
+
+kknn_spec
+```
+### The workflow
+
+```{r}
+#| label: workflow
+
+kknn_workflow <-
+    workflow() |>
+    add_recipe(weapon_recipe) |>
+    add_model(kknn_spec)
+
+kknn_workflow
+
+```
+
+
