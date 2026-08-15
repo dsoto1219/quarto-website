@@ -1,0 +1,4 @@
+- source: project
+  posit-connect-cloud:
+    - id: 01a005ce-4960-b480-1665-2a446999fca8
+      url: https://connect.posit.cloud/dsoto1219/content/01a005ce-4960-b480-1665-2a446999fca8
