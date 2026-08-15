@@ -231,14 +231,6 @@ weapon_fit_resamples <-
 weapon_fit_resamples
 ```
 
-```{r}
-saveRDS(weapon_fit_resamples, here("model_outputs", "weapon_fit_resamples.rds"))
-```
-
-```{r}
-weapon_fit_resamples <- readRDS(here("models","model_outputs", "weapon_fit_resamples.rds"))
-```
-
 Let's examine the cross-validation metrics.
 
 ```{r}
