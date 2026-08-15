@@ -227,5 +227,57 @@ collect_metrics(weapon_last_fit)
 
 These metrics are not too different from our CV sanity-check metrics, so we can say our KNN generalizes.
 
+## Test-set Predictions
 
+```{r}
+#| label: predictions-testing
 
+predictions_testing <-
+  weapon_last_fit |>
+  collect_predictions() |>
+  select(-.row, -.config)
+
+predictions_testing
+```
+
+### Confusion matrix
+
+```{r}
+#| label: confusion-matrix
+
+predictions_testing |>
+    conf_mat(truth = WeaponCarryingSchool, estimate = .pred_class) |>
+    autoplot(type = "heatmap")
+```
+
+According to the confusion matrix, it seems the most common mistake our KNN model makes is *false positives*.
+
+### ROC curve on the test set 
+
+```{r}
+#| label: roc-curve
+
+predictions_testing |>
+    roc_curve(truth = WeaponCarryingSchool, .pred_1, event_level = "second") |>
+    autoplot()
+```
+
+Not bad! It hugs the top-left corner.
+
+### Making sure our metrics are Interpretable
+
+Of course, with imbalanced outcomes, we cannot trust accuracy alone. 
+Sensitivity and specificity tell the real story.
+
+```{r}
+#| label: interpretable-metrics
+
+multi_metric <- metric_set(sensitivity, specificity, accuracy, kap)
+
+multi_metric(
+    predictions_testing,
+    truth = WeaponCarryingSchool,
+    estimate = .pred_class,
+    event_level = "second"
+)
+```
