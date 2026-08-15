@@ -23,6 +23,8 @@ library(here)
 ### Load cached data
 
 ```{r}
+#| label: load-cached-data
+
 analysis_split <- readRDS(here("models", "data", "analysis_split.rds"))
 analysis_data <- readRDS(here("models", "data", "analysis_data.rds"))
 analysis_train <- readRDS(here("models", "data", "analysis_train.rds"))
