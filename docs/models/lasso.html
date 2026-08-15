@@ -419,18 +419,18 @@ Computational engine: glmnet </code></pre>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">collect_metrics</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 150 × 7
-    penalty .metric     .estimator  mean     n std_err .config              
-      &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;                
- 1 1   e-10 accuracy    binary     0.957     5 0.00158 Preprocessor1_Model01
- 2 1   e-10 brier_class binary     0.881     5 0.00160 Preprocessor1_Model01
- 3 1   e-10 roc_auc     binary     0.688     5 0.00742 Preprocessor1_Model01
- 4 1.60e-10 accuracy    binary     0.957     5 0.00158 Preprocessor1_Model02
- 5 1.60e-10 brier_class binary     0.881     5 0.00160 Preprocessor1_Model02
- 6 1.60e-10 roc_auc     binary     0.688     5 0.00742 Preprocessor1_Model02
- 7 2.56e-10 accuracy    binary     0.957     5 0.00158 Preprocessor1_Model03
- 8 2.56e-10 brier_class binary     0.881     5 0.00160 Preprocessor1_Model03
- 9 2.56e-10 roc_auc     binary     0.688     5 0.00742 Preprocessor1_Model03
-10 4.09e-10 accuracy    binary     0.957     5 0.00158 Preprocessor1_Model04
+    penalty .metric     .estimator   mean     n std_err .config         
+      &lt;dbl&gt; &lt;chr&gt;       &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;           
+ 1 1   e-10 accuracy    binary     0.957      5 0.00158 pre0_mod01_post0
+ 2 1   e-10 brier_class binary     0.0399     5 0.00128 pre0_mod01_post0
+ 3 1   e-10 roc_auc     binary     0.688      5 0.00742 pre0_mod01_post0
+ 4 1.60e-10 accuracy    binary     0.957      5 0.00158 pre0_mod02_post0
+ 5 1.60e-10 brier_class binary     0.0399     5 0.00128 pre0_mod02_post0
+ 6 1.60e-10 roc_auc     binary     0.688      5 0.00742 pre0_mod02_post0
+ 7 2.56e-10 accuracy    binary     0.957      5 0.00158 pre0_mod03_post0
+ 8 2.56e-10 brier_class binary     0.0399     5 0.00128 pre0_mod03_post0
+ 9 2.56e-10 roc_auc     binary     0.688      5 0.00742 pre0_mod03_post0
+10 4.09e-10 accuracy    binary     0.957      5 0.00158 pre0_mod04_post0
 # ℹ 140 more rows</code></pre>
 </div>
 </div>
@@ -440,7 +440,7 @@ Computational engine: glmnet </code></pre>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="lasso_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="lasso_files/figure-html/autoplot-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -456,9 +456,9 @@ Computational engine: glmnet </code></pre>
 <span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>best</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1 × 2
-   penalty .config              
-     &lt;dbl&gt; &lt;chr&gt;                
-1 0.000339 Preprocessor1_Model33</code></pre>
+   penalty .config         
+     &lt;dbl&gt; &lt;chr&gt;           
+1 0.000339 pre0_mod33_post0</code></pre>
 </div>
 </div>
 <p>Now we’ll create our final workflow with the best penalty value.</p>
@@ -499,17 +499,86 @@ Computational engine: glmnet </code></pre>
 <span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(final_wf, <span class="at">data =</span> analysis_train)</span>
 <span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>weapon_fit</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
+Preprocessor: Recipe
+Model: logistic_reg()
+
+── Preprocessor ────────────────────────────────────────────────────────────────
+5 Recipe Steps
+
+• step_impute_mode()
+• step_impute_mean()
+• step_zv()
+• step_corr()
+• step_dummy()
+
+── Model ───────────────────────────────────────────────────────────────────────
+
+Call:  glmnet::glmnet(x = maybe_matrix(x), y = y, family = "binomial",      alpha = ~1) 
+
+   Df %Dev    Lambda
+1   0 0.00 0.0235100
+2   2 1.00 0.0214300
+3   2 1.79 0.0195200
+4   3 2.45 0.0177900
+5   4 3.11 0.0162100
+6   4 3.67 0.0147700
+7   5 4.12 0.0134600
+8   6 4.61 0.0122600
+9   6 5.01 0.0111700
+10  6 5.33 0.0101800
+11  6 5.59 0.0092750
+12  6 5.80 0.0084510
+13  6 5.97 0.0077000
+14  7 6.11 0.0070160
+15  7 6.24 0.0063930
+16  7 6.35 0.0058250
+17  7 6.43 0.0053070
+18  7 6.50 0.0048360
+19  7 6.56 0.0044060
+20  8 6.61 0.0040150
+21  8 6.65 0.0036580
+22  8 6.68 0.0033330
+23  8 6.71 0.0030370
+24  9 6.76 0.0027670
+25  9 6.80 0.0025210
+26  9 6.83 0.0022970
+27  9 6.86 0.0020930
+28  9 6.88 0.0019070
+29  9 6.90 0.0017380
+30  9 6.91 0.0015840
+31  9 6.93 0.0014430
+32  9 6.94 0.0013150
+33  9 6.95 0.0011980
+34  9 6.95 0.0010910
+35  9 6.96 0.0009945
+36  9 6.96 0.0009061
+37  9 6.97 0.0008256
+38  9 6.97 0.0007523
+39  9 6.97 0.0006855
+40  9 6.98 0.0006246
+41  9 6.98 0.0005691
+42 10 6.98 0.0005185
+43 10 6.98 0.0004725
+44 10 6.99 0.0004305
+45 10 6.99 0.0003922
+46 10 6.99 0.0003574
+
+...
+and 2 more lines.</code></pre>
+</div>
 </div>
 </section>
 <section id="model-evaluation" class="level2">
 <h2 class="anchored" data-anchor-id="model-evaluation">Model Evaluation</h2>
 <p>Let’s examine the model’s predictions on the training data.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>weapon_pred <span class="ot">&lt;-</span> </span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(weapon_fit, analysis_train) <span class="sc">|&gt;</span> </span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(WeaponCarryingSchool, .pred_class, .pred_1, .pred_0)</span>
-<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>weapon_pred</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>weapon_pred <span class="ot">&lt;-</span> </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">augment</span>(weapon_fit, analysis_train) <span class="sc">|&gt;</span> </span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(WeaponCarryingSchool, .pred_class, .pred_1, .pred_0)</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>weapon_pred</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 14,696 × 4
    WeaponCarryingSchool .pred_class .pred_1 .pred_0
@@ -529,25 +598,25 @@ Computational engine: glmnet </code></pre>
 </div>
 <p>We can visualize the model’s performance using an ROC curve.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>roc_plot_training <span class="ot">&lt;-</span> </span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  weapon_pred <span class="sc">|&gt;</span> </span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_curve</span>(<span class="at">truth =</span> WeaponCarryingSchool, .pred_1, <span class="at">event_level =</span> <span class="st">"second"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>roc_plot_training </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>roc_plot_training <span class="ot">&lt;-</span> </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  weapon_pred <span class="sc">|&gt;</span> </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_curve</span>(<span class="at">truth =</span> WeaponCarryingSchool, .pred_1, <span class="at">event_level =</span> <span class="st">"second"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>roc_plot_training </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="lasso_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="lasso_files/figure-html/roc-curve-training-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
 <p>Let’s look at the model coefficients to understand which predictors are most important.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>weapon_fit <span class="sc">|&gt;</span> </span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_parsnip</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>weapon_fit <span class="sc">|&gt;</span> </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_parsnip</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: 'Matrix'</code></pre>
@@ -582,21 +651,33 @@ Attaching package: 'Matrix'</code></pre>
 <h2 class="anchored" data-anchor-id="cross-validation-results">Cross-Validation Results</h2>
 <p>We’ll fit the model on each cross-validation fold to get a more robust estimate of its performance.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>weapon_fit_resamples <span class="ot">&lt;-</span> </span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_resamples</span>(final_wf, <span class="at">resamples =</span> analysis_folds)</span>
-<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>weapon_fit_resamples</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>weapon_fit_resamples <span class="ot">&lt;-</span> </span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit_resamples</span>(final_wf, <span class="at">resamples =</span> analysis_folds)</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>weapon_fit_resamples</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># Resampling results
+# 5-fold cross-validation 
+# A tibble: 5 × 4
+  splits               id    .metrics         .notes          
+  &lt;list&gt;               &lt;chr&gt; &lt;list&gt;           &lt;list&gt;          
+1 &lt;split [11756/2940]&gt; Fold1 &lt;tibble [3 × 4]&gt; &lt;tibble [0 × 4]&gt;
+2 &lt;split [11757/2939]&gt; Fold2 &lt;tibble [3 × 4]&gt; &lt;tibble [0 × 4]&gt;
+3 &lt;split [11757/2939]&gt; Fold3 &lt;tibble [3 × 4]&gt; &lt;tibble [0 × 4]&gt;
+4 &lt;split [11757/2939]&gt; Fold4 &lt;tibble [3 × 4]&gt; &lt;tibble [0 × 4]&gt;
+5 &lt;split [11757/2939]&gt; Fold5 &lt;tibble [3 × 4]&gt; &lt;tibble [0 × 4]&gt;</code></pre>
+</div>
 </div>
 <p>Let’s examine the cross-validation metrics.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(weapon_fit_resamples)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">collect_metrics</span>(weapon_fit_resamples)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 3 × 6
-  .metric     .estimator   mean     n std_err .config             
-  &lt;chr&gt;       &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               
-1 accuracy    binary     0.957      5 0.00158 Preprocessor1_Model1
-2 brier_class binary     0.0399     5 0.00128 Preprocessor1_Model1
-3 roc_auc     binary     0.688      5 0.00737 Preprocessor1_Model1</code></pre>
+  .metric     .estimator   mean     n std_err .config        
+  &lt;chr&gt;       &lt;chr&gt;       &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;          
+1 accuracy    binary     0.957      5 0.00158 pre0_mod0_post0
+2 brier_class binary     0.0399     5 0.00128 pre0_mod0_post0
+3 roc_auc     binary     0.688      5 0.00737 pre0_mod0_post0</code></pre>
 </div>
 </div>
 </section>
@@ -604,7 +685,7 @@ Attaching package: 'Matrix'</code></pre>
 <h2 class="anchored" data-anchor-id="variable-importance">Variable Importance</h2>
 <p>Finally, let’s create a variable importance plot to identify the most influential predictors in our model.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vip)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(vip)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: 'vip'</code></pre>
@@ -614,13 +695,13 @@ Attaching package: 'vip'</code></pre>
 
     vi</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>weapon_fit <span class="sc">|&gt;</span> </span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vip</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>weapon_fit <span class="sc">|&gt;</span> </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">vip</span>() </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="lasso_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="lasso_files/figure-html/vip-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -710,7 +791,7 @@ Attaching package: 'vip'</code></pre>
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/dsoto1219\.github\.io\/quarto-website\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }

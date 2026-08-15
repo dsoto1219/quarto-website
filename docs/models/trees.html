@@ -496,11 +496,11 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 5 × 9
   cost_complexity tree_depth min_n .metric .estimator  mean     n std_err
             &lt;dbl&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
-1      0.00000218          7   122 roc_auc binary     0.670    10 0.00693
-2      0.000515            5     5 roc_auc binary     0.668    10 0.00865
-3      0.0000104           5   145 roc_auc binary     0.668    10 0.00805
-4      0.00000579          9   125 roc_auc binary     0.668    10 0.00893
-5      0.00245             5   108 roc_auc binary     0.668    10 0.00811
+1      0.00000218          7   122 roc_auc binary     0.661    10  0.0161
+2      0.0000408           8   147 roc_auc binary     0.661    10  0.0168
+3      0.00000579          9   125 roc_auc binary     0.659    10  0.0159
+4      0.000108           10   120 roc_auc binary     0.659    10  0.0159
+5      0.000515            5     5 roc_auc binary     0.659    10  0.0152
 # ℹ 1 more variable: .config &lt;chr&gt;</code></pre>
 </div>
 </div>
@@ -548,9 +548,9 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 3 × 6
   .metric     .estimator  mean     n std_err .config        
   &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;          
-1 accuracy    binary     0.701    10 0.00848 pre0_mod0_post0
-2 brier_class binary     0.213    10 0.00118 pre0_mod0_post0
-3 roc_auc     binary     0.670    10 0.00693 pre0_mod0_post0</code></pre>
+1 accuracy    binary     0.698    10 0.0107  pre0_mod0_post0
+2 brier_class binary     0.212    10 0.00194 pre0_mod0_post0
+3 roc_auc     binary     0.661    10 0.0161  pre0_mod0_post0</code></pre>
 </div>
 </div>
 <p>Looks good, time to lock it in.</p>
@@ -793,7 +793,7 @@ Computational engine: rpart </code></pre>
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/dsoto1219\.github\.io\/quarto-website\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
