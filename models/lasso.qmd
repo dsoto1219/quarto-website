@@ -48,7 +48,7 @@ Before fitting our model, we need to preprocess the data. We'll create a recipe 
 - Creates dummy variables for categorical predictors
 
 ```{r}
-#| label: model-rec
+#| label: recipe
 
 weapon_carry_recipe <- 
   recipe(formula = WeaponCarryingSchool ~ ., data = analysis_train) |>
@@ -64,6 +64,8 @@ weapon_carry_recipe
 Let's apply our recipe to transform the data according to these preprocessing steps.
 
 ```{r}
+#| label: bake-recipe
+
 weapon_carry_recipe %>% 
   prep() %>% 
   bake(new_data = analysis_data) 
@@ -104,6 +106,8 @@ weapon_carry_workflow
 To find the optimal penalty value, we'll create a grid of potential values to test. We'll use 50 different penalty values, evenly spaced on a logarithmic scale.
 
 ```{r}
+#| label: create-grid-regular
+
 lambda_grid <- grid_regular(penalty(), levels = 50)
 lambda_grid
 ```
@@ -111,7 +115,7 @@ lambda_grid
 Now, we'll perform cross-validation to find the best penalty value. This process is time-consuming, so we'll save the results for future use.
 
 ```{r}
-#| eval: false
+#| label: lasso-tune
 
 set.seed(2023)
 
@@ -125,21 +129,18 @@ lasso_tune <-
 ```
 
 ```{r}
-#| eval: false
-#| echo: false
-
 saveRDS(lasso_tune, here("model_outputs", "lasso_tune.rds"))
 ```
 
 ```{r}
-#| echo: false
-
 lasso_tune <- readRDS(here("models", "model_outputs", "lasso_tune.rds"))
 ```
 
 Let's examine the performance metrics for different penalty values.
 
 ```{r}
+#| label: collect-metrics
+
 lasso_tune %>% 
   collect_metrics()
 ```
@@ -147,6 +148,8 @@ lasso_tune %>%
 We can visualize how the model's performance changes with different penalty values.
 
 ```{r}
+#| label: autoplot
+
 autoplot(lasso_tune)
 ```
 
@@ -155,6 +158,8 @@ autoplot(lasso_tune)
 We'll select the best model based on the ROC AUC metric, which measures the model's ability to distinguish between classes.
 
 ```{r}
+#| label: best-lasso-model
+
 best <- lasso_tune |> 
   select_best(metric ="roc_auc")
 
@@ -164,6 +169,8 @@ best
 Now we'll create our final workflow with the best penalty value.
 
 ```{r}
+#| label: final-workflow
+
 final_wf <- finalize_workflow(weapon_carry_workflow, best)
 
 final_wf
@@ -174,7 +181,7 @@ final_wf
 We'll fit our final model on the training data. This process is also time-consuming, so we'll save the results.
 
 ```{r}
-#| eval: false
+#| label: fit-final-model
 
 weapon_fit <- 
   fit(final_wf, data = analysis_train)
@@ -183,15 +190,10 @@ weapon_fit
 ```
 
 ```{r}
-#| eval: false
-#| echo: false
-
 saveRDS(weapon_fit, here("model_outputs", "weapon_fit.rds"))
 ```
 
 ```{r}
-#| echo: false
-
 weapon_fit <- readRDS(here("models","model_outputs", "weapon_fit.rds"))
 ```
 
@@ -200,6 +202,8 @@ weapon_fit <- readRDS(here("models","model_outputs", "weapon_fit.rds"))
 Let's examine the model's predictions on the training data.
 
 ```{r}
+#| label: model-eval
+
 weapon_pred <- 
   augment(weapon_fit, analysis_train) |> 
   select(WeaponCarryingSchool, .pred_class, .pred_1, .pred_0)
@@ -210,6 +214,8 @@ weapon_pred
 We can visualize the model's performance using an ROC curve.
 
 ```{r}
+#| label: roc-curve-training
+
 roc_plot_training <- 
   weapon_pred |> 
   roc_curve(truth = WeaponCarryingSchool, .pred_1, event_level = "second") |> 
@@ -221,6 +227,8 @@ roc_plot_training
 Let's look at the model coefficients to understand which predictors are most important.
 
 ```{r}
+#| label: model-coefficients
+
 weapon_fit |> 
   extract_fit_parsnip() |> 
   tidy()
@@ -231,7 +239,7 @@ weapon_fit |>
 We'll fit the model on each cross-validation fold to get a more robust estimate of its performance.
 
 ```{r}
-#| eval: false
+#| label: weapon-fit-resamples
 
 weapon_fit_resamples <- 
   fit_resamples(final_wf, resamples = analysis_folds)
@@ -240,20 +248,18 @@ weapon_fit_resamples
 ```
 
 ```{r}
-#| eval: false
-#| echo: false
-
 saveRDS(weapon_fit_resamples, here("model_outputs", "weapon_fit_resamples.rds"))
 ```
 
 ```{r}
-#| echo: false
 weapon_fit_resamples <- readRDS(here("models","model_outputs", "weapon_fit_resamples.rds"))
 ```
 
 Let's examine the cross-validation metrics.
 
 ```{r}
+#| label: cv-results
+
 collect_metrics(weapon_fit_resamples)
 ```
 
@@ -262,6 +268,8 @@ collect_metrics(weapon_fit_resamples)
 Finally, let's create a variable importance plot to identify the most influential predictors in our model.
 
 ```{r}
+#| label: vip
+
 library(vip)
 
 weapon_fit |> 
