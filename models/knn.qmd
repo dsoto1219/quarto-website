@@ -201,3 +201,31 @@ final_wf
 ```
 We are now ready for the test set.
 
+## Evaluate on the Test Set
+
+Like usual, we use `last_fit()`:
+
+```{r}
+#| label: weapon-last-fit
+
+weapon_last_fit <- last_fit(
+    final_wf,
+    split   = analysis_split,
+    metrics = metric_set(accuracy, kap, roc_auc, sensitivity, specificity)
+)
+
+weapon_last_fit
+```
+
+And our metrics are as follows:
+
+```{r}
+#| label: test-set-metrics
+
+collect_metrics(weapon_last_fit)
+```
+
+These metrics are not too different from our CV sanity-check metrics, so we can say our KNN generalizes.
+
+
+
