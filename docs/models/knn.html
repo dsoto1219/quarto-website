@@ -468,11 +468,11 @@ Computational engine: kknn </code></pre>
 <pre><code># A tibble: 5 × 7
   neighbors .metric .estimator  mean     n std_err .config        
       &lt;dbl&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;          
-1        51 roc_auc binary     0.673     5 0.00869 pre0_mod9_post0
-2        31 roc_auc binary     0.668     5 0.00837 pre0_mod8_post0
-3        21 roc_auc binary     0.662     5 0.00908 pre0_mod7_post0
-4        15 roc_auc binary     0.655     5 0.00938 pre0_mod6_post0
-5        11 roc_auc binary     0.651     5 0.00794 pre0_mod5_post0</code></pre>
+1        51 roc_auc binary     0.674     5 0.00918 pre0_mod9_post0
+2        31 roc_auc binary     0.669     5 0.00737 pre0_mod8_post0
+3        21 roc_auc binary     0.662     5 0.00749 pre0_mod7_post0
+4        15 roc_auc binary     0.654     5 0.00933 pre0_mod6_post0
+5        11 roc_auc binary     0.651     5 0.00901 pre0_mod5_post0</code></pre>
 </div>
 </div>
 </section>
@@ -517,9 +517,9 @@ Computational engine: kknn </code></pre>
 <pre><code># A tibble: 3 × 6
   .metric     .estimator  mean     n std_err .config        
   &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;          
-1 accuracy    binary     0.842     5 0.00759 pre0_mod0_post0
-2 brier_class binary     0.111     5 0.00242 pre0_mod0_post0
-3 roc_auc     binary     0.673     5 0.00869 pre0_mod0_post0</code></pre>
+1 accuracy    binary     0.838     5 0.00442 pre0_mod0_post0
+2 brier_class binary     0.116     5 0.00252 pre0_mod0_post0
+3 roc_auc     binary     0.674     5 0.00918 pre0_mod0_post0</code></pre>
 </div>
 </div>
 <p>This is an honest, CV-estimated performance for our single chosen <code>K</code>. Our metrics look good, so we’ll lock in and evaluate this <code>K</code> on our test set.</p>
@@ -584,11 +584,11 @@ Computational engine: kknn </code></pre>
 <pre><code># A tibble: 5 × 4
   .metric     .estimator .estimate .config        
   &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          
-1 accuracy    binary         0.837 pre0_mod0_post0
-2 kap         binary         0.124 pre0_mod0_post0
-3 sensitivity binary         0.856 pre0_mod0_post0
-4 specificity binary         0.425 pre0_mod0_post0
-5 roc_auc     binary         0.706 pre0_mod0_post0</code></pre>
+1 accuracy    binary         0.840 pre0_mod0_post0
+2 kap         binary         0.126 pre0_mod0_post0
+3 sensitivity binary         0.859 pre0_mod0_post0
+4 specificity binary         0.420 pre0_mod0_post0
+5 roc_auc     binary         0.705 pre0_mod0_post0</code></pre>
 </div>
 </div>
 <p>These metrics are not too different from our CV sanity-check metrics, so we can say our KNN generalizes.</p>
@@ -606,16 +606,16 @@ Computational engine: kknn </code></pre>
 <pre><code># A tibble: 4,899 × 5
    .pred_class .pred_0 .pred_1 id               WeaponCarryingSchool
    &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;            &lt;fct&gt;               
- 1 0             1     0       train/test split 0                   
- 2 0             0.671 0.329   train/test split 0                   
- 3 0             0.996 0.00377 train/test split 0                   
- 4 0             0.996 0.00377 train/test split 0                   
- 5 0             1     0       train/test split 0                   
- 6 0             0.860 0.140   train/test split 0                   
- 7 0             0.648 0.352   train/test split 0                   
- 8 1             0.205 0.795   train/test split 1                   
- 9 1             0.279 0.721   train/test split 0                   
-10 0             0.587 0.413   train/test split 0                   
+ 1 0             1       0     train/test split 0                   
+ 2 0             0.683   0.317 train/test split 0                   
+ 3 0             1       0     train/test split 0                   
+ 4 0             1       0     train/test split 0                   
+ 5 0             1       0     train/test split 0                   
+ 6 0             0.823   0.177 train/test split 0                   
+ 7 0             0.819   0.181 train/test split 0                   
+ 8 1             0.394   0.606 train/test split 1                   
+ 9 1             0.254   0.746 train/test split 0                   
+10 0             0.566   0.434 train/test split 0                   
 # ℹ 4,889 more rows</code></pre>
 </div>
 </div>
@@ -667,10 +667,10 @@ Computational engine: kknn </code></pre>
 <pre><code># A tibble: 4 × 3
   .metric     .estimator .estimate
   &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt;
-1 sensitivity binary         0.425
-2 specificity binary         0.856
-3 accuracy    binary         0.837
-4 kap         binary         0.124</code></pre>
+1 sensitivity binary         0.420
+2 specificity binary         0.859
+3 accuracy    binary         0.840
+4 kap         binary         0.126</code></pre>
 </div>
 </div>
 
@@ -752,7 +752,7 @@ Computational engine: kknn </code></pre>
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp('/' + window.location.host + '/');
+        var filterRegex = new RegExp("https:\/\/dsoto1219\.github\.io\/quarto-website\/");
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
