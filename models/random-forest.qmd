@@ -97,7 +97,6 @@ ranger_workflow <-
 
 ranger_workflow
 ```
-
 ### Tuning
 
 We are tuning two main knobs:
