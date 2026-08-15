@@ -29,8 +29,19 @@ analysis_split <- readRDS(here("models", "data", "analysis_split.rds"))
 analysis_data <- readRDS(here("models", "data", "analysis_data.rds"))
 analysis_train <- readRDS(here("models", "data", "analysis_train.rds"))
 analysis_test <- readRDS(here("models","data", "analysis_test.rds"))
-analysis_folds <- readRDS(here("models","data", "analysis_folds.rds"))
 ```
+
+We set the folds manually here, as we need to specify the strata, which we did not do in the data section.
+
+```{r}
+#| label: set-folds
+
+set.seed(2023)
+
+analysis_folds <- vfold_cv(analysis_train, v = 5, strata = WeaponCarryingSchool)
+analysis_folds
+```
+
 
 ### Sanity check: class balance
 
