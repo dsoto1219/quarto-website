@@ -108,5 +108,69 @@ kknn_workflow <-
 kknn_workflow
 
 ```
+## Tuning `K`
 
+### Build the tuning grid
 
+We build a tuning grid with odd numbers. 
+This is because with binary classification and odd `K`, we can never get a "tie vote."
+
+```{r}
+#| label: neighbor-grid
+
+neighbor_grid <- tibble(neighbors = c(1, 3, 5, 7, 11, 15, 21, 31, 51))
+neighbor_grid
+```
+
+### Run the tuning
+
+KNN tuning is fast — no model is actually trained, just distances are computed.
+
+```{r}
+#| label: run-tuning
+
+doParallel::registerDoParallel()
+
+set.seed(2023)
+
+knn_tune <- tune_grid(
+    kknn_workflow,
+    resamples = analysis_folds,
+    grid      = neighbor_grid,
+    metrics   = metric_set(roc_auc, accuracy)
+)
+
+doParallel::stopImplicitCluster()
+```
+
+### Show the best `K`
+
+Top 5 `K` values, ranked by mean ROC AUC across the 5 folds.
+
+```{r}
+#| label: show-best-k
+
+show_best(knn_tune, metric = "roc_auc")
+```
+
+### Visualize the tuning results
+
+```{r}
+#| label: tuning-visualization
+
+autoplot(knn_tune)
+```
+### Pick the best `K`
+
+We pick one number as our "winning" `K` value:
+
+```{r}
+#| label: best-k
+
+best_k <- select_best(knn_tune, metric = "roc_auc")
+best_k
+```
+
+But we don't commit to this yet. Instead, we check it first.
+
+## Sanity-Check Before Committing
