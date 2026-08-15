@@ -130,10 +130,8 @@ lasso_tune <-
 
 ```{r}
 #| label: save-lasso-tune-rds
-#| echo: false
 
 saveRDS(lasso_tune, here("model_outputs", "lasso_tune.rds"))
-lasso_tune <- readRDS(here("models", "model_outputs", "lasso_tune.rds"))
 ```
 
 Let's examine the performance metrics for different penalty values.
@@ -191,10 +189,8 @@ weapon_fit
 
 ```{r}
 #| label: save-weapon-fit-rds
-#| echo: false
 
 saveRDS(weapon_fit, here("model_outputs", "weapon_fit.rds"))
-weapon_fit <- readRDS(here("models","model_outputs", "weapon_fit.rds"))
 ```
 
 ## Model Evaluation
