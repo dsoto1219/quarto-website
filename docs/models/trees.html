@@ -496,11 +496,11 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 5 × 9
   cost_complexity tree_depth min_n .metric .estimator  mean     n std_err
             &lt;dbl&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
-1      0.00000322          9    83 roc_auc binary     0.663    10  0.0136
-2      0.0000602           8    98 roc_auc binary     0.663    10  0.0141
-3      0.00000218          7   122 roc_auc binary     0.663    10  0.0130
-4      0.00000579          9   125 roc_auc binary     0.663    10  0.0135
-5      0.000001            7    81 roc_auc binary     0.662    10  0.0147
+1      0.00000218          7   122 roc_auc binary     0.670    10 0.00693
+2      0.000515            5     5 roc_auc binary     0.668    10 0.00865
+3      0.0000104           5   145 roc_auc binary     0.668    10 0.00805
+4      0.00000579          9   125 roc_auc binary     0.668    10 0.00893
+5      0.00245             5   108 roc_auc binary     0.668    10 0.00811
 # ℹ 1 more variable: .config &lt;chr&gt;</code></pre>
 </div>
 </div>
@@ -530,7 +530,7 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 1 × 4
   cost_complexity tree_depth min_n .config         
             &lt;dbl&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;           
-1      0.00000322          9    83 pre0_mod07_post0</code></pre>
+1      0.00000218          7   122 pre0_mod05_post0</code></pre>
 </div>
 </div>
 <p>But we don’t commit yet: we want to check how this performs first.</p>
@@ -548,9 +548,9 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 3 × 6
   .metric     .estimator  mean     n std_err .config        
   &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;          
-1 accuracy    binary     0.708    10 0.00676 pre0_mod0_post0
-2 brier_class binary     0.210    10 0.00191 pre0_mod0_post0
-3 roc_auc     binary     0.663    10 0.0136  pre0_mod0_post0</code></pre>
+1 accuracy    binary     0.701    10 0.00848 pre0_mod0_post0
+2 brier_class binary     0.213    10 0.00118 pre0_mod0_post0
+3 roc_auc     binary     0.670    10 0.00693 pre0_mod0_post0</code></pre>
 </div>
 </div>
 <p>Looks good, time to lock it in.</p>
@@ -574,9 +574,9 @@ Model: decision_tree()
 Decision Tree Model Specification (classification)
 
 Main Arguments:
-  cost_complexity = 3.2245905452964e-06
-  tree_depth = 9
-  min_n = 83
+  cost_complexity = 2.18264472839749e-06
+  tree_depth = 7
+  min_n = 122
 
 Engine-Specific Arguments:
   parms = list(prior = c(0.5, 0.5))
@@ -616,11 +616,11 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 5 × 4
   .metric     .estimator .estimate .config        
   &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          
-1 accuracy    binary        0.693  pre0_mod0_post0
-2 kap         binary        0.0719 pre0_mod0_post0
-3 sensitivity binary        0.698  pre0_mod0_post0
-4 specificity binary        0.590  pre0_mod0_post0
-5 roc_auc     binary        0.671  pre0_mod0_post0</code></pre>
+1 accuracy    binary        0.689  pre0_mod0_post0
+2 kap         binary        0.0744 pre0_mod0_post0
+3 sensitivity binary        0.693  pre0_mod0_post0
+4 specificity binary        0.608  pre0_mod0_post0
+5 roc_auc     binary        0.691  pre0_mod0_post0</code></pre>
 </div>
 </div>
 <p>Comparing these to the CV metrics from the sanity-check section, we see they are in about the same ballpark. Thus, the model generalizes.</p>
@@ -638,13 +638,13 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 4,899 × 4
    WeaponCarryingSchool .pred_class .pred_1 .pred_0
    &lt;fct&gt;                &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt;
- 1 0                    0             0.339   0.661
- 2 0                    1             0.530   0.470
- 3 0                    0             0.339   0.661
- 4 0                    0             0.339   0.661
- 5 0                    0             0.339   0.661
+ 1 0                    0             0.341   0.659
+ 2 0                    0             0.470   0.530
+ 3 0                    0             0.341   0.659
+ 4 0                    0             0.341   0.659
+ 5 0                    0             0.341   0.659
  6 0                    1             0.521   0.479
- 7 0                    0             0.394   0.606
+ 7 0                    1             0.538   0.462
  8 1                    1             0.893   0.107
  9 0                    1             0.734   0.266
 10 0                    1             0.521   0.479
@@ -691,9 +691,6 @@ Computational engine: rpart </code></pre>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>cart_last_fit <span class="sc">|&gt;</span></span>
 <span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span></span>
 <span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rpart.plot</span>(<span class="at">roundint =</span> <span class="cn">FALSE</span>, <span class="at">type =</span> <span class="dv">4</span>, <span class="at">extra =</span> <span class="dv">104</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Warning: labs do not fit even at cex 0.15, there may be some overplotting</code></pre>
-</div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -707,9 +704,9 @@ Computational engine: rpart </code></pre>
 <h2 class="anchored" data-anchor-id="variable-importance-with-vip">Variable importance with <code>vip</code></h2>
 <p>Each bar in the variable importance plot (VIP) indicates how much that predictor reduced impurity across all splits. Predictors not shown were never useful enough to make the tree. This makes for a free feature ranking for your manuscript.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>cart_last_fit <span class="sc">|&gt;</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">extract_fit_parsnip</span>() <span class="sc">|&gt;</span></span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">vip</span>(<span class="at">num_features =</span> <span class="dv">15</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>cart_last_fit <span class="sc">|&gt;</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">extract_fit_parsnip</span>() <span class="sc">|&gt;</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">vip</span>(<span class="at">num_features =</span> <span class="dv">15</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
