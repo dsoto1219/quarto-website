@@ -129,10 +129,10 @@ lasso_tune <-
 ```
 
 ```{r}
-saveRDS(lasso_tune, here("model_outputs", "lasso_tune.rds"))
-```
+#| label: save-lasso-tune-rds
+#| echo: false
 
-```{r}
+saveRDS(lasso_tune, here("model_outputs", "lasso_tune.rds"))
 lasso_tune <- readRDS(here("models", "model_outputs", "lasso_tune.rds"))
 ```
 
@@ -190,10 +190,10 @@ weapon_fit
 ```
 
 ```{r}
-saveRDS(weapon_fit, here("model_outputs", "weapon_fit.rds"))
-```
+#| label: save-weapon-fit-rds
+#| echo: false
 
-```{r}
+saveRDS(weapon_fit, here("model_outputs", "weapon_fit.rds"))
 weapon_fit <- readRDS(here("models","model_outputs", "weapon_fit.rds"))
 ```
 
