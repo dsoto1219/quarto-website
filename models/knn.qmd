@@ -174,3 +174,30 @@ best_k
 But we don't commit to this yet. Instead, we check it first.
 
 ## Sanity-Check Before Committing
+
+How does our chosen `K` actually do? Let us see:
+
+```{r}
+#| label: test-best-k
+
+kknn_workflow |>
+    finalize_workflow(best_k) |>
+    fit_resamples(resamples = analysis_folds) |>
+    collect_metrics()
+```
+This is an honest, CV-estimated performance for our single chosen `K`. 
+Our metrics look good, so we'll lock in and evaluate this `K` on our test set.
+
+### Locking in our Final Workflow
+
+Plugging in our best `K`:
+
+```{r}
+#| label: final-workflow
+
+final_wf <- finalize_workflow(kknn_workflow, best_k)
+
+final_wf
+```
+We are now ready for the test set.
+
