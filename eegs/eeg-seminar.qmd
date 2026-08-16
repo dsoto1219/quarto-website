@@ -77,7 +77,7 @@ pak::pak("R.matlab", "hdf5r")
 ```{r}
 #| label: data-raw
 
-dat_raw <- eegUtils::import_set(set_file)
+dat_raw <- import_set(set_file)
 ```
 
 Inspecting the data type:
