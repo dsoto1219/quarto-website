@@ -6,8 +6,9 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
+<meta name="author" content="Daniel Soto">
 
-<title>Daniel Soto’s Portfolio</title>
+<title>EEG Seminar Notes – Daniel Soto’s Portfolio</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -23,26 +24,61 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
-<script src="site_libs/quarto-nav/quarto-nav.js"></script>
-<script src="site_libs/quarto-nav/headroom.min.js"></script>
-<script src="site_libs/clipboard/clipboard.min.js"></script>
-<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="site_libs/quarto-search/fuse.min.js"></script>
-<script src="site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="./">
-<script src="site_libs/quarto-html/quarto.js" type="module"></script>
-<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="site_libs/quarto-html/popper.min.js"></script>
-<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
-<script src="site_libs/quarto-html/anchor.min.js"></script>
-<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
-<script src="site_libs/bootstrap/bootstrap.min.js"></script>
-<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-6b423f165eeea3787de40cb4f8e821c3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<script src="../site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting-15634bcf2e68342d4ad2dfa704d543f6.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap-6b423f165eeea3787de40cb4f8e821c3.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -72,7 +108,7 @@ ul.task-list li input[type="checkbox"] {
 }</script>
 
 
-<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="../styles.css">
 </head>
 
 <body class="nav-fixed quarto-light">
@@ -82,7 +118,7 @@ ul.task-list li input[type="checkbox"] {
     <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
-    <a class="navbar-brand" href="./index.html">
+    <a class="navbar-brand" href="../index.html">
     <span class="navbar-title">Daniel Soto’s Portfolio</span>
     </a>
   </div>
@@ -93,11 +129,11 @@ ul.task-list li input[type="checkbox"] {
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" aria-current="page"> 
+    <a class="nav-link" href="../index.html"> 
 <span class="menu-text">Home</span></a>
   </li>  
   <li class="nav-item">
-    <a class="nav-link" href="./about.html"> 
+    <a class="nav-link" href="../about.html"> 
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item dropdown ">
@@ -106,27 +142,27 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-machine-learning-notes">    
         <li>
-    <a class="dropdown-item" href="./models/datasets.html">
+    <a class="dropdown-item" href="../models/datasets.html">
  <span class="dropdown-text">Data and Research Question</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./models/logistic.html">
+    <a class="dropdown-item" href="../models/logistic.html">
  <span class="dropdown-text">Logistic Regression</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./models/lasso.html">
+    <a class="dropdown-item" href="../models/lasso.html">
  <span class="dropdown-text">Lasso Regression</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./models/trees.html">
+    <a class="dropdown-item" href="../models/trees.html">
  <span class="dropdown-text">Decision Trees</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./models/random-forest.html">
+    <a class="dropdown-item" href="../models/random-forest.html">
  <span class="dropdown-text">Random Forest</span></a>
   </li>  
         <li>
-    <a class="dropdown-item" href="./models/knn.html">
+    <a class="dropdown-item" href="../models/knn.html">
  <span class="dropdown-text">K-Nearest Neighbors</span></a>
   </li>  
     </ul>
@@ -137,7 +173,7 @@ ul.task-list li input[type="checkbox"] {
     </a>
     <ul class="dropdown-menu" aria-labelledby="nav-menu-eegs">    
         <li>
-    <a class="dropdown-item" href="./eegs/eeg-seminar.html">
+    <a class="dropdown-item" href="../eegs/eeg-seminar.html">
  <span class="dropdown-text">N170</span></a>
   </li>  
     </ul>
@@ -158,7 +194,11 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#what-youll-find-here" id="toc-what-youll-find-here" class="nav-link active" data-scroll-target="#what-youll-find-here">What You’ll Find Here</a></li>
+  <li><a href="#setting-up-data" id="toc-setting-up-data" class="nav-link active" data-scroll-target="#setting-up-data">Setting Up Data</a></li>
+  <li><a href="#preprocessing" id="toc-preprocessing" class="nav-link" data-scroll-target="#preprocessing">Preprocessing</a>
+  <ul class="collapse">
+  <li><a href="#viewing-data" id="toc-viewing-data" class="nav-link" data-scroll-target="#viewing-data">Viewing Data</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -167,13 +207,19 @@ ul.task-list li input[type="checkbox"] {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Daniel Soto’s Portfolio</h1>
+<h1 class="title">EEG Seminar Notes</h1>
 </div>
 
 
 
 <div class="quarto-title-meta">
 
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Daniel Soto </p>
+          </div>
+  </div>
     
   
     
@@ -184,35 +230,166 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<p>Welcome! This website displays a few projects I have worked on:</p>
-<ol type="1">
-<li>During my time at the Summer Institute of Biostatistics and Data Science under the guidance of Dr.&nbsp;Catalina Cañizares. In this project, we explore various statistical and machine learning models using the Youth Risk Behavior Survey (YRBS) 2023 dataset. Through this, I display different implementations and modeling techniques using the <code>tidymodels</code> framework in R.</li>
-<li>My messing around with Electroencephalogram (EEG) data.</li>
-</ol>
-<section id="what-youll-find-here" class="level3">
-<h3 class="anchored" data-anchor-id="what-youll-find-here">What You’ll Find Here</h3>
-<ul>
-<li><p><strong>About Me</strong>: A little bit about me and my research interests.</p></li>
-<li><p><strong>Machine Learning Notes</strong>: My exploration of the YRBS dataset.</p>
-<ul>
-<li><p><strong>The Dataset</strong>: Information about my primary dataset and the research question we aim to answer.</p></li>
-<li><p><strong>Model Implementations</strong>: Hands-on examples of the following models to answer the research question:</p>
-<ul>
-<li>Logistic Regression</li>
-<li>Lasso Regression</li>
-<li>Decision Trees</li>
-<li>Random Forest</li>
-<li>K-Nearest Neighbors (KNN)</li>
-</ul></li>
-</ul></li>
-<li><p><strong>Electroencephalogram Work</strong>: My work replicating results from EEG papers.</p>
-<ul>
-<li>The N170 dataset from the ERP CORE dataset</li>
-<li>The <code>ds004408</code> dataset</li>
-</ul></li>
-</ul>
+<p>These are my notes and completed exercises taken from the seminar notes at https://alexenge.github.io/eegSeminaR/.</p>
+<section id="setting-up-data" class="level2">
+<h2 class="anchored" data-anchor-id="setting-up-data">Setting Up Data</h2>
+<p>Though they use the data at <code>alexenge/erpcore</code>, we will use the data from <code>eegverse/erpcore</code>, as the former does not seem to exist anymore on GitHub.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"eegverse/erpcore"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(erpcore)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)    <span class="co"># For general handling of local data files</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Moreover, we will only be using data from the N170 experiment, which showed that subjects who were hooked up to EEGs and were tasked with viewing faces elicited different responses than when they were tasked to view cars.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"eegs"</span>, <span class="st">"data/n170"</span>) <span class="co"># for me, all of my files are in ./eegs/ </span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(data_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># This function downloads all n170 data to `data_dir`</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">get_erpcore</span>(</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">component =</span> <span class="st">"n170"</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">dest_path =</span> data_dir,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"bids"</span>,          <span class="co"># we only want data in BIDS format</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">subjects =</span> <span class="st">"sub-001"</span>,   <span class="co"># limit our subjects  to just 001 for now</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">conflicts =</span> <span class="st">"overwrite"</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="preprocessing" class="level2">
+<h2 class="anchored" data-anchor-id="preprocessing">Preprocessing</h2>
+<p>For preprocessing, we first load <code>eegUtils</code>, a package for working with EEG data.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"craddm/eegUtils"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(eegUtils)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The downloaded ERP CORE data is in <code>data/n170</code>, as we specified in the setup section. The data is in BIDS format; though the seminar notes say the subjects are each in their respective <code>sub-XXX/egg</code> directory, on my end the file structure looks like <code>{subject-number}/{subject-number}_N170.set</code>.</p>
+<p>So, we retrieve this <code>.set</code> file for subject 1:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>bids_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"eegs"</span>, <span class="st">"data/n170"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>set_file <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"1/1_N170.set"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">file.exists</span>(set_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<p><code>eegUtils</code> has functions for importing raw EEG data from various file formats into R, including the <code>.set</code> format used by ERP CORE.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Needed these packages for `import_set` to work</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"R.matlab"</span>, <span class="st">"hdf5r"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dat_raw <span class="ot">&lt;-</span> <span class="fu">import_set</span>(set_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Importing from EEGLAB .set file.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Importing data from .fdt file.</code></pre>
+</div>
+</div>
+<p>Inspecting the data type:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(dat_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "eeg_data"</code></pre>
+</div>
+</div>
+<p>we see <code>eeg_data</code> is a custom class defined by <code>eegUtils</code> — a big list with many sub-components:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dat_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>List of 8
+ $ signals  :'data.frame':  699392 obs. of  33 variables:
+  ..$ FP1       : num [1:699392] -2503 -2502 -2502 -2503 -2504 ...
+  ..$ F3        : num [1:699392] 1898 1899 1896 1897 1895 ...
+  ..$ F7        : num [1:699392] 12316 12314 12310 12308 12305 ...
+  ..$ FC3       : num [1:699392] 2694 2696 2695 2695 2693 ...
+  ..$ C3        : num [1:699392] 3794 3794 3794 3794 3793 ...
+  ..$ C5        : num [1:699392] 7308 7308 7308 7309 7308 ...
+  ..$ P3        : num [1:699392] -328 -328 -329 -329 -329 ...
+  ..$ P7        : num [1:699392] -471 -471 -472 -472 -473 ...
+  ..$ P9        : num [1:699392] 250 252 252 249 246 ...
+  ..$ PO7       : num [1:699392] -2770 -2767 -2765 -2762 -2763 ...
+  ..$ PO3       : num [1:699392] -3285 -3285 -3284 -3283 -3283 ...
+  ..$ O1        : num [1:699392] -6382 -6383 -6383 -6380 -6377 ...
+  ..$ Oz        : num [1:699392] -5855 -5852 -5848 -5846 -5847 ...
+  ..$ Pz        : num [1:699392] 3699 3699 3698 3699 3699 ...
+  ..$ CPz       : num [1:699392] 1347 1347 1345 1345 1345 ...
+  ..$ FP2       : num [1:699392] 959 962 965 967 967 ...
+  ..$ Fz        : num [1:699392] 9392 9393 9392 9392 9391 ...
+  ..$ F4        : num [1:699392] 4989 4989 4990 4990 4989 ...
+  ..$ F8        : num [1:699392] 9311 9311 9311 9311 9309 ...
+  ..$ FC4       : num [1:699392] 8402 8403 8404 8405 8403 ...
+  ..$ FCz       : num [1:699392] 5594 5595 5595 5596 5594 ...
+  ..$ Cz        : num [1:699392] 171 171 171 170 168 ...
+  ..$ C4        : num [1:699392] 4092 4093 4093 4093 4092 ...
+  ..$ C6        : num [1:699392] 1757 1758 1758 1758 1756 ...
+  ..$ P4        : num [1:699392] -1050 -1049 -1050 -1050 -1051 ...
+  ..$ P8        : num [1:699392] -3165 -3161 -3160 -3160 -3161 ...
+  ..$ P10       : num [1:699392] 22439 22441 22442 22445 22446 ...
+  ..$ PO8       : num [1:699392] -5183 -5177 -5172 -5167 -5166 ...
+  ..$ PO4       : num [1:699392] -5888 -5886 -5885 -5885 -5885 ...
+  ..$ O2        : num [1:699392] -4763 -4760 -4760 -4757 -4753 ...
+  ..$ HEOG_left : num [1:699392] 5347 5343 5334 5327 5322 ...
+  ..$ HEOG_right: num [1:699392] 4003 4003 4002 4000 3996 ...
+  ..$ VEOG_lower: num [1:699392] 4875 4875 4874 4871 4868 ...
+ $ srate    : num 1024
+ $ events   : tibble [640 × 4] (S3: tbl_df/tbl/data.frame)
+  ..$ event_type : num [1:640] 202 202 79 201 73 201 75 201 112 201 ...
+  ..$ event_onset: num [1:640] 1682 11029 15412 16091 16998 ...
+  ..$ urevent    : num [1:640] 1 2 3 4 5 6 7 8 9 10 ...
+  ..$ event_time : num [1:640] 1.64 10.77 15.05 15.71 16.6 ...
+ $ chan_info:'data.frame':  33 obs. of  9 variables:
+  ..$ electrode: chr [1:33] "FP1" "F3" "F7" "FC3" ...
+  ..$ radius   : num [1:33] 1 1 1 1 1 1 1 1 1 1 ...
+  ..$ theta    : num [1:33] NA NA NA NA NA NA NA NA NA NA ...
+  ..$ phi      : num [1:33] NA NA NA NA NA NA NA NA NA NA ...
+  ..$ cart_x   : int [1:33] NA NA NA NA NA NA NA NA NA NA ...
+  ..$ cart_y   : logi [1:33] NA NA NA NA NA NA ...
+  ..$ cart_z   : logi [1:33] NA NA NA NA NA NA ...
+  ..$ x        : num [1:33] NA NA NA NA NA NA NA NA NA NA ...
+  ..$ y        : num [1:33] NA NA NA NA NA NA NA NA NA NA ...
+ $ timings  : tibble [699,392 × 2] (S3: tbl_df/tbl/data.frame)
+  ..$ time  : num [1:699392] 0 0.000977 0.001953 0.00293 0.003906 ...
+  ..$ sample: int [1:699392] 1 2 3 4 5 6 7 8 9 10 ...
+ $ reference: NULL
+ $ epochs   : epoch_nf [1 × 3] (S3: epoch_info/tbl_df/tbl/data.frame)
+  ..$ epoch         : int 1
+  ..$ participant_id: chr "1_N170"
+  ..$ recording     : chr "1_N170"
+ $ version  :Classes 'package_version', 'numeric_version'  hidden list of 1
+  ..$ : int [1:3] 0 8 0
+ - attr(*, "class")= chr "eeg_data"</code></pre>
+</div>
+</div>
+<p>The data we actually care about is in the <code>dat_raw$signals</code> data frame. Here, each row is one sample (time point), each column is one channel (EEG electrode), and each value is the EEG voltage (in microvolts; µV) measured at this time sample and channel.</p>
+<section id="viewing-data" class="level3">
+<h3 class="anchored" data-anchor-id="viewing-data">Viewing Data</h3>
+<p>We can visually check the data at multiple steps using the <code>browse_data</code> function. This will open a site we can open either on our browser or in the “Viewer” tab on the right-hand side of RStudio from which we can interactively inspect the data. We can use the function as is by calling <code>browse_data</code> on our <code>dat_raw</code>, i.e.&nbsp;<code>browse_data(dat_raw)</code>, or we can manually specify which time steps we want to see as follows:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>time_lim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">300</span>, <span class="dv">305</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">browse_data</span>(dat_raw, time_lim, <span class="at">baseline =</span> time_lim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Downsampling from 1024Hz to 256Hz.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Loading required package: shiny</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Listening on http://127.0.0.1:7626</code></pre>
+</div>
+</div>
+<p>Note that unlike in the seminar example, the interactive example does not give a legend showing which colors indicate which channel. Below is the example image given in the seminar:</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="butterfly-plot-with-legend.png" class="img-fluid figure-img"></p>
+<figcaption>Butterfly Plot With Legend</figcaption>
+</figure>
+</div>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
