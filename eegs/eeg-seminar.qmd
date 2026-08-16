@@ -33,7 +33,6 @@ get_erpcore(
   component = "n170",
   dest_path = data_dir,
   type = "bids",          # we only want data in BIDS format
-  subjects = "sub-001",   # limit our subjects  to just 001 for now
   conflicts = "overwrite"
 )
 ```
