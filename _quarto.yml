@@ -6,7 +6,7 @@ project:
     - data/
 
 website:
-  title: "Machine Learning Notes"
+  title: "Daniel Soto's Portfolio"
   navbar:
     left:
       - href: index.qmd
