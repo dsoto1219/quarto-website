@@ -23,8 +23,6 @@ Moreover, we will only be using data from the N170 experiment, which showed that
 ```{r}
 #| label: get-n170
 #| eval: false
-#| include: false
-#| output: false
 
 library(here)
 
