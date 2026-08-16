@@ -13,7 +13,7 @@ website:
         text: Home
       - href: about.qmd
         text: About
-      - text: Models
+      - text: Machine Learning Notes
         menu:
           - href: models/datasets.qmd
             text: Data and Research Question
