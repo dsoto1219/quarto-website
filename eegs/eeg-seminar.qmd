@@ -16,6 +16,7 @@ Though they use the data at `alexenge/erpcore`, we will use the data from `eegve
 pak::pak("eegverse/erpcore")
 
 library(erpcore)
+library(here)    # For general handling of local data files
 ```
 
 Moreover, we will only be using data from the N170 experiment, which showed that subjects who were hooked up to EEGs and were tasked with viewing faces elicited different responses than when they were tasked to view cars.
@@ -23,8 +24,6 @@ Moreover, we will only be using data from the N170 experiment, which showed that
 ```{r}
 #| label: get-n170
 #| eval: false
-
-library(here)
 
 data_dir <- here("eegs", "data/n170") # for me, all of my files are in ./eegs/ 
 dir.create(data_dir, recursive = TRUE)
