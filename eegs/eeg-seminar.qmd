@@ -257,11 +257,73 @@ deriv_dir <- here(bids_dir, "derivatives/eegUtils/sub-001/eeg")
 ### Event Codes
 
 Significant "events," (e.g. stimuli, responses) are marked in the EEG recording by unique **event codes**.
-The meaning of these codes are explained in a specific file in BIDS:
+In this experiment, event codes between 1-40 mean the stimulus was a face, while event codes between 41-80 mean the stimulus was a car.
+Note that in my case, the `task-N170_events.json` file did not exist in the directory where the N170 data got downloaded, but that is ok because we still know from the paper that this convention was used.
+We can hard-code these events as epoch labels as follows:
 
 ```{r}
-#| label: events-file
+#| label: event-codes
 
-events_file <- here(bids_dir)
+event_codes <- c(1:80)
+epoch_labels <- ifelse(event_codes <= 40, "face", "car")
 ```
 
+### Construct Epochs
+
+Now, for the epoch data, we want to include between 100-200 ms before the stimulus onset as a baseline period.
+
+```{r}
+#| label: epoch-data
+
+dat_epo <- epoch_data(
+  dat_downs,
+  event_codes,
+  time_lim = c(-0.2, 0.8),
+  epoch_labels = epoch_labels
+)
+```
+
+To plot these epochs, we use an "ERP image," with:
+
+- X-axis: Time relative to stimulus onset
+- Y-axis: Trial number (or any other sorting, e.g. by reaction time)
+- Colors: EEG amplitude
+
+```{r}
+#| label: erp-image
+
+erp_image(dat_epo, electrode = "PO8", smoothing = 1)
+```
+
+### Baseline Correction
+
+Trials will differ in their overall amplitude, i.e. due to drifts and slow artifacts. 
+This can hide more subtle differences between conditions.
+The solution tothis is to subtract the average activity during the pre-stimulus baseline:
+
+```{r}
+#| label: remove-baseline
+
+dat_basl <- rm_baseline(dat_epo, c(-0.2, 0.0))
+erp_image(dat_basl, electrode = "PO4", smoothing = 1)
+```
+
+We can confirm that the average voltage during the baseline window is actually zero given an epoch and channel:
+
+```{r}
+#| label: voltage-confirmation
+
+# Extract baseline time points (baseline meaning before onset, thus t < 0.0) at 
+# epoch 42
+inds <- which(dat_basl$timings$epoch == 42 & dat_basl$timings$time < 0.0)
+
+mean(dat_basl$signals$FP1[inds]) # close enough to 0
+```
+Now, we can save the baseline-corrected epochs.
+
+```{r}
+#| label: save-epochs
+
+epo_file <- here(deriv_dir, "sub-001_task-N170_desc-epoched_eeg.rds")
+saveRDS(dat_basl, epo_file)
+```
