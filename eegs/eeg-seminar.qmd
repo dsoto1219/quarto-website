@@ -22,11 +22,12 @@ Moreover, we will only be using data from the N170 experiment, which showed that
 
 ```{r}
 #| label: get-n170
+#| echo: false
 #| output: false
 
 library(here)
 
-data_dir <- here("data/n170")
+data_dir <- here("eegs", "data/n170") # for me, all of my files are in ./eegs/ 
 dir.create(data_dir, recursive = TRUE)
 
 # This function downloads all n170 data to `data_dir`
@@ -41,5 +42,59 @@ get_erpcore(
 
 ## Preprocessing
 
+For preprocessing, we first load `eegUtils`, a package for working with EEG data.
 
+```{r}
+#| label: load-eegUtils
+#| output: false
 
+pak::pak("craddm/eegUtils")
+
+library(eegUtils)
+```
+
+The downloaded ERP CORE data is in `data/n170`, as we specified in the setup section.
+The data is in BIDS format; though the seminar notes say the subjects are each in their respective `sub-XXX/egg` directory, on my end the file structure looks like `{subject-number}/{subject-number}_N170.set`.
+
+So, we retrieve this `.set` file for subject 1:
+
+```{r}
+#| label: set-file
+
+bids_dir <- here("eegs", "data/n170")
+set_file <- here(bids_dir, "1/1_N170.set")
+file.exists(set_file)
+```
+`eegUtils` has functions for importing raw EEG data from various file formats into R, including the `.set` format used by ERP CORE.
+
+```{r}
+#| label: import-set-deps
+#| output: false
+
+# Needed these packages for `import_set` to work
+pak::pak("R.matlab", "hdf5r") 
+```
+
+```{r}
+#| label: data-raw
+
+dat_raw <- eegUtils::import_set(set_file)
+```
+
+Inspecting the data type:
+```{r}
+#| label: inspect-data-type
+
+class(dat_raw)
+```
+
+we see `eeg_data` is a custom class defined by `eegUtils` — a big list with many sub-components:
+
+```{r}
+#| label: inspect-dat-raw
+
+str(dat_raw)
+```
+
+The data we actually care about is in the `dat_raw$signals` data frame.
+Here, each row is one sample (time point), each column is one channel (EEG electrode), and each value is the EEG voltage (in microvolts; µV) measured at this time sample and channel.
