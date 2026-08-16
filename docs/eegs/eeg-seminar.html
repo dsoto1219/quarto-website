@@ -106,6 +106,24 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-label": "Search"
   }
 }</script>
+<link href="../site_libs/htmltools-fill-0.5.9/fill.css" rel="stylesheet">
+
+<script src="../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<script src="../site_libs/plotly-binding-4.12.1/plotly.js"></script>
+
+<script src="../site_libs/typedarray-0.1/typedarray.min.js"></script>
+
+<script src="../site_libs/jquery-3.5.1/jquery.min.js"></script>
+
+<link href="../site_libs/crosstalk-1.2.2/css/crosstalk.min.css" rel="stylesheet">
+
+<script src="../site_libs/crosstalk-1.2.2/js/crosstalk.min.js"></script>
+
+<link href="../site_libs/plotly-htmlwidgets-css-2.25.2/plotly-htmlwidgets.css" rel="stylesheet">
+
+<script src="../site_libs/plotly-main-2.25.2/plotly-latest.min.js"></script>
+
 
 
 <link rel="stylesheet" href="../styles.css">
@@ -198,6 +216,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#preprocessing" id="toc-preprocessing" class="nav-link" data-scroll-target="#preprocessing">Preprocessing</a>
   <ul class="collapse">
   <li><a href="#viewing-data" id="toc-viewing-data" class="nav-link" data-scroll-target="#viewing-data">Viewing Data</a></li>
+  <li><a href="#channel-locations" id="toc-channel-locations" class="nav-link" data-scroll-target="#channel-locations">Channel Locations</a></li>
+  <li><a href="#re-referencing" id="toc-re-referencing" class="nav-link" data-scroll-target="#re-referencing">Re-referencing</a></li>
+  <li><a href="#filtering" id="toc-filtering" class="nav-link" data-scroll-target="#filtering">Filtering</a></li>
+  <li><a href="#extra-downsampling" id="toc-extra-downsampling" class="nav-link" data-scroll-target="#extra-downsampling">Extra: Downsampling</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -230,7 +252,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>These are my notes and completed exercises taken from the seminar notes at <a href="https://alexenge.github.io/eegSeminaR/"></a>.</p>
+<p>These are my notes and completed exercises taken from <a href="https://alexenge.github.io/eegSeminaR/">this 2022 seminar on EEG data analysis in R</a>.</p>
 <section id="setting-up-data" class="level2">
 <h2 class="anchored" data-anchor-id="setting-up-data">Setting Up Data</h2>
 <p>Though they use the data at <code>alexenge/erpcore</code>, we will use the data from <code>eegverse/erpcore</code>, as the former does not seem to exist anymore on GitHub.</p>
@@ -365,17 +387,201 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>The data we actually care about is in the <code>dat_raw$signals</code> data frame. Here, each row is one sample (time point), each column is one channel (EEG electrode), and each value is the EEG voltage (in microvolts; µV) measured at this time sample and channel.</p>
 <section id="viewing-data" class="level3">
 <h3 class="anchored" data-anchor-id="viewing-data">Viewing Data</h3>
-<p>We can visually check the data at multiple steps using the <code>browse_data</code> function. This will open a site we can open either on our browser or in the “Viewer” tab on the right-hand side of RStudio from which we can interactively inspect the data. We can use the function as is by calling <code>browse_data</code> on our <code>dat_raw</code>, i.e.&nbsp;<code>browse_data(dat_raw)</code>, or we can manually specify which time steps we want to see as follows:</p>
+<p>We can visually check the data at multiple steps using the <code>browse_data</code> function. This will open a site we can open either on our browser or in the “Viewer” tab on the right-hand side of RStudio from which we can interactively inspect the data.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>time_lim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">300</span>, <span class="dv">305</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">browse_data</span>(dat_raw, time_lim, <span class="at">baseline =</span> time_lim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">browse_data</span>(dat_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Note that unlike in the seminar example, the interactive example does not give a legend showing which colors indicate which channel. Below is the example image given in the seminar:</p>
-<div class="quarto-figure quarto-figure-center">
+<p>We can also make a static butterfly plot of a given chunk of data:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>time_lim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">300</span>, <span class="dv">305</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_butterfly</span>(dat_raw, time_lim, <span class="at">baseline =</span> time_lim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Baseline: 300 - 305s</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
 <figure class="figure">
-<p><img src="butterfly-plot-with-legend.png" class="img-fluid figure-img"></p>
-<figcaption>Butterfly Plot With Legend</figcaption>
+<p><img src="eeg-seminar_files/figure-html/butterfly-plot-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
+</div>
+</div>
+</div>
+</section>
+<section id="channel-locations" class="level3">
+<h3 class="anchored" data-anchor-id="channel-locations">Channel Locations</h3>
+<p>For some steps, such as with making topographic plots, we need to know the relative positions of electrodes on the scalp. These are sometimes included in the raw data, but in this case we need to use a separate function:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dat_raw <span class="ot">&lt;-</span> <span class="fu">electrode_locations</span>(dat_raw, <span class="at">montage =</span> <span class="st">"biosemi64"</span>, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Electrodes not found: HEOG_left HEOG_right VEOG_lower</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>dat_raw<span class="sc">$</span>chan_info</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 33 × 9
+   electrode radius theta   phi cart_x cart_y cart_z     x     y
+   &lt;chr&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+ 1 FP1            1   -92   -72  -26.2   80.8  -2.97 -28.4  87.5
+ 2 F3             1   -60   -51  -46.3   57.2  42.5  -37.8  46.6
+ 3 F7             1   -92   -36  -68.7   49.9  -2.97 -74.4  54.1
+ 4 FC3            1   -50   -28  -57.5   30.6  54.6  -44.2  23.5
+ 5 C3             1   -46     0  -61.1    0    59.0  -46     0  
+ 6 C5             1   -69     0  -79.4    0    30.5  -69     0  
+ 7 P3             1   -60    51  -46.3  -57.2  42.5  -37.8 -46.6
+ 8 P7             1   -92    36  -68.7  -49.9  -2.97 -74.4 -54.1
+ 9 P9             1  -115    36  -62.3  -45.3 -35.9  -93.0 -67.6
+10 PO7            1   -92    54  -49.9  -68.7  -2.97 -54.1 -74.4
+# ℹ 23 more rows</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_electrodes</span>(dat_raw, <span class="at">interact =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: Ignoring 3 observations</code></pre>
+</div>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-c7931762fe63192b1dc6" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-c7931762fe63192b1dc6">{"x":{"visdat":{"7bf4513d6b8":["function () ","plotlyVisDat"]},"cur_data":"7bf4513d6b8","attrs":{"7bf4513d6b8":{"x":{},"y":{},"z":{},"text":{},"mode":"text+markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"cart_x"},"yaxis":{"title":"cart_y"},"zaxis":{"title":"cart_z"}},"hovermode":"closest","showlegend":false},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-26.25,-46.329999999999998,-68.719999999999999,-57.490000000000002,-61.140000000000001,-79.349999999999994,-46.329999999999998,-68.719999999999999,-62.32,-49.93,-34.530000000000001,-26.25,0,0,0,26.25,0,46.329999999999998,68.719999999999999,57.490000000000002,0,0,61.140000000000001,79.349999999999994,46.329999999999998,68.719999999999999,62.32,49.93,34.530000000000001,26.25],"y":[80.790000000000006,57.210000000000001,49.93,30.57,0,0,-57.210000000000001,-49.93,-45.280000000000001,-68.719999999999999,-74.049999999999997,-80.790000000000006,-84.950000000000003,-61.140000000000001,-33.210000000000001,80.790000000000006,61.140000000000001,57.210000000000001,49.93,30.57,33.210000000000001,0,0,0,-57.210000000000001,-49.93,-45.280000000000001,-68.719999999999999,-74.049999999999997,-80.790000000000006],"z":[-2.9700000000000002,42.5,-2.9700000000000002,54.640000000000001,59.049999999999997,30.460000000000001,42.5,-2.9700000000000002,-35.920000000000002,-2.9700000000000002,23.43,-2.9700000000000002,-2.9700000000000002,59.049999999999997,78.239999999999995,-2.9700000000000002,59.049999999999997,42.5,-2.9700000000000002,54.640000000000001,78.239999999999995,85,59.049999999999997,30.460000000000001,42.5,-2.9700000000000002,-35.920000000000002,-2.9700000000000002,23.43,-2.9700000000000002],"text":["FP1","F3","F7","FC3","C3","C5","P3","P7","P9","PO7","PO3","O1","Oz","Pz","CPz","FP2","Fz","F4","F8","FC4","FCz","Cz","C4","C6","P4","P8","P10","PO8","PO4","O2"],"mode":"text+markers","type":"scatter3d","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="re-referencing" class="level3">
+<h3 class="anchored" data-anchor-id="re-referencing">Re-referencing</h3>
+<p>During recording (“online”), each electrode is measuring the difference in voltage compared to the reference electrode (e.g., FCz). In contrast, during preprocessing (“offline”), a new reference is typically chose:</p>
+<ul>
+<li><strong>Average reference</strong>: Difference to the average of all scalp channels</li>
+<li><strong>Linked mastoids</strong>: Difference to the average of the mastoid channels (M1 and M2)</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>eog_channels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"HEOG_left"</span>, <span class="st">"HEOG_right"</span>, <span class="st">"VEOG_lower"</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>dat_reref <span class="ot">&lt;-</span> <span class="fu">eeg_reference</span>(dat_raw, <span class="at">ref_chans =</span> <span class="st">"average"</span>, <span class="at">exclude =</span> eog_channels)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="filtering" class="level3">
+<h3 class="anchored" data-anchor-id="filtering">Filtering</h3>
+<p>We now want to filter our signals for frequencies that represent brain waves, and nothing else. According to the seminar’s notes, the kinds of wave frequencies that we will encounter will represent the following EEG activity:</p>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>Frequency</th>
+<th>EEG activity</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>&lt; 0.1 Hz</td>
+<td>Electrode drift, sweat artifacts</td>
+</tr>
+<tr class="even">
+<td>0.1–4 Hz (delta)</td>
+<td>Slow-wave sleep</td>
+</tr>
+<tr class="odd">
+<td>4–8 Hz (theta)</td>
+<td>Drowsiness, idling</td>
+</tr>
+<tr class="even">
+<td>8–13 Hz (alpha)</td>
+<td>Relaxing, inhibition</td>
+</tr>
+<tr class="odd">
+<td>13–30 Hz (beta)</td>
+<td>Active thinking, alertness</td>
+</tr>
+<tr class="even">
+<td>30–80 Hz (gamma)</td>
+<td>Binding, consciousness (?)</td>
+</tr>
+<tr class="odd">
+<td>50 Hz (US: 60 Hz)</td>
+<td>Power line noise</td>
+</tr>
+<tr class="even">
+<td>&gt; 80 Hz</td>
+<td>Muscle artifacts</td>
+</tr>
+</tbody>
+</table>
+<p>Thus, we only really care about the waves with frequencies between 0.1 Hz and 30 Hz. To remove unwanted parts of the signal, we do the following:</p>
+<ol type="1">
+<li>Convert time-domain EEG into the frequency domain via Fourier Transform</li>
+<li>Remove or attenuate certain frequencies, depending on whether they are in our range or not.</li>
+</ol>
+<ul>
+<li>A <em>high-pass</em> filter will remove slow frequencies (in our case, &lt;0.1 Hz)</li>
+<li>A <em>low-pass</em> filter will remove fast frequencies (in our case, &gt;30 Hz)</li>
+<li>A <em>band-pass</em> filter combines a high-pass and low-pass filter</li>
+<li>A <em>band-stop</em> filter removes a narrow frequency range (e.g.&nbsp;around 50 Hz)</li>
+</ul>
+<ol start="3" type="1">
+<li>Convert cleaned signal back into the time domain</li>
+</ol>
+<p>This can all be done with one function, <code>eeg_filter</code>:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>dat_filt <span class="ot">&lt;-</span> <span class="fu">eeg_filter</span>(dat_reref, <span class="at">low_freq =</span> <span class="fl">0.1</span>, <span class="at">high_freq =</span> <span class="fl">30.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Band-pass FIR filter from 0.1 - 30 Hz</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Transition bandwidth: 0.1 Hz</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Filter order: 33792</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Removing channel means...</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_butterfly</span>(dat_filt, time_lim, <span class="at">baseline =</span> time_lim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Baseline: 300 - 305s</code></pre>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="eeg-seminar_files/figure-html/filtering-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Let’s now save our preprocessed data (we won’t use the file conventions from the seminar, instead mimicking the conventions from the downloaded data):</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>deriv_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"derivatives/eegUtils/1/"</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>preproc_file <span class="ot">&lt;-</span> <span class="fu">here</span>(deriv_dir, <span class="st">"1_N170_desc-preprocessed_eeg.rds"</span>)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(deriv_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dat_filt, preproc_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="extra-downsampling" class="level3">
+<h3 class="anchored" data-anchor-id="extra-downsampling">Extra: Downsampling</h3>
+<p>The <strong>sampling rate</strong> is the number of EEG voltages recorded per second (in Hz).</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>dat_raw<span class="sc">$</span>srate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 1024</code></pre>
+</div>
+</div>
+<p>This means that each pair of samples is less than 1 ms apart:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">/</span> dat_raw<span class="sc">$</span>srate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 0.0009765625</code></pre>
+</div>
+</div>
+<p>We don’t need that much temporal resolution, so we will downsample the data using <code>eeg_downsample</code> from the <code>eegUtils</code> library:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>dat_downs <span class="ot">&lt;-</span> <span class="fu">eeg_downsample</span>(dat_filt, <span class="at">q =</span> <span class="fl">4.0</span>) <span class="co"># q is the downsampling factor</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Downsampling from 1024Hz to 256Hz.</code></pre>
+</div>
+</div>
+<p>This will reduce our computer’s memory load and make subsequent computations faster:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>show_size_mb <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">format</span>(<span class="fu">object.size</span>(x), <span class="at">units =</span> <span class="st">"MB"</span>)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">list</span>(<span class="at">before =</span> dat_filt, <span class="at">after =</span> dat_downs), show_size_mb)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$before
+[1] "184.1 Mb"
+
+$after
+[1] "46.1 Mb"</code></pre>
+</div>
 </div>
 
 
