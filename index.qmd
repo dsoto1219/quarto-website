@@ -2,18 +2,28 @@
 title: "Daniel Soto's Portfolio"
 ---
 
-This website displays a project I worked on during my time at the Summer Institute of Biostatistics and Data Science under the guidance of Dr. Catalina Cañizares. 
+Welcome! This website displays a few projects I have worked on: 
+
+1. During my time at the Summer Institute of Biostatistics and Data Science under the guidance of Dr. Catalina Cañizares. 
 In this project, we explore various statistical and machine learning models using the Youth Risk Behavior Survey (YRBS) 2023 dataset. 
 Through this, I display different implementations and modeling techniques using the `tidymodels` framework in R.
+2. My messing around with Electroencephalogram (EEG) data.
 
 ### What You'll Find Here
 
 - **About Me**: A little bit about me and my research interests.
-- **The Dataset**: Information about my primary dataset and the research question we aim to answer.
-- **Model Implementations**: Hands-on examples of the following models to answer the research question:
+- **Machine Learning Notes**: My exploration of the YRBS dataset.
 
-    -   Logistic Regression
-    -   Lasso Regression
-    -   Decision Trees
-    -   Random Forest
-    -   K-Nearest Neighbors (KNN)
+  - **The Dataset**: Information about my primary dataset and the research question we aim to answer.
+  - **Model Implementations**: Hands-on examples of the following models to answer the research question:
+  
+      -   Logistic Regression
+      -   Lasso Regression
+      -   Decision Trees
+      -   Random Forest
+      -   K-Nearest Neighbors (KNN)
+      
+- **Electroencephalogram Work**: My work replicating results from EEG papers.
+
+  - The N170 dataset from the ERP CORE dataset
+  - The `ds004408` dataset
