@@ -27,6 +27,10 @@ website:
             text: Random Forest
           - href: models/knn.qmd
             text: K-Nearest Neighbors
+      - text: EEGs
+        menu:
+         - href: eegs/eeg-seminar.qmd
+      
 
 
 format:
