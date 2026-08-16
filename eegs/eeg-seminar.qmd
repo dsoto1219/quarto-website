@@ -4,3 +4,4 @@ author: "Daniel Soto"
 ---
 
 These are my notes and completed exercises taken from the seminar notes at https://alexenge.github.io/eegSeminaR/.
+Though they use the data at `alexenge/erpcore`, we will use the data from `eegverse/erpcore`, as the former does not seem to exist anymore on GitHub.
