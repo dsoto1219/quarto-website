@@ -106,6 +106,7 @@ We can use the function as is by calling `browse_data` on our `dat_raw`, i.e. `b
 ```{r}
 #| label: browse-data
 #| eval: false
+#| output: false
 
 time_lim <- c(300, 305)
 browse_data(dat_raw, time_lim, baseline = time_lim)
