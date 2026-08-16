@@ -228,9 +228,3 @@ show_size_mb <- function(x) format(object.size(x), units = "MB")
 lapply(list(before = dat_filt, after = dat_downs), show_size_mb)
 saveRDS(dat_downs, preproc_file)
 ```
-
-
-
-
-
-
