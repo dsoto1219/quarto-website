@@ -116,3 +116,17 @@ Note that unlike in the seminar example, the interactive example does not give a
 Below is the example image given in the seminar:
 
 ![Butterfly Plot With Legend](butterfly-plot-with-legend.png)
+
+### Channel Locations
+
+For some steps, such as with making topographic plots, we need to know the relative positions of electrodes on the scalp. 
+These are sometimes included in the raw data, but in this case we need to use a separate function:
+
+```{r}
+#| label: electrode-locations
+
+dat_raw <- electrode_locations(dat_raw, montage = "biosemi64", overwrite = TRUE)
+dat_raw$chan_info
+
+plot_electrodes(dat_raw, interact = TRUE)
+```
