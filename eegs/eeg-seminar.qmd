@@ -3,7 +3,7 @@ title: "EEG Seminar Notes"
 author: "Daniel Soto"
 ---
 
-These are my notes and completed exercises taken from the seminar notes at [](https://alexenge.github.io/eegSeminaR/).
+These are my notes and completed exercises taken from the seminar notes at [this link](https://alexenge.github.io/eegSeminaR/). 
 
 ## Setting Up Data
 
@@ -116,4 +116,3 @@ Note that unlike in the seminar example, the interactive example does not give a
 Below is the example image given in the seminar:
 
 ![Butterfly Plot With Legend](butterfly-plot-with-legend.png)
-
