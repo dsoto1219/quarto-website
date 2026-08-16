@@ -112,3 +112,8 @@ time_lim <- c(300, 305)
 browse_data(dat_raw, time_lim, baseline = time_lim)
 ```
 
+Note that unlike in the seminar example, the interactive example does not give a legend showing which colors indicate which channel.
+Below is the example image given in the seminar:
+
+![Butterfly Plot With Legend](butterfly-plot-with-legend.png)
+
