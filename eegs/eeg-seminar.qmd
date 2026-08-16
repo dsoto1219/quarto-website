@@ -196,3 +196,41 @@ dir.create(deriv_dir, recursive = TRUE)
 saveRDS(dat_filt, preproc_file)
 ```
 
+### Extra: Downsampling
+
+The **sampling rate** is the number of EEG voltages recorded per second (in Hz).
+```{r}
+#| label: sampling-rate
+
+dat_raw$srate
+```
+
+This means that each pair of samples is less than 1 ms apart:
+```{r}
+#| label: samp-rate-recip
+
+1 / dat_raw$srate
+```
+We don't need that much temporal resolution, so we will downsample the data using `eeg_downsample` from the `eegUtils` library:
+
+```{r}
+#| label: downsampling
+
+dat_downs <- eeg_downsample(dat_filt, q = 4.0) # q is the downsampling factor
+```
+
+This will reduce our computer's memory load and make subsequent computations faster:
+
+```{r}
+#| label: memory-load
+
+show_size_mb <- function(x) format(object.size(x), units = "MB")
+lapply(list(before = dat_filt, after = dat_downs), show_size_mb)
+saveRDS(dat_downs, preproc_file)
+```
+
+
+
+
+
+
