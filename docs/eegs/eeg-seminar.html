@@ -230,7 +230,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>These are my notes and completed exercises taken from the seminar notes at https://alexenge.github.io/eegSeminaR/.</p>
+<p>These are my notes and completed exercises taken from <a href="https://alexenge.github.io/eegSeminaR/">this 2022 seminar on EEG data analysis in R</a>.</p>
 <section id="setting-up-data" class="level2">
 <h2 class="anchored" data-anchor-id="setting-up-data">Setting Up Data</h2>
 <p>Though they use the data at <code>alexenge/erpcore</code>, we will use the data from <code>eegverse/erpcore</code>, as the former does not seem to exist anymore on GitHub.</p>
@@ -369,16 +369,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>time_lim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">300</span>, <span class="dv">305</span>)</span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">browse_data</span>(dat_raw, time_lim, <span class="at">baseline =</span> time_lim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Downsampling from 1024Hz to 256Hz.</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loading required package: shiny</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Listening on http://127.0.0.1:7626</code></pre>
-</div>
 </div>
 <p>Note that unlike in the seminar example, the interactive example does not give a legend showing which colors indicate which channel. Below is the example image given in the seminar:</p>
 <div class="quarto-figure quarto-figure-center">
