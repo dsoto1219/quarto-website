@@ -4,4 +4,38 @@ author: "Daniel Soto"
 ---
 
 These are my notes and completed exercises taken from the seminar notes at https://alexenge.github.io/eegSeminaR/.
+
+## Setup
+
 Though they use the data at `alexenge/erpcore`, we will use the data from `eegverse/erpcore`, as the former does not seem to exist anymore on GitHub.
+
+```{r}
+#| label: install-erpcore
+#| output: false
+
+pak::pak("eegverse/erpcore")
+
+library(erpcore)
+```
+
+Moreover, we will only be using data from the N170 experiment, which showed that subjects who were hooked up to EEGs and were tasked with viewing faces elicited different responses than when they were tasked to view cars.
+
+```{r}
+#| label: get-n170
+#| output: false
+
+library(here)
+
+data_dir <- here("data/n170")
+dir.create(data_dir, recursive = TRUE)
+
+# This function downloads all n170 data to `data_dir`
+get_erpcore(
+  component = "n170",
+  dest_path = data_dir,
+  type = "bids",          # we only want data in BIDS format
+  subjects = "sub-001",   # limit our subjects  to just 001 for now
+  conflicts = "overwrite"
+)
+```
+
