@@ -7,33 +7,51 @@ These are my notes and completed exercises taken from [this 2022 seminar on EEG 
 
 ## Setting Up Data
 
-Though they use the data at `alexenge/erpcore`, we will use the data from `eegverse/erpcore`, as the former does not seem to exist anymore on GitHub.
+Though they use the data at `alexenge/erpcore`, we will be downloading the data using the `osfr` package, as the `erpcore` R package seems to be broken.
 
 ```{r}
-#| label: install-erpcore
+#| label: install-osfr
 #| output: false
 
-pak::pak("eegverse/erpcore")
+pak::pak("osfr")
 
-library(erpcore)
+library(osfr)
 library(here)    # For general handling of local data files
 ```
 
 Moreover, we will only be using data from the N170 experiment, which showed that subjects who were hooked up to EEGs and were tasked with viewing faces elicited different responses than when they were tasked to view cars.
+We use the `osfr` package to get the data in BIDS format.
 
 ```{r}
 #| label: get-n170
 #| eval: false
 
-data_dir <- here("eegs", "data/n170") # for me, all of my files are in ./eegs/ 
-dir.create(data_dir, recursive = TRUE)
+bids_dir <- here("eegs", "data/n170")
+dir.create(bids_dir, recursive = TRUE)
 
-# This function downloads all n170 data to `data_dir`
-get_erpcore(
-  component = "n170",
-  dest_path = data_dir,
-  type = "bids",          # we only want data in BIDS format
-  conflicts = "overwrite"
+# Connect to the N170 OSF project
+n170_osf <- osf_retrieve_node("https://osf.io/pfde9/")
+
+# See the top-level folders
+folders <- osf_ls_files(n170_osf, n_max = Inf)
+folders
+
+# Get the folder with data in BIDS format
+bids_folder <- folders[
+  folders$name == "N170 Raw Data BIDS-Compatible",
+]
+bids_folder
+
+bids_files <- osf_ls_files(
+  bids_folder,
+  n_max = Inf
+)
+
+osf_download(
+  bids_files,
+  path = bids_dir,
+  conflicts = "overwrite",
+  recurse = TRUE
 )
 ```
 
@@ -59,7 +77,7 @@ So, we retrieve this `.set` file for subject 1:
 #| label: set-file
 
 bids_dir <- here("eegs", "data/n170")
-set_file <- here(bids_dir, "1/1_N170.set")
+set_file <- here(bids_dir, "sub-001/eeg/sub-001_task-N170_eeg.set")
 file.exists(set_file)
 ```
 `eegUtils` has functions for importing raw EEG data from various file formats into R, including the `.set` format used by ERP CORE.
@@ -183,14 +201,14 @@ dat_filt <- eeg_filter(dat_reref, low_freq = 0.1, high_freq = 30.0)
 plot_butterfly(dat_filt, time_lim, baseline = time_lim)
 ```
 
-Let's now save our preprocessed data (we won't use the file conventions from the seminar, instead mimicking the conventions from the downloaded data):
+Let's now save our preprocessed data: 
 
 ```{r}
 #| label: save-preprocessed-data
 #| output: false
 
-deriv_dir <- here(bids_dir, "derivatives/eegUtils/1/")
-preproc_file <- here(deriv_dir, "1_N170_desc-preprocessed_eeg.rds")
+deriv_dir <- here(bids_dir, "derivatives/eegUtils/sub-001/eeg")
+preproc_file <- here(deriv_dir, "sub-001_task-N170_desc-preprocessed_eeg.rds")
 dir.create(deriv_dir, recursive = TRUE)
 saveRDS(dat_filt, preproc_file)
 ```
@@ -227,3 +245,23 @@ show_size_mb <- function(x) format(object.size(x), units = "MB")
 lapply(list(before = dat_filt, after = dat_downs), show_size_mb)
 saveRDS(dat_downs, preproc_file)
 ```
+
+## Creating Epochs
+
+```{r}
+#| label: set-deriv-dir
+
+deriv_dir <- here(bids_dir, "derivatives/eegUtils/sub-001/eeg")
+```
+
+### Event Codes
+
+Significant "events," (e.g. stimuli, responses) are marked in the EEG recording by unique **event codes**.
+The meaning of these codes are explained in a specific file in BIDS:
+
+```{r}
+#| label: events-file
+
+events_file <- here(bids_dir)
+```
+
