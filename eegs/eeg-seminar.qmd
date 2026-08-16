@@ -130,3 +130,19 @@ dat_raw$chan_info
 
 plot_electrodes(dat_raw, interact = TRUE)
 ```
+
+### Re-referencing
+
+During recording ("online"), each electrode is measuring the difference in voltage compared to the reference electrode (e.g., FCz).
+In contrast, during preprocessing ("offline"), a new reference is typically chose:
+
+- **Average reference**: Difference to the average of all scalp channels
+- **Linked mastoids**: Difference to the average of the mastoid channels (M1 and M2)
+
+```{r}
+#| label: re-referencing
+
+eog_channels <- c("HEOG_left", "HEOG_right", "VEOG_lower")
+dat_reref <- eeg_reference(dat_raw, ref_chans = "average", exclude = eog_channels)
+```
+
