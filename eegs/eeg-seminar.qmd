@@ -97,3 +97,17 @@ str(dat_raw)
 
 The data we actually care about is in the `dat_raw$signals` data frame.
 Here, each row is one sample (time point), each column is one channel (EEG electrode), and each value is the EEG voltage (in microvolts; µV) measured at this time sample and channel.
+
+### Viewing Data
+
+We can visually check the data at multiple steps using the `browse_data` function. 
+This will open a site we can open either on our browser or in the "Viewer" tab on the right-hand side of RStudio from which we can interactively inspect the data.
+We can use the function as is by calling `browse_data` on our `dat_raw`, i.e. `browse_data(dat_raw)`, or we can manually specify which time steps we want to see as follows:
+
+```{r}
+#| label: browse-data
+
+time_lim <- c(300, 305)
+browse_data(dat_raw, time_lim, baseline = time_lim)
+```
+
