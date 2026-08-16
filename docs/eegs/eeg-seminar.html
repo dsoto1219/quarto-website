@@ -221,6 +221,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#filtering" id="toc-filtering" class="nav-link" data-scroll-target="#filtering">Filtering</a></li>
   <li><a href="#extra-downsampling" id="toc-extra-downsampling" class="nav-link" data-scroll-target="#extra-downsampling">Extra: Downsampling</a></li>
   </ul></li>
+  <li><a href="#creating-epochs" id="toc-creating-epochs" class="nav-link" data-scroll-target="#creating-epochs">Creating Epochs</a>
+  <ul class="collapse">
+  <li><a href="#event-codes" id="toc-event-codes" class="nav-link" data-scroll-target="#event-codes">Event Codes</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -255,26 +259,42 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>These are my notes and completed exercises taken from <a href="https://alexenge.github.io/eegSeminaR/">this 2022 seminar on EEG data analysis in R</a>.</p>
 <section id="setting-up-data" class="level2">
 <h2 class="anchored" data-anchor-id="setting-up-data">Setting Up Data</h2>
-<p>Though they use the data at <code>alexenge/erpcore</code>, we will use the data from <code>eegverse/erpcore</code>, as the former does not seem to exist anymore on GitHub.</p>
+<p>Though they use the data at <code>alexenge/erpcore</code>, we will be downloading the data using the <code>osfr</code> package, as the <code>erpcore</code> R package seems to be broken.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"eegverse/erpcore"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"osfr"</span>)</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(erpcore)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(osfr)</span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(here)    <span class="co"># For general handling of local data files</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>Moreover, we will only be using data from the N170 experiment, which showed that subjects who were hooked up to EEGs and were tasked with viewing faces elicited different responses than when they were tasked to view cars.</p>
+<p>Moreover, we will only be using data from the N170 experiment, which showed that subjects who were hooked up to EEGs and were tasked with viewing faces elicited different responses than when they were tasked to view cars. We use the <code>osfr</code> package to get the data in BIDS format.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>data_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"eegs"</span>, <span class="st">"data/n170"</span>) <span class="co"># for me, all of my files are in ./eegs/ </span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(data_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>bids_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"eegs"</span>, <span class="st">"data/n170"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(bids_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># This function downloads all n170 data to `data_dir`</span></span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">get_erpcore</span>(</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">component =</span> <span class="st">"n170"</span>,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">dest_path =</span> data_dir,</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"bids"</span>,          <span class="co"># we only want data in BIDS format</span></span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">subjects =</span> <span class="st">"sub-001"</span>,   <span class="co"># limit our subjects  to just 001 for now</span></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">conflicts =</span> <span class="st">"overwrite"</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Connect to the N170 OSF project</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>n170_osf <span class="ot">&lt;-</span> <span class="fu">osf_retrieve_node</span>(<span class="st">"https://osf.io/pfde9/"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co"># See the top-level folders</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>folders <span class="ot">&lt;-</span> <span class="fu">osf_ls_files</span>(n170_osf, <span class="at">n_max =</span> <span class="cn">Inf</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>folders</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Get the folder with data in BIDS format</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>bids_folder <span class="ot">&lt;-</span> folders[</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  folders<span class="sc">$</span>name <span class="sc">==</span> <span class="st">"N170 Raw Data BIDS-Compatible"</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>]</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>bids_folder</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>bids_files <span class="ot">&lt;-</span> <span class="fu">osf_ls_files</span>(</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>  bids_folder,</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">n_max =</span> <span class="cn">Inf</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="fu">osf_download</span>(</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  bids_files,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">path =</span> bids_dir,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">conflicts =</span> <span class="st">"overwrite"</span>,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">recurse =</span> <span class="cn">TRUE</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="preprocessing" class="level2">
@@ -289,7 +309,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>So, we retrieve this <code>.set</code> file for subject 1:</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>bids_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"eegs"</span>, <span class="st">"data/n170"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>set_file <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"1/1_N170.set"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>set_file <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"sub-001/eeg/sub-001_task-N170_eeg.set"</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">file.exists</span>(set_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] TRUE</code></pre>
@@ -377,8 +397,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  $ reference: NULL
  $ epochs   : epoch_nf [1 × 3] (S3: epoch_info/tbl_df/tbl/data.frame)
   ..$ epoch         : int 1
-  ..$ participant_id: chr "1_N170"
-  ..$ recording     : chr "1_N170"
+  ..$ participant_id: chr "sub-001_task-N170_eeg"
+  ..$ recording     : chr "sub-001_task-N170_eeg"
  $ version  :Classes 'package_version', 'numeric_version'  hidden list of 1
   ..$ : int [1:3] 0 8 0
  - attr(*, "class")= chr "eeg_data"</code></pre>
@@ -437,8 +457,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>Warning: Ignoring 3 observations</code></pre>
 </div>
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-01d5b8e1c73f084930bb" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-01d5b8e1c73f084930bb">{"x":{"visdat":{"6598485d4e58":["function () ","plotlyVisDat"]},"cur_data":"6598485d4e58","attrs":{"6598485d4e58":{"x":{},"y":{},"z":{},"text":{},"mode":"text+markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"cart_x"},"yaxis":{"title":"cart_y"},"zaxis":{"title":"cart_z"}},"hovermode":"closest","showlegend":false},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-26.25,-46.329999999999998,-68.719999999999999,-57.490000000000002,-61.140000000000001,-79.349999999999994,-46.329999999999998,-68.719999999999999,-62.32,-49.93,-34.530000000000001,-26.25,0,0,0,26.25,0,46.329999999999998,68.719999999999999,57.490000000000002,0,0,61.140000000000001,79.349999999999994,46.329999999999998,68.719999999999999,62.32,49.93,34.530000000000001,26.25],"y":[80.790000000000006,57.210000000000001,49.93,30.57,0,0,-57.210000000000001,-49.93,-45.280000000000001,-68.719999999999999,-74.049999999999997,-80.790000000000006,-84.950000000000003,-61.140000000000001,-33.210000000000001,80.790000000000006,61.140000000000001,57.210000000000001,49.93,30.57,33.210000000000001,0,0,0,-57.210000000000001,-49.93,-45.280000000000001,-68.719999999999999,-74.049999999999997,-80.790000000000006],"z":[-2.9700000000000002,42.5,-2.9700000000000002,54.640000000000001,59.049999999999997,30.460000000000001,42.5,-2.9700000000000002,-35.920000000000002,-2.9700000000000002,23.43,-2.9700000000000002,-2.9700000000000002,59.049999999999997,78.239999999999995,-2.9700000000000002,59.049999999999997,42.5,-2.9700000000000002,54.640000000000001,78.239999999999995,85,59.049999999999997,30.460000000000001,42.5,-2.9700000000000002,-35.920000000000002,-2.9700000000000002,23.43,-2.9700000000000002],"text":["FP1","F3","F7","FC3","C3","C5","P3","P7","P9","PO7","PO3","O1","Oz","Pz","CPz","FP2","Fz","F4","F8","FC4","FCz","Cz","C4","C6","P4","P8","P10","PO8","PO4","O2"],"mode":"text+markers","type":"scatter3d","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-fc2908e07d38c01d2773" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-fc2908e07d38c01d2773">{"x":{"visdat":{"c0e83d526cd2":["function () ","plotlyVisDat"]},"cur_data":"c0e83d526cd2","attrs":{"c0e83d526cd2":{"x":{},"y":{},"z":{},"text":{},"mode":"text+markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"cart_x"},"yaxis":{"title":"cart_y"},"zaxis":{"title":"cart_z"}},"hovermode":"closest","showlegend":false},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-26.25,-46.329999999999998,-68.719999999999999,-57.490000000000002,-61.140000000000001,-79.349999999999994,-46.329999999999998,-68.719999999999999,-62.32,-49.93,-34.530000000000001,-26.25,0,0,0,26.25,0,46.329999999999998,68.719999999999999,57.490000000000002,0,0,61.140000000000001,79.349999999999994,46.329999999999998,68.719999999999999,62.32,49.93,34.530000000000001,26.25],"y":[80.790000000000006,57.210000000000001,49.93,30.57,0,0,-57.210000000000001,-49.93,-45.280000000000001,-68.719999999999999,-74.049999999999997,-80.790000000000006,-84.950000000000003,-61.140000000000001,-33.210000000000001,80.790000000000006,61.140000000000001,57.210000000000001,49.93,30.57,33.210000000000001,0,0,0,-57.210000000000001,-49.93,-45.280000000000001,-68.719999999999999,-74.049999999999997,-80.790000000000006],"z":[-2.9700000000000002,42.5,-2.9700000000000002,54.640000000000001,59.049999999999997,30.460000000000001,42.5,-2.9700000000000002,-35.920000000000002,-2.9700000000000002,23.43,-2.9700000000000002,-2.9700000000000002,59.049999999999997,78.239999999999995,-2.9700000000000002,59.049999999999997,42.5,-2.9700000000000002,54.640000000000001,78.239999999999995,85,59.049999999999997,30.460000000000001,42.5,-2.9700000000000002,-35.920000000000002,-2.9700000000000002,23.43,-2.9700000000000002],"text":["FP1","F3","F7","FC3","C3","C5","P3","P7","P9","PO7","PO3","O1","Oz","Pz","CPz","FP2","Fz","F4","F8","FC4","FCz","Cz","C4","C6","P4","P8","P10","PO8","PO4","O2"],"mode":"text+markers","type":"scatter3d","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
@@ -540,10 +560,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Let’s now save our preprocessed data (we won’t use the file conventions from the seminar, instead mimicking the conventions from the downloaded data):</p>
+<p>Let’s now save our preprocessed data:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>deriv_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"derivatives/eegUtils/1/"</span>)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>preproc_file <span class="ot">&lt;-</span> <span class="fu">here</span>(deriv_dir, <span class="st">"1_N170_desc-preprocessed_eeg.rds"</span>)</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>deriv_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"derivatives/eegUtils/sub-001/eeg"</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>preproc_file <span class="ot">&lt;-</span> <span class="fu">here</span>(deriv_dir, <span class="st">"sub-001_task-N170_desc-preprocessed_eeg.rds"</span>)</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(deriv_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dat_filt, preproc_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -583,6 +603,19 @@ $after
 [1] "46.1 Mb"</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dat_downs, preproc_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="creating-epochs" class="level2">
+<h2 class="anchored" data-anchor-id="creating-epochs">Creating Epochs</h2>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>deriv_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"derivatives/eegUtils/sub-001/eeg"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<section id="event-codes" class="level3">
+<h3 class="anchored" data-anchor-id="event-codes">Event Codes</h3>
+<p>Significant “events,” (e.g.&nbsp;stimuli, responses) are marked in the EEG recording by unique <strong>event codes</strong>. The meaning of these codes are explained in a specific file in BIDS:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>events_file <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 
 
