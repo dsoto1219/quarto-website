@@ -3,7 +3,7 @@ title: "EEG Seminar Notes"
 author: "Daniel Soto"
 ---
 
-These are my notes and completed exercises taken from the seminar notes at [this link](https://alexenge.github.io/eegSeminaR/). 
+These are my notes and completed exercises taken from [this 2022 seminar on EEG data analysis in R](https://alexenge.github.io/eegSeminaR/). 
 
 ## Setting Up Data
 
