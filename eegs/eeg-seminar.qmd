@@ -148,3 +148,51 @@ eog_channels <- c("HEOG_left", "HEOG_right", "VEOG_lower")
 dat_reref <- eeg_reference(dat_raw, ref_chans = "average", exclude = eog_channels)
 ```
 
+### Filtering
+
+We now want to filter our signals for frequencies that represent brain waves, and nothing else.
+According to the seminar's notes, the kinds of wave frequencies that we will encounter will represent the following EEG activity:
+
+Frequency	| EEG activity
+--- | ---
+< 0.1 Hz |	Electrode drift, sweat artifacts
+0.1–4 Hz (delta) |	Slow-wave sleep
+4–8 Hz (theta) |	Drowsiness, idling
+8–13 Hz (alpha) |	Relaxing, inhibition
+13–30 Hz (beta)	| Active thinking, alertness
+30–80 Hz (gamma) | Binding, consciousness (?)
+50 Hz (US: 60 Hz)	| Power line noise
+\> 80 Hz	| Muscle artifacts
+
+Thus, we only really care about the waves with frequencies between 0.1 Hz and 30 Hz.
+To remove unwanted parts of the signal, we do the following:
+
+1. Convert time-domain EEG into the frequency domain via Fourier Transform
+2. Remove or attenuate certain frequencies, depending on whether they are in our range or not.
+  - A *high-pass* filter will remove slow frequencies (in our case, <0.1 Hz)
+  - A *low-pass* filter will remove fast frequencies (in our case, >30 Hz)
+  - A *band-pass* filter combines a high-pass and low-pass filter
+  - A *band-stop* filter removes a narrow frequency range (e.g. around 50 Hz)
+3. Convert cleaned signal back into the time domain
+
+This can all be done with one function, `eeg_filter`:
+
+```{r}
+#| label: filtering
+
+dat_filt <- eeg_filter(dat_reref, low_freq = 0.1, high_freq = 30.0)
+plot_butterfly(dat_filt, time_lim, baseline = time_lim)
+```
+
+Let's now save our preprocessed data (we won't use the file conventions from the seminar, instead mimicking the conventions from the downloaded data):
+
+```{r}
+#| label: save-preprocessed-data
+#| output: false
+
+deriv_dir <- here(bids_dir, "derivatives/eegUtils/1/")
+preproc_file <- here(deriv_dir, "1_N170_desc-preprocessed_eeg.rds")
+dir.create(deriv_dir, recursive = TRUE)
+saveRDS(dat_filt, preproc_file)
+```
+
