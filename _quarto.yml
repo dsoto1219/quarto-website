@@ -30,6 +30,7 @@ website:
       - text: EEGs
         menu:
          - href: eegs/eeg-seminar.qmd
+           text: N170
       
 
 
