@@ -273,7 +273,8 @@ epoch_labels <- ifelse(event_codes <= 40, "face", "car")
 
 ### Construct Epochs
 
-Now, for the epoch data, we want to include between 100-200 ms before the stimulus onset as a baseline period.
+Now, knowing event codes, we can "cut out" our epochs around them.
+For the epoch data, we want to include between 100-200 ms before the stimulus onset as a baseline period.
 
 ```{r}
 #| label: epoch-data
