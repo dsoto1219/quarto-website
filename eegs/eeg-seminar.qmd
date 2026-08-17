@@ -1,5 +1,5 @@
 ---
-title: "EEG Seminar Notes"
+title: "eegSeminaR Notes"
 author: "Daniel Soto"
 ---
 
