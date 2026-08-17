@@ -303,7 +303,7 @@ erp_image(dat_epo, electrode = "PO8", smoothing = 1)
 
 Trials will differ in their overall amplitude, i.e. due to drifts and slow artifacts. 
 This can hide more subtle differences between conditions.
-The solution tothis is to subtract the average activity during the pre-stimulus baseline:
+The solution to this is to subtract the average activity during the pre-stimulus baseline:
 
 ```{r}
 #| label: remove-baseline
