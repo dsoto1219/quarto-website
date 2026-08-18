@@ -366,18 +366,16 @@ window.Quarto = {
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>bids_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(<span class="st">"eegs"</span>, <span class="st">"data/n170"</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>set_file <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"sub-001/eeg/sub-001_task-N170_eeg.set"</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">file.exists</span>(set_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] TRUE</code></pre>
-</div>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">file.exists</span>(set_file))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><code>eegUtils</code> has functions for importing raw EEG data from various file formats into R, including the <code>.set</code> format used by ERP CORE.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Needed these packages for `import_set` to work</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"R.matlab"</span>, <span class="st">"hdf5r"</span>) </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Needed these packages for `import_set` to work</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>pak<span class="sc">::</span><span class="fu">pak</span>(<span class="st">"R.matlab"</span>, <span class="st">"hdf5r"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dat_raw <span class="ot">&lt;-</span> <span class="fu">import_set</span>(set_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>dat_raw <span class="ot">&lt;-</span> <span class="fu">import_set</span>(set_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Importing from EEGLAB .set file.</code></pre>
 </div>
@@ -387,14 +385,14 @@ window.Quarto = {
 </div>
 <p>Inspecting the data type:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(dat_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(dat_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "eeg_data"</code></pre>
 </div>
 </div>
 <p>we see <code>eeg_data</code> is a custom class defined by <code>eegUtils</code> — a big list with many sub-components:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dat_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dat_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>List of 8
  $ signals  :'data.frame':  699392 obs. of  33 variables:
@@ -465,12 +463,12 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="viewing-data">Viewing Data</h3>
 <p>We can visually check the data at multiple steps using the <code>browse_data</code> function. This will open a site we can open either on our browser or in the “Viewer” tab on the right-hand side of RStudio from which we can interactively inspect the data.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">browse_data</span>(dat_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">browse_data</span>(dat_raw)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>We can also make a static butterfly plot of a given chunk of data:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>time_lim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">300</span>, <span class="dv">305</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_butterfly</span>(dat_raw, time_lim, <span class="at">baseline =</span> time_lim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>time_lim <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">300</span>, <span class="dv">305</span>)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_butterfly</span>(dat_raw, time_lim, <span class="at">baseline =</span> time_lim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Baseline: 300 - 305s</code></pre>
 </div>
@@ -487,11 +485,11 @@ window.Quarto = {
 <h3 class="anchored" data-anchor-id="channel-locations">Channel Locations</h3>
 <p>For some steps, such as with making topographic plots, we need to know the relative positions of electrodes on the scalp. These are sometimes included in the raw data, but in this case we need to use a separate function:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>dat_raw <span class="ot">&lt;-</span> <span class="fu">electrode_locations</span>(dat_raw, <span class="at">montage =</span> <span class="st">"biosemi64"</span>, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>dat_raw <span class="ot">&lt;-</span> <span class="fu">electrode_locations</span>(dat_raw, <span class="at">montage =</span> <span class="st">"biosemi64"</span>, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Electrodes not found: HEOG_left HEOG_right VEOG_lower</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>dat_raw<span class="sc">$</span>chan_info</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dat_raw<span class="sc">$</span>chan_info</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 33 × 9
    electrode radius theta   phi cart_x cart_y cart_z     x     y
@@ -508,13 +506,13 @@ window.Quarto = {
 10 PO7            1   -92    54  -49.9  -68.7  -2.97 -54.1 -74.4
 # ℹ 23 more rows</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_electrodes</span>(dat_raw, <span class="at">interact =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_electrodes</span>(dat_raw, <span class="at">interact =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: Ignoring 3 observations</code></pre>
 </div>
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-b0857e482a057755dd75" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-b0857e482a057755dd75">{"x":{"visdat":{"10038524f35d2":["function () ","plotlyVisDat"]},"cur_data":"10038524f35d2","attrs":{"10038524f35d2":{"x":{},"y":{},"z":{},"text":{},"mode":"text+markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"cart_x"},"yaxis":{"title":"cart_y"},"zaxis":{"title":"cart_z"}},"hovermode":"closest","showlegend":false},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-26.25,-46.329999999999998,-68.719999999999999,-57.490000000000002,-61.140000000000001,-79.349999999999994,-46.329999999999998,-68.719999999999999,-62.32,-49.93,-34.530000000000001,-26.25,0,0,0,26.25,0,46.329999999999998,68.719999999999999,57.490000000000002,0,0,61.140000000000001,79.349999999999994,46.329999999999998,68.719999999999999,62.32,49.93,34.530000000000001,26.25],"y":[80.790000000000006,57.210000000000001,49.93,30.57,0,0,-57.210000000000001,-49.93,-45.280000000000001,-68.719999999999999,-74.049999999999997,-80.790000000000006,-84.950000000000003,-61.140000000000001,-33.210000000000001,80.790000000000006,61.140000000000001,57.210000000000001,49.93,30.57,33.210000000000001,0,0,0,-57.210000000000001,-49.93,-45.280000000000001,-68.719999999999999,-74.049999999999997,-80.790000000000006],"z":[-2.9700000000000002,42.5,-2.9700000000000002,54.640000000000001,59.049999999999997,30.460000000000001,42.5,-2.9700000000000002,-35.920000000000002,-2.9700000000000002,23.43,-2.9700000000000002,-2.9700000000000002,59.049999999999997,78.239999999999995,-2.9700000000000002,59.049999999999997,42.5,-2.9700000000000002,54.640000000000001,78.239999999999995,85,59.049999999999997,30.460000000000001,42.5,-2.9700000000000002,-35.920000000000002,-2.9700000000000002,23.43,-2.9700000000000002],"text":["FP1","F3","F7","FC3","C3","C5","P3","P7","P9","PO7","PO3","O1","Oz","Pz","CPz","FP2","Fz","F4","F8","FC4","FCz","Cz","C4","C6","P4","P8","P10","PO8","PO4","O2"],"mode":"text+markers","type":"scatter3d","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-eeb4ee0f8c65bda33d0b" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-eeb4ee0f8c65bda33d0b">{"x":{"visdat":{"f50067a321b9":["function () ","plotlyVisDat"]},"cur_data":"f50067a321b9","attrs":{"f50067a321b9":{"x":{},"y":{},"z":{},"text":{},"mode":"text+markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"cart_x"},"yaxis":{"title":"cart_y"},"zaxis":{"title":"cart_z"}},"hovermode":"closest","showlegend":false},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-26.25,-46.329999999999998,-68.719999999999999,-57.490000000000002,-61.140000000000001,-79.349999999999994,-46.329999999999998,-68.719999999999999,-62.32,-49.93,-34.530000000000001,-26.25,0,0,0,26.25,0,46.329999999999998,68.719999999999999,57.490000000000002,0,0,61.140000000000001,79.349999999999994,46.329999999999998,68.719999999999999,62.32,49.93,34.530000000000001,26.25],"y":[80.790000000000006,57.210000000000001,49.93,30.57,0,0,-57.210000000000001,-49.93,-45.280000000000001,-68.719999999999999,-74.049999999999997,-80.790000000000006,-84.950000000000003,-61.140000000000001,-33.210000000000001,80.790000000000006,61.140000000000001,57.210000000000001,49.93,30.57,33.210000000000001,0,0,0,-57.210000000000001,-49.93,-45.280000000000001,-68.719999999999999,-74.049999999999997,-80.790000000000006],"z":[-2.9700000000000002,42.5,-2.9700000000000002,54.640000000000001,59.049999999999997,30.460000000000001,42.5,-2.9700000000000002,-35.920000000000002,-2.9700000000000002,23.43,-2.9700000000000002,-2.9700000000000002,59.049999999999997,78.239999999999995,-2.9700000000000002,59.049999999999997,42.5,-2.9700000000000002,54.640000000000001,78.239999999999995,85,59.049999999999997,30.460000000000001,42.5,-2.9700000000000002,-35.920000000000002,-2.9700000000000002,23.43,-2.9700000000000002],"text":["FP1","F3","F7","FC3","C3","C5","P3","P7","P9","PO7","PO3","O1","Oz","Pz","CPz","FP2","Fz","F4","F8","FC4","FCz","Cz","C4","C6","P4","P8","P10","PO8","PO4","O2"],"mode":"text+markers","type":"scatter3d","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
@@ -526,8 +524,8 @@ window.Quarto = {
 <li><strong>Linked mastoids</strong>: Difference to the average of the mastoid channels (M1 and M2)</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>eog_channels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"HEOG_left"</span>, <span class="st">"HEOG_right"</span>, <span class="st">"VEOG_lower"</span>)</span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>dat_reref <span class="ot">&lt;-</span> <span class="fu">eeg_reference</span>(dat_raw, <span class="at">ref_chans =</span> <span class="st">"average"</span>, <span class="at">exclude =</span> eog_channels)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>eog_channels <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"HEOG_left"</span>, <span class="st">"HEOG_right"</span>, <span class="st">"VEOG_lower"</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>dat_reref <span class="ot">&lt;-</span> <span class="fu">eeg_reference</span>(dat_raw, <span class="at">ref_chans =</span> <span class="st">"average"</span>, <span class="at">exclude =</span> eog_channels)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="filtering" class="level3">
@@ -591,7 +589,7 @@ window.Quarto = {
 </ol>
 <p>This can all be done with one function, <code>eeg_filter</code>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>dat_filt <span class="ot">&lt;-</span> <span class="fu">eeg_filter</span>(dat_reref, <span class="at">low_freq =</span> <span class="fl">0.1</span>, <span class="at">high_freq =</span> <span class="fl">30.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>dat_filt <span class="ot">&lt;-</span> <span class="fu">eeg_filter</span>(dat_reref, <span class="at">low_freq =</span> <span class="fl">0.1</span>, <span class="at">high_freq =</span> <span class="fl">30.0</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Band-pass FIR filter from 0.1 - 30 Hz</code></pre>
 </div>
@@ -604,7 +602,7 @@ window.Quarto = {
 <div class="cell-output cell-output-stderr">
 <pre><code>Removing channel means...</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_butterfly</span>(dat_filt, time_lim, <span class="at">baseline =</span> time_lim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_butterfly</span>(dat_filt, time_lim, <span class="at">baseline =</span> time_lim)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Baseline: 300 - 305s</code></pre>
 </div>
@@ -618,39 +616,39 @@ window.Quarto = {
 </div>
 <p>Let’s now save our preprocessed data:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>deriv_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"derivatives/eegUtils/sub-001/eeg"</span>)</span>
-<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>preproc_file <span class="ot">&lt;-</span> <span class="fu">here</span>(deriv_dir, <span class="st">"sub-001_task-N170_desc-preprocessed_eeg.rds"</span>)</span>
-<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(deriv_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dat_filt, preproc_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>deriv_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"derivatives/eegUtils/sub-001/eeg"</span>)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>preproc_file <span class="ot">&lt;-</span> <span class="fu">here</span>(deriv_dir, <span class="st">"sub-001_task-N170_desc-preprocessed_eeg.rds"</span>)</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(deriv_dir, <span class="at">recursive =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dat_filt, preproc_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="extra-downsampling" class="level3">
 <h3 class="anchored" data-anchor-id="extra-downsampling">Extra: Downsampling</h3>
 <p>The <strong>sampling rate</strong> is the number of EEG voltages recorded per second (in Hz).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>dat_raw<span class="sc">$</span>srate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>dat_raw<span class="sc">$</span>srate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 1024</code></pre>
 </div>
 </div>
 <p>This means that each pair of samples is less than 1 ms apart:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">/</span> dat_raw<span class="sc">$</span>srate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">/</span> dat_raw<span class="sc">$</span>srate</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 0.0009765625</code></pre>
 </div>
 </div>
 <p>We don’t need that much temporal resolution, so we will downsample the data using <code>eeg_downsample</code> from the <code>eegUtils</code> library:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>dat_downs <span class="ot">&lt;-</span> <span class="fu">eeg_downsample</span>(dat_filt, <span class="at">q =</span> <span class="fl">4.0</span>) <span class="co"># q is the downsampling factor</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>dat_downs <span class="ot">&lt;-</span> <span class="fu">eeg_downsample</span>(dat_filt, <span class="at">q =</span> <span class="fl">4.0</span>) <span class="co"># q is the downsampling factor</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Downsampling from 1024Hz to 256Hz.</code></pre>
 </div>
 </div>
 <p>This will reduce our computer’s memory load and make subsequent computations faster:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>show_size_mb <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">format</span>(<span class="fu">object.size</span>(x), <span class="at">units =</span> <span class="st">"MB"</span>)</span>
-<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">list</span>(<span class="at">before =</span> dat_filt, <span class="at">after =</span> dat_downs), show_size_mb)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>show_size_mb <span class="ot">&lt;-</span> <span class="cf">function</span>(x) <span class="fu">format</span>(<span class="fu">object.size</span>(x), <span class="at">units =</span> <span class="st">"MB"</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">lapply</span>(<span class="fu">list</span>(<span class="at">before =</span> dat_filt, <span class="at">after =</span> dat_downs), show_size_mb)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$before
 [1] "184.1 Mb"
@@ -658,33 +656,33 @@ window.Quarto = {
 $after
 [1] "46.1 Mb"</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dat_downs, preproc_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dat_downs, preproc_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
 <section id="creating-epochs" class="level2">
 <h2 class="anchored" data-anchor-id="creating-epochs">Creating Epochs</h2>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>deriv_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"derivatives/eegUtils/sub-001/eeg"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>deriv_dir <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"derivatives/eegUtils/sub-001/eeg"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <section id="event-codes" class="level3">
 <h3 class="anchored" data-anchor-id="event-codes">Event Codes</h3>
 <p>Significant “events,” (e.g.&nbsp;stimuli, responses) are marked in the EEG recording by unique <strong>event codes</strong>. In this experiment, event codes between 1-40 mean the stimulus was a face, while event codes between 41-80 mean the stimulus was a car. Note that in my case, the <code>task-N170_events.json</code> file did not exist in the directory where the N170 data got downloaded, but that is ok because we still know from the paper that this convention was used. We can hard-code these events as epoch labels as follows:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>event_codes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">80</span>)</span>
-<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>epoch_labels <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(event_codes <span class="sc">&lt;=</span> <span class="dv">40</span>, <span class="st">"face"</span>, <span class="st">"car"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>event_codes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">80</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>epoch_labels <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(event_codes <span class="sc">&lt;=</span> <span class="dv">40</span>, <span class="st">"face"</span>, <span class="st">"car"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="construct-epochs" class="level3">
 <h3 class="anchored" data-anchor-id="construct-epochs">Construct Epochs</h3>
 <p>Now, knowing event codes, we can “cut out” our epochs around them. For the epoch data, we want to include between 100-200 ms before the stimulus onset as a baseline period.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>dat_epo <span class="ot">&lt;-</span> <span class="fu">epoch_data</span>(</span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  dat_downs,</span>
-<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  event_codes,</span>
-<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_lim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.2</span>, <span class="fl">0.8</span>),</span>
-<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">epoch_labels =</span> epoch_labels</span>
-<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>dat_epo <span class="ot">&lt;-</span> <span class="fu">epoch_data</span>(</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  dat_downs,</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  event_codes,</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_lim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.2</span>, <span class="fl">0.8</span>),</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">epoch_labels =</span> epoch_labels</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Adjusting output limits to match sampling rate.</code></pre>
 </div>
@@ -705,7 +703,7 @@ $after
 <li>Colors: EEG amplitude</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">erp_image</span>(dat_epo, <span class="at">electrode =</span> <span class="st">"PO8"</span>, <span class="at">smoothing =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="fu">erp_image</span>(dat_epo, <span class="at">electrode =</span> <span class="st">"PO8"</span>, <span class="at">smoothing =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -719,11 +717,11 @@ $after
 <h3 class="anchored" data-anchor-id="baseline-correction">Baseline Correction</h3>
 <p>Trials will differ in their overall amplitude, i.e.&nbsp;due to drifts and slow artifacts. This can hide more subtle differences between conditions. The solution to this is to subtract the average activity during the pre-stimulus baseline:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>dat_basl <span class="ot">&lt;-</span> <span class="fu">rm_baseline</span>(dat_epo, <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.2</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>dat_basl <span class="ot">&lt;-</span> <span class="fu">rm_baseline</span>(dat_epo, <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.2</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Baseline: -0.2 - 0s</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">erp_image</span>(dat_basl, <span class="at">electrode =</span> <span class="st">"PO4"</span>, <span class="at">smoothing =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">erp_image</span>(dat_basl, <span class="at">electrode =</span> <span class="st">"PO4"</span>, <span class="at">smoothing =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -734,19 +732,19 @@ $after
 </div>
 <p>We can confirm that the average voltage during the baseline window is actually zero given an epoch and channel:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract baseline time points (baseline meaning before onset, thus t &lt; 0.0) at </span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="co"># epoch 42</span></span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>inds <span class="ot">&lt;-</span> <span class="fu">which</span>(dat_basl<span class="sc">$</span>timings<span class="sc">$</span>epoch <span class="sc">==</span> <span class="dv">42</span> <span class="sc">&amp;</span> dat_basl<span class="sc">$</span>timings<span class="sc">$</span>time <span class="sc">&lt;</span> <span class="fl">0.0</span>)</span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(dat_basl<span class="sc">$</span>signals<span class="sc">$</span>FP1[inds]) <span class="co"># close enough to 0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract baseline time points (baseline meaning before onset, thus t &lt; 0.0) at </span></span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="co"># epoch 42</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>inds <span class="ot">&lt;-</span> <span class="fu">which</span>(dat_basl<span class="sc">$</span>timings<span class="sc">$</span>epoch <span class="sc">==</span> <span class="dv">42</span> <span class="sc">&amp;</span> dat_basl<span class="sc">$</span>timings<span class="sc">$</span>time <span class="sc">&lt;</span> <span class="fl">0.0</span>)</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(dat_basl<span class="sc">$</span>signals<span class="sc">$</span>FP1[inds]) <span class="co"># close enough to 0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 5.04796e-16</code></pre>
 </div>
 </div>
 <p>Now, we can save the baseline-corrected epochs.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>epo_file <span class="ot">&lt;-</span> <span class="fu">here</span>(deriv_dir, <span class="st">"sub-001_task-N170_desc-epoched_eeg.rds"</span>)</span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dat_basl, epo_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb53"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a>epo_file <span class="ot">&lt;-</span> <span class="fu">here</span>(deriv_dir, <span class="st">"sub-001_task-N170_desc-epoched_eeg.rds"</span>)</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dat_basl, epo_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
@@ -756,8 +754,8 @@ $after
 <h3 class="anchored" data-anchor-id="independent-component-analysis">Independent Component Analysis</h3>
 <p>With the baseline-corrected epoch data, we can run Independent Component Analysis (ICA) to separate our EEG recordings into a number of additive sub-components. The seminar decides to separate into the 15 most important components:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>n_components <span class="ot">&lt;-</span> <span class="dv">15</span></span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>ica <span class="ot">&lt;-</span> <span class="fu">run_ICA</span>(dat_epo, <span class="at">method =</span> <span class="st">"fastica"</span>, <span class="at">pca =</span> n_components)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>n_components <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>ica <span class="ot">&lt;-</span> <span class="fu">run_ICA</span>(dat_epo, <span class="at">method =</span> <span class="st">"fastica"</span>, <span class="at">pca =</span> n_components)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Reducing data to 15 dimensions using PCA.</code></pre>
 </div>
@@ -767,13 +765,13 @@ $after
 </div>
 <p>With this, we can plot scalp distributions of the extracted ICA components. In particular, eye-blink and vertical eye movement components will have a very strong signal at the forehead (<code>Comp001``Comp001</code>), and vertical eye movement components will have opposite polarities left-frontal vs.&nbsp;right-frontal (maybe <code>Comp008</code> and/or <code>Comp009</code>).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb58"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">topoplot</span>(</span>
-<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>  ica,</span>
-<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">component =</span> <span class="dv">1</span><span class="sc">:</span>n_components,</span>
-<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">20</span>),</span>
-<span id="cb58-5"><a href="#cb58-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">chan_marker =</span> <span class="st">"none"</span>,</span>
-<span id="cb58-6"><a href="#cb58-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">scaling=</span><span class="fl">0.4</span></span>
-<span id="cb58-7"><a href="#cb58-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">topoplot</span>(</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  ica,</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">component =</span> <span class="dv">1</span><span class="sc">:</span>n_components,</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">20</span>, <span class="dv">20</span>),</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">chan_marker =</span> <span class="st">"none"</span>,</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">scaling=</span><span class="fl">0.4</span></span>
+<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Plotting 15 components</code></pre>
 </div>
@@ -796,9 +794,9 @@ $after
 </div>
 <p>We can also automatically detect “bad” components based on their correlation with the electrooculogram (EOG), the part that measures eye-movement signals. We set a threshold of <code>0.6</code>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>heog <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"HEOG_left"</span>, <span class="st">"HEOG_right"</span>)</span>
-<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>veog <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"FP2"</span>, <span class="st">"VEOG_lower"</span>)</span>
-<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>bad_components <span class="ot">&lt;-</span> <span class="fu">ar_eogcor</span>(ica, dat_epo, heog, veog, <span class="at">threshold =</span> <span class="fl">0.6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>heog <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"HEOG_left"</span>, <span class="st">"HEOG_right"</span>)</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>veog <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"FP2"</span>, <span class="st">"VEOG_lower"</span>)</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>bad_components <span class="ot">&lt;-</span> <span class="fu">ar_eogcor</span>(ica, dat_epo, heog, veog, <span class="at">threshold =</span> <span class="fl">0.6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -809,7 +807,7 @@ $after
 <div class="cell-output cell-output-stderr">
 <pre><code>Components with high EOG correlation: Comp001 Comp006 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>bad_components</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb64"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>bad_components</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Comp001" "Comp006"</code></pre>
 </div>
@@ -817,37 +815,37 @@ $after
 <p>Weirdly, in the seminar, it ends up being components 001 and 009 that are outliers, but here we see we get components 001 and 006 are the outliers. I chalk this up to the potential differences that may have come from us using different R package sources for the data we use.</p>
 <p>Regardless, with this, we can remove the “bad” ICA components from the actual (epoched) data:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>dat_icacorr <span class="ot">&lt;-</span> <span class="fu">apply_ica</span>(dat_epo, ica, <span class="at">comps =</span> bad_components)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>dat_icacorr <span class="ot">&lt;-</span> <span class="fu">apply_ica</span>(dat_epo, ica, <span class="at">comps =</span> bad_components)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>The seminar provides useful helper functions to compare the uncorrected and corrected epochs visually:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>extract_epoch <span class="ot">&lt;-</span> <span class="cf">function</span>(epochs, epoch_no, electrode) {</span>
-<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>  epoch_ixs <span class="ot">&lt;-</span> epochs<span class="sc">$</span>timings<span class="sc">$</span>epoch <span class="sc">==</span> epoch_no</span>
-<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
-<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">time =</span> <span class="fu">unique</span>(epochs<span class="sc">$</span>timings<span class="sc">$</span>time),</span>
-<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">amplitude =</span> epochs<span class="sc">$</span>signals[epoch_ixs, electrode][[<span class="dv">1</span>]]</span>
-<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb68-9"><a href="#cb68-9" aria-hidden="true" tabindex="-1"></a>compare_epochs <span class="ot">&lt;-</span> <span class="cf">function</span>(uncorr_epochs,</span>
-<span id="cb68-10"><a href="#cb68-10" aria-hidden="true" tabindex="-1"></a>                           corr_epochs,</span>
-<span id="cb68-11"><a href="#cb68-11" aria-hidden="true" tabindex="-1"></a>                           epoch_no,</span>
-<span id="cb68-12"><a href="#cb68-12" aria-hidden="true" tabindex="-1"></a>                           electrode) {</span>
-<span id="cb68-13"><a href="#cb68-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">require</span>(ggplot2)</span>
-<span id="cb68-14"><a href="#cb68-14" aria-hidden="true" tabindex="-1"></a>  n_samples <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(uncorr_epochs<span class="sc">$</span>timings<span class="sc">$</span>time))</span>
-<span id="cb68-15"><a href="#cb68-15" aria-hidden="true" tabindex="-1"></a>  epochs <span class="ot">&lt;-</span> <span class="fu">list</span>(uncorr_epochs, corr_epochs) <span class="sc">|&gt;</span></span>
-<span id="cb68-16"><a href="#cb68-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(extract_epoch, epoch_no, electrode) <span class="sc">|&gt;</span></span>
-<span id="cb68-17"><a href="#cb68-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">do.call</span>(<span class="at">what =</span> <span class="st">"rbind"</span>)</span>
-<span id="cb68-18"><a href="#cb68-18" aria-hidden="true" tabindex="-1"></a>  epochs<span class="sc">$</span>type <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"uncorrected"</span>, <span class="st">"corrected"</span>), <span class="at">each =</span> n_samples) <span class="sc">|&gt;</span></span>
-<span id="cb68-19"><a href="#cb68-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">factor</span>(<span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"uncorrected"</span>, <span class="st">"corrected"</span>))</span>
-<span id="cb68-20"><a href="#cb68-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(epochs, <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> amplitude, <span class="at">color =</span> type)) <span class="sc">+</span></span>
-<span id="cb68-21"><a href="#cb68-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
-<span id="cb68-22"><a href="#cb68-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Time (s)"</span>, <span class="at">y =</span> <span class="st">"Amplitude (µV)"</span>, <span class="at">color =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
-<span id="cb68-23"><a href="#cb68-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">"Epoch #"</span>, epoch_no, <span class="st">", channel "</span>, electrode)) <span class="sc">+</span></span>
-<span id="cb68-24"><a href="#cb68-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span>
-<span id="cb68-25"><a href="#cb68-25" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb68-26"><a href="#cb68-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb68-27"><a href="#cb68-27" aria-hidden="true" tabindex="-1"></a><span class="fu">compare_epochs</span>(dat_epo, dat_icacorr, <span class="at">epoch_no =</span> <span class="dv">103</span>, <span class="at">electrode =</span> <span class="st">"FP1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a>extract_epoch <span class="ot">&lt;-</span> <span class="cf">function</span>(epochs, epoch_no, electrode) {</span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a>  epoch_ixs <span class="ot">&lt;-</span> epochs<span class="sc">$</span>timings<span class="sc">$</span>epoch <span class="sc">==</span> epoch_no</span>
+<span id="cb67-3"><a href="#cb67-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb67-4"><a href="#cb67-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">time =</span> <span class="fu">unique</span>(epochs<span class="sc">$</span>timings<span class="sc">$</span>time),</span>
+<span id="cb67-5"><a href="#cb67-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">amplitude =</span> epochs<span class="sc">$</span>signals[epoch_ixs, electrode][[<span class="dv">1</span>]]</span>
+<span id="cb67-6"><a href="#cb67-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb67-7"><a href="#cb67-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb67-8"><a href="#cb67-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-9"><a href="#cb67-9" aria-hidden="true" tabindex="-1"></a>compare_epochs <span class="ot">&lt;-</span> <span class="cf">function</span>(uncorr_epochs,</span>
+<span id="cb67-10"><a href="#cb67-10" aria-hidden="true" tabindex="-1"></a>                           corr_epochs,</span>
+<span id="cb67-11"><a href="#cb67-11" aria-hidden="true" tabindex="-1"></a>                           epoch_no,</span>
+<span id="cb67-12"><a href="#cb67-12" aria-hidden="true" tabindex="-1"></a>                           electrode) {</span>
+<span id="cb67-13"><a href="#cb67-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">require</span>(ggplot2)</span>
+<span id="cb67-14"><a href="#cb67-14" aria-hidden="true" tabindex="-1"></a>  n_samples <span class="ot">&lt;-</span> <span class="fu">length</span>(<span class="fu">unique</span>(uncorr_epochs<span class="sc">$</span>timings<span class="sc">$</span>time))</span>
+<span id="cb67-15"><a href="#cb67-15" aria-hidden="true" tabindex="-1"></a>  epochs <span class="ot">&lt;-</span> <span class="fu">list</span>(uncorr_epochs, corr_epochs) <span class="sc">|&gt;</span></span>
+<span id="cb67-16"><a href="#cb67-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">lapply</span>(extract_epoch, epoch_no, electrode) <span class="sc">|&gt;</span></span>
+<span id="cb67-17"><a href="#cb67-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">do.call</span>(<span class="at">what =</span> <span class="st">"rbind"</span>)</span>
+<span id="cb67-18"><a href="#cb67-18" aria-hidden="true" tabindex="-1"></a>  epochs<span class="sc">$</span>type <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="st">"uncorrected"</span>, <span class="st">"corrected"</span>), <span class="at">each =</span> n_samples) <span class="sc">|&gt;</span></span>
+<span id="cb67-19"><a href="#cb67-19" aria-hidden="true" tabindex="-1"></a>    <span class="fu">factor</span>(<span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"uncorrected"</span>, <span class="st">"corrected"</span>))</span>
+<span id="cb67-20"><a href="#cb67-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(epochs, <span class="fu">aes</span>(<span class="at">x =</span> time, <span class="at">y =</span> amplitude, <span class="at">color =</span> type)) <span class="sc">+</span></span>
+<span id="cb67-21"><a href="#cb67-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_line</span>() <span class="sc">+</span></span>
+<span id="cb67-22"><a href="#cb67-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Time (s)"</span>, <span class="at">y =</span> <span class="st">"Amplitude (µV)"</span>, <span class="at">color =</span> <span class="cn">NULL</span>) <span class="sc">+</span></span>
+<span id="cb67-23"><a href="#cb67-23" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="fu">paste0</span>(<span class="st">"Epoch #"</span>, epoch_no, <span class="st">", channel "</span>, electrode)) <span class="sc">+</span></span>
+<span id="cb67-24"><a href="#cb67-24" aria-hidden="true" tabindex="-1"></a>    <span class="fu">theme_minimal</span>()</span>
+<span id="cb67-25"><a href="#cb67-25" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb67-26"><a href="#cb67-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb67-27"><a href="#cb67-27" aria-hidden="true" tabindex="-1"></a><span class="fu">compare_epochs</span>(dat_epo, dat_icacorr, <span class="at">epoch_no =</span> <span class="dv">103</span>, <span class="at">electrode =</span> <span class="st">"FP1"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Loading required package: ggplot2</code></pre>
 </div>
@@ -864,7 +862,7 @@ $after
 <h3 class="anchored" data-anchor-id="artifact-rejection">Artifact Rejection</h3>
 <p>ICA may not be able to correct all eye movements or other artifacts. Additionally, we want to reject all epochs where at least one channel exceeds an absolute voltage thresheld, like ±100 µV.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>dat_rej <span class="ot">&lt;-</span> <span class="fu">ar_thresh</span>(dat_icacorr, <span class="at">threshold =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="sc">-</span><span class="dv">100</span>), <span class="at">reject =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>dat_rej <span class="ot">&lt;-</span> <span class="fu">ar_thresh</span>(dat_icacorr, <span class="at">threshold =</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="sc">-</span><span class="dv">100</span>), <span class="at">reject =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>1175 (0.09%) samples above 100 uV threshold.</code></pre>
 </div>
@@ -880,8 +878,8 @@ $after
 </div>
 <p>Thresholds in practice should be chosen carefully, as rejecting many epochs reduces statistical power. More sophisticated thresholding approaches exist, e.g.&nbsp;via a moving window. Save artifact-corrected epochs for later:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>corr_file <span class="ot">&lt;-</span> <span class="fu">here</span>(deriv_dir, <span class="st">"sub-001_task-N170_desc-corrected_eeg.rds"</span>)</span>
-<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dat_rej, corr_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>corr_file <span class="ot">&lt;-</span> <span class="fu">here</span>(deriv_dir, <span class="st">"sub-001_task-N170_desc-corrected_eeg.rds"</span>)</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dat_rej, corr_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
@@ -892,8 +890,8 @@ $after
 <p>We can’t just measure a single EEG electrode. For one thing, single measurements are noisy and spatially imprecise. Thus, averaging across nearby electrodes boosts our signal-to-noise ratio. For another, their measurements are not well-defined without relationships to other electrodes. Altogether, this leads to us defining the <strong>region of interest (ROI)</strong>, “the set of electrodes where we expect our ERP component of interest to be maximal.”</p>
 <p>First, we convert our epoched data to a data frame for subsetting / averages.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb76"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>dat_frame <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(dat_epo)</span>
-<span id="cb76-2"><a href="#cb76-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dat_frame)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>dat_frame <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(dat_epo)</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dat_frame)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>'data.frame':   41120 obs. of  39 variables:
  $ FP1           : num  -11.04 -7.23 -2.72 2.08 6.72 ...
@@ -968,28 +966,28 @@ $after
 </ul>
 <p>With this, we create a new “virtual” channel, a column in the data frame, containing the average signal in the ROI:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>roi <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"P7"</span>, <span class="st">"P8"</span>, <span class="st">"P9"</span>, <span class="st">"P10"</span>, <span class="st">"PO7"</span>, <span class="st">"PO8"</span>)</span>
-<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>dat_frame<span class="sc">$</span>roi <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(dat_frame[roi])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a>roi <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"P7"</span>, <span class="st">"P8"</span>, <span class="st">"P9"</span>, <span class="st">"P10"</span>, <span class="st">"PO7"</span>, <span class="st">"PO8"</span>)</span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>dat_frame<span class="sc">$</span>roi <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(dat_frame[roi])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="select-time-window" class="level3">
 <h3 class="anchored" data-anchor-id="select-time-window">Select Time Window</h3>
 <p>ERP components unfold on the time scale of 10 ms to multiples 100s of ms. Here, we want to select the time window for where we expect our component to be — in our case, around 170 ms for the N170.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>tmin <span class="ot">&lt;-</span> <span class="fl">0.15</span></span>
-<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>tmax <span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
-<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>dat_frame <span class="ot">&lt;-</span> <span class="fu">subset</span>(dat_frame, time <span class="sc">&gt;=</span> tmin <span class="sc">&amp;</span> time <span class="sc">&lt;</span> tmax)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a>tmin <span class="ot">&lt;-</span> <span class="fl">0.15</span></span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a>tmax <span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb78-4"><a href="#cb78-4" aria-hidden="true" tabindex="-1"></a>dat_frame <span class="ot">&lt;-</span> <span class="fu">subset</span>(dat_frame, time <span class="sc">&gt;=</span> tmin <span class="sc">&amp;</span> time <span class="sc">&lt;</span> tmax)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Averaging across this time window gets us one value, the mean ERP amplitude, per trial:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>dat_trials <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(</span>
-<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>  roi <span class="sc">~</span> epoch <span class="sc">+</span> event_type <span class="sc">+</span> epoch_labels,</span>
-<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>  dat_frame,</span>
-<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>  mean</span>
-<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dat_trials) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"epoch"</span>, <span class="st">"stimulus"</span>, <span class="st">"condition"</span>, <span class="st">"amplitude"</span>)</span>
-<span id="cb80-7"><a href="#cb80-7" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dat_trials)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb79"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>dat_trials <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a>  roi <span class="sc">~</span> epoch <span class="sc">+</span> event_type <span class="sc">+</span> epoch_labels,</span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a>  dat_frame,</span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a>  mean</span>
+<span id="cb79-5"><a href="#cb79-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb79-6"><a href="#cb79-6" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(dat_trials) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"epoch"</span>, <span class="st">"stimulus"</span>, <span class="st">"condition"</span>, <span class="st">"amplitude"</span>)</span>
+<span id="cb79-7"><a href="#cb79-7" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(dat_trials)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>'data.frame':   160 obs. of  4 variables:
  $ epoch    : num  72 105 30 108 26 85 61 147 38 100 ...
@@ -1000,10 +998,10 @@ $after
 </div>
 <p>We can make a quick box plot comparing the single trial mean ERP amplitudes for faces vs.&nbsp;cars:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat_trials, <span class="fu">aes</span>(<span class="at">x =</span> condition, <span class="at">y =</span> amplitude)) <span class="sc">+</span></span>
-<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
-<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"N170 amplitude (µV)"</span>) <span class="sc">+</span></span>
-<span id="cb82-4"><a href="#cb82-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(dat_trials, <span class="fu">aes</span>(<span class="at">x =</span> condition, <span class="at">y =</span> amplitude)) <span class="sc">+</span></span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="cn">NULL</span>, <span class="at">y =</span> <span class="st">"N170 amplitude (µV)"</span>) <span class="sc">+</span></span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1014,8 +1012,8 @@ $after
 </div>
 <p>We’ll quantify this effect using statistical modeling in Vignette 7. Finally, we save the single trial data for later:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>trials_file <span class="ot">&lt;-</span> <span class="fu">here</span>(deriv_dir, <span class="st">"sub-001_task-N170_trials.csv"</span>)</span>
-<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dat_trials, trials_file, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb82"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a>trials_file <span class="ot">&lt;-</span> <span class="fu">here</span>(deriv_dir, <span class="st">"sub-001_task-N170_trials.csv"</span>)</span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dat_trials, trials_file, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 <section id="building-a-pipeline" class="level3">
@@ -1026,51 +1024,51 @@ $after
 <li>Return value: A data frame with single trial mean ERP amplitudes (as above)</li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>run_pipeline <span class="ot">&lt;-</span> <span class="cf">function</span>(set_file,</span>
-<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">montage =</span> <span class="st">"biosemi64"</span>,</span>
-<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">reref_chans =</span> <span class="st">"average"</span>,</span>
-<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">reref_exclude =</span> <span class="fu">c</span>(<span class="st">"HEOG_left"</span>, <span class="st">"HEOG_right"</span>, <span class="st">"VEOG_lower"</span>),</span>
-<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">filter_low_freq =</span> <span class="fl">0.1</span>,</span>
-<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">filter_high_freq =</span> <span class="fl">30.0</span>,</span>
-<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>                         <span class="at">downsample_factor =</span> <span class="fl">4.0</span>,</span>
-<span id="cb84-8"><a href="#cb84-8" aria-hidden="true" tabindex="-1"></a>                         <span class="at">event_codes =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">80</span>),</span>
-<span id="cb84-9"><a href="#cb84-9" aria-hidden="true" tabindex="-1"></a>                         <span class="at">epoch_labels =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"face"</span>, <span class="dv">40</span>), <span class="fu">rep</span>(<span class="st">"car"</span>, <span class="dv">40</span>)),</span>
-<span id="cb84-10"><a href="#cb84-10" aria-hidden="true" tabindex="-1"></a>                         <span class="at">epoch_time_lim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.2</span>, <span class="fl">0.8</span>),</span>
-<span id="cb84-11"><a href="#cb84-11" aria-hidden="true" tabindex="-1"></a>                         <span class="at">baseline =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.2</span>, <span class="fl">0.0</span>),</span>
-<span id="cb84-12"><a href="#cb84-12" aria-hidden="true" tabindex="-1"></a>                         <span class="at">artifact_threshold =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">100.0</span>, <span class="fl">100.0</span>),</span>
-<span id="cb84-13"><a href="#cb84-13" aria-hidden="true" tabindex="-1"></a>                         <span class="at">erp_roi =</span> <span class="fu">c</span>(<span class="st">"P7"</span>, <span class="st">"P8"</span>, <span class="st">"P9"</span>, <span class="st">"P10"</span>, <span class="st">"PO7"</span>, <span class="st">"PO8"</span>),</span>
-<span id="cb84-14"><a href="#cb84-14" aria-hidden="true" tabindex="-1"></a>                         <span class="at">erp_time_lim =</span> <span class="fu">c</span>(<span class="fl">0.15</span>, <span class="fl">0.2</span>)) {</span>
-<span id="cb84-15"><a href="#cb84-15" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-16"><a href="#cb84-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># From Vignette 3: Preprocessing</span></span>
-<span id="cb84-17"><a href="#cb84-17" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">import_set</span>(set_file)</span>
-<span id="cb84-18"><a href="#cb84-18" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">electrode_locations</span>(dat, <span class="at">montage =</span> montage, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb84-19"><a href="#cb84-19" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">eeg_reference</span>(dat, reref_chans, reref_exclude)</span>
-<span id="cb84-20"><a href="#cb84-20" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">eeg_downsample</span>(dat, downsample_factor)</span>
-<span id="cb84-21"><a href="#cb84-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-22"><a href="#cb84-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># From Vignette 4: Creating epochs</span></span>
-<span id="cb84-23"><a href="#cb84-23" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">epoch_data</span>(dat, event_codes, epoch_time_lim, baseline, epoch_labels)</span>
-<span id="cb84-24"><a href="#cb84-24" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">ar_thresh</span>(dat, artifact_threshold, <span class="at">reject =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb84-25"><a href="#cb84-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb84-26"><a href="#cb84-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># From Vignette 6: Extracting amplitudes</span></span>
-<span id="cb84-27"><a href="#cb84-27" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(dat)</span>
-<span id="cb84-28"><a href="#cb84-28" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>roi <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(dat[roi])</span>
-<span id="cb84-29"><a href="#cb84-29" aria-hidden="true" tabindex="-1"></a>  tmin <span class="ot">&lt;-</span> <span class="fu">min</span>(erp_time_lim)</span>
-<span id="cb84-30"><a href="#cb84-30" aria-hidden="true" tabindex="-1"></a>  tmax <span class="ot">&lt;-</span> <span class="fu">max</span>(erp_time_lim)</span>
-<span id="cb84-31"><a href="#cb84-31" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">subset</span>(dat, time <span class="sc">&gt;=</span> tmin <span class="sc">&amp;</span> time <span class="sc">&lt;</span> tmax)</span>
-<span id="cb84-32"><a href="#cb84-32" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(roi <span class="sc">~</span> epoch <span class="sc">+</span> event_type <span class="sc">+</span> epoch_labels, dat, mean)</span>
-<span id="cb84-33"><a href="#cb84-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(dat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"epoch"</span>, <span class="st">"stimulus"</span>, <span class="st">"condition"</span>, <span class="st">"amplitude"</span>)</span>
-<span id="cb84-34"><a href="#cb84-34" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb84-35"><a href="#cb84-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dat)</span>
-<span id="cb84-36"><a href="#cb84-36" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>run_pipeline <span class="ot">&lt;-</span> <span class="cf">function</span>(set_file,</span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>                         <span class="at">montage =</span> <span class="st">"biosemi64"</span>,</span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>                         <span class="at">reref_chans =</span> <span class="st">"average"</span>,</span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a>                         <span class="at">reref_exclude =</span> <span class="fu">c</span>(<span class="st">"HEOG_left"</span>, <span class="st">"HEOG_right"</span>, <span class="st">"VEOG_lower"</span>),</span>
+<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a>                         <span class="at">filter_low_freq =</span> <span class="fl">0.1</span>,</span>
+<span id="cb83-6"><a href="#cb83-6" aria-hidden="true" tabindex="-1"></a>                         <span class="at">filter_high_freq =</span> <span class="fl">30.0</span>,</span>
+<span id="cb83-7"><a href="#cb83-7" aria-hidden="true" tabindex="-1"></a>                         <span class="at">downsample_factor =</span> <span class="fl">4.0</span>,</span>
+<span id="cb83-8"><a href="#cb83-8" aria-hidden="true" tabindex="-1"></a>                         <span class="at">event_codes =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">80</span>),</span>
+<span id="cb83-9"><a href="#cb83-9" aria-hidden="true" tabindex="-1"></a>                         <span class="at">epoch_labels =</span> <span class="fu">c</span>(<span class="fu">rep</span>(<span class="st">"face"</span>, <span class="dv">40</span>), <span class="fu">rep</span>(<span class="st">"car"</span>, <span class="dv">40</span>)),</span>
+<span id="cb83-10"><a href="#cb83-10" aria-hidden="true" tabindex="-1"></a>                         <span class="at">epoch_time_lim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.2</span>, <span class="fl">0.8</span>),</span>
+<span id="cb83-11"><a href="#cb83-11" aria-hidden="true" tabindex="-1"></a>                         <span class="at">baseline =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.2</span>, <span class="fl">0.0</span>),</span>
+<span id="cb83-12"><a href="#cb83-12" aria-hidden="true" tabindex="-1"></a>                         <span class="at">artifact_threshold =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">100.0</span>, <span class="fl">100.0</span>),</span>
+<span id="cb83-13"><a href="#cb83-13" aria-hidden="true" tabindex="-1"></a>                         <span class="at">erp_roi =</span> <span class="fu">c</span>(<span class="st">"P7"</span>, <span class="st">"P8"</span>, <span class="st">"P9"</span>, <span class="st">"P10"</span>, <span class="st">"PO7"</span>, <span class="st">"PO8"</span>),</span>
+<span id="cb83-14"><a href="#cb83-14" aria-hidden="true" tabindex="-1"></a>                         <span class="at">erp_time_lim =</span> <span class="fu">c</span>(<span class="fl">0.15</span>, <span class="fl">0.2</span>)) {</span>
+<span id="cb83-15"><a href="#cb83-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-16"><a href="#cb83-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># From Vignette 3: Preprocessing</span></span>
+<span id="cb83-17"><a href="#cb83-17" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">import_set</span>(set_file)</span>
+<span id="cb83-18"><a href="#cb83-18" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">electrode_locations</span>(dat, <span class="at">montage =</span> montage, <span class="at">overwrite =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb83-19"><a href="#cb83-19" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">eeg_reference</span>(dat, reref_chans, reref_exclude)</span>
+<span id="cb83-20"><a href="#cb83-20" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">eeg_downsample</span>(dat, downsample_factor)</span>
+<span id="cb83-21"><a href="#cb83-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-22"><a href="#cb83-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># From Vignette 4: Creating epochs</span></span>
+<span id="cb83-23"><a href="#cb83-23" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">epoch_data</span>(dat, event_codes, epoch_time_lim, baseline, epoch_labels)</span>
+<span id="cb83-24"><a href="#cb83-24" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">ar_thresh</span>(dat, artifact_threshold, <span class="at">reject =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb83-25"><a href="#cb83-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-26"><a href="#cb83-26" aria-hidden="true" tabindex="-1"></a>  <span class="co"># From Vignette 6: Extracting amplitudes</span></span>
+<span id="cb83-27"><a href="#cb83-27" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">as.data.frame</span>(dat)</span>
+<span id="cb83-28"><a href="#cb83-28" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>roi <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(dat[roi])</span>
+<span id="cb83-29"><a href="#cb83-29" aria-hidden="true" tabindex="-1"></a>  tmin <span class="ot">&lt;-</span> <span class="fu">min</span>(erp_time_lim)</span>
+<span id="cb83-30"><a href="#cb83-30" aria-hidden="true" tabindex="-1"></a>  tmax <span class="ot">&lt;-</span> <span class="fu">max</span>(erp_time_lim)</span>
+<span id="cb83-31"><a href="#cb83-31" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">subset</span>(dat, time <span class="sc">&gt;=</span> tmin <span class="sc">&amp;</span> time <span class="sc">&lt;</span> tmax)</span>
+<span id="cb83-32"><a href="#cb83-32" aria-hidden="true" tabindex="-1"></a>  dat <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(roi <span class="sc">~</span> epoch <span class="sc">+</span> event_type <span class="sc">+</span> epoch_labels, dat, mean)</span>
+<span id="cb83-33"><a href="#cb83-33" aria-hidden="true" tabindex="-1"></a>  <span class="fu">names</span>(dat) <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"epoch"</span>, <span class="st">"stimulus"</span>, <span class="st">"condition"</span>, <span class="st">"amplitude"</span>)</span>
+<span id="cb83-34"><a href="#cb83-34" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb83-35"><a href="#cb83-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(dat)</span>
+<span id="cb83-36"><a href="#cb83-36" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>With this, we find all <code>.set</code> EEG files inside our BIDS directory (including sub-directories).</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>(set_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(</span>
-<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>  bids_dir,</span>
-<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">.set$"</span>,</span>
-<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">recursive =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">full.names =</span> <span class="cn">TRUE</span></span>
-<span id="cb85-6"><a href="#cb85-6" aria-hidden="true" tabindex="-1"></a>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>(set_files <span class="ot">&lt;-</span> <span class="fu">list.files</span>(</span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>  bids_dir,</span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pattern =</span> <span class="st">"</span><span class="sc">\\</span><span class="st">.set$"</span>,</span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">recursive =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">full.names =</span> <span class="cn">TRUE</span></span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code> [1] "C:/Users/Daniel/quarto-website/eegs/data/n170/sub-001/eeg/sub-001_task-N170_eeg.set"
  [2] "C:/Users/Daniel/quarto-website/eegs/data/n170/sub-002/eeg/sub-002_task-N170_eeg.set"
@@ -1109,23 +1107,24 @@ $after
 [35] "C:/Users/Daniel/quarto-website/eegs/data/n170/sub-035/eeg/sub-035_task-N170_eeg.set"
 [36] "C:/Users/Daniel/quarto-website/eegs/data/n170/sub-036/eeg/sub-036_task-N170_eeg.set"
 [37] "C:/Users/Daniel/quarto-website/eegs/data/n170/sub-037/eeg/sub-037_task-N170_eeg.set"
-[38] "C:/Users/Daniel/quarto-website/eegs/data/n170/sub-039/eeg/sub-039_task-N170_eeg.set"</code></pre>
+[38] "C:/Users/Daniel/quarto-website/eegs/data/n170/sub-038/eeg/sub-038_task-N170_eeg.set"
+[39] "C:/Users/Daniel/quarto-website/eegs/data/n170/sub-039/eeg/sub-039_task-N170_eeg.set"</code></pre>
 </div>
 </div>
 <p>Then, we apply the pipeline function to each <code>.set</code> file, returning a list of data frames, one for each participant:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a>dats_group <span class="ot">&lt;-</span> <span class="fu">lapply</span>(set_files, run_pipeline)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>dat_group <span class="ot">&lt;-</span> <span class="fu">lapply</span>(set_files, run_pipeline)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Then, we combine all of our data frames into one big data frame, adding an ID column to keep track of which trials belong to which participant:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
-<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb88-3"><a href="#cb88-3" aria-hidden="true" tabindex="-1"></a>dat_group <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(dats_group, <span class="at">.id =</span> <span class="st">"participant"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb87-2"><a href="#cb87-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb87-3"><a href="#cb87-3" aria-hidden="true" tabindex="-1"></a>dat_group <span class="ot">&lt;-</span> <span class="fu">bind_rows</span>(dats_group, <span class="at">.id =</span> <span class="st">"participant"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Finally, we save for later:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a>group_file <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"derivatives/eegUtils/group_task-N170_trials.csv"</span>)</span>
-<span id="cb89-2"><a href="#cb89-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dat_group, group_file, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>group_file <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"derivatives/eegUtils/group_task-N170_trials.csv"</span>)</span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="fu">write.csv</span>(dat_group, group_file, <span class="at">row.names =</span> <span class="cn">FALSE</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section>
 </section>
@@ -1133,11 +1132,11 @@ $after
 <h2 class="anchored" data-anchor-id="statistical-modeling">Statistical Modeling</h2>
 <p>We’ll start by modeling data for a single subject, just to get a feel for things. Let us load the required packages:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lme4)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Loading required package: Matrix</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmerTest)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lmerTest)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: 'lmerTest'</code></pre>
@@ -1155,7 +1154,7 @@ Attaching package: 'lmerTest'</code></pre>
 </div>
 <p>Then, we’ll start with a simple student’s <span class="math inline">\(t\)</span>-test for the difference between <code>"car"</code> trials and <code>"face"</code> trials:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(amplitude <span class="sc">~</span> condition, <span class="at">data =</span> dat_trials)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb95"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb95-1"><a href="#cb95-1" aria-hidden="true" tabindex="-1"></a><span class="fu">t.test</span>(amplitude <span class="sc">~</span> condition, <span class="at">data =</span> dat_trials)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
     Welch Two Sample t-test
@@ -1176,8 +1175,8 @@ sample estimates:
 <p>The N170 <code>amplitude</code> is predicted by an intercept and the <code>condition</code> effect (faces vs.&nbsp;cars)</p>
 <p>The intercept is the average N170 voltage in car trials.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(amplitude <span class="sc">~</span> condition, dat_trials)</span>
-<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb97"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb97-1"><a href="#cb97-1" aria-hidden="true" tabindex="-1"></a>mod <span class="ot">&lt;-</span> <span class="fu">lm</span>(amplitude <span class="sc">~</span> condition, dat_trials)</span>
+<span id="cb97-2"><a href="#cb97-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
 Call:
@@ -1209,9 +1208,9 @@ F-statistic: 2.941 on 1 and 158 DF,  p-value: 0.0883</code></pre>
 </ul>
 <p>We will apply our methods to the <code>dat_group</code> data frame from last section. We’ll load it:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>group_file <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"derivatives/eegUtils/group_task-N170_trials.csv"</span>)</span>
-<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>dat_group <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(group_file)</span>
-<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat_group)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb99"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb99-1"><a href="#cb99-1" aria-hidden="true" tabindex="-1"></a>group_file <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir, <span class="st">"derivatives/eegUtils/group_task-N170_trials.csv"</span>)</span>
+<span id="cb99-2"><a href="#cb99-2" aria-hidden="true" tabindex="-1"></a>dat_group <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(group_file)</span>
+<span id="cb99-3"><a href="#cb99-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat_group)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  participant epoch stimulus condition amplitude
 1           1    72       41       car  0.529240
@@ -1224,11 +1223,11 @@ F-statistic: 2.941 on 1 and 158 DF,  p-value: 0.0883</code></pre>
 </div>
 <p>In our model formula, we want to capture fixed intercept and predictor effects <em>across</em> subjects. As for random effects (in parentheses), we want to capture subject-specific variation in the intercept and in the predictor effect. In the linear model, this looks like:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>mod_lmm <span class="ot">&lt;-</span> <span class="fu">lmer</span>(amplitude <span class="sc">~</span> condition <span class="sc">+</span> </span>
-<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>                  (condition <span class="sc">|</span> participant) <span class="sc">+</span> </span>
-<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a>                  (<span class="dv">1</span> <span class="sc">|</span> stimulus),</span>
-<span id="cb102-4"><a href="#cb102-4" aria-hidden="true" tabindex="-1"></a>                dat_group)</span>
-<span id="cb102-5"><a href="#cb102-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lmm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb101"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb101-1"><a href="#cb101-1" aria-hidden="true" tabindex="-1"></a>mod_lmm <span class="ot">&lt;-</span> <span class="fu">lmer</span>(amplitude <span class="sc">~</span> condition <span class="sc">+</span> </span>
+<span id="cb101-2"><a href="#cb101-2" aria-hidden="true" tabindex="-1"></a>                  (condition <span class="sc">|</span> participant) <span class="sc">+</span> </span>
+<span id="cb101-3"><a href="#cb101-3" aria-hidden="true" tabindex="-1"></a>                  (<span class="dv">1</span> <span class="sc">|</span> stimulus),</span>
+<span id="cb101-4"><a href="#cb101-4" aria-hidden="true" tabindex="-1"></a>                dat_group)</span>
+<span id="cb101-5"><a href="#cb101-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(mod_lmm)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Linear mixed model fit by REML. t-tests use Satterthwaite's method [
 lmerModLmerTest]
@@ -1270,8 +1269,8 @@ conditionfc -0.397</code></pre>
 <h3 class="anchored" data-anchor-id="time-course">Time Course</h3>
 <p>First, load required packages:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)    <span class="co"># for data wrangling</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb103"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb103-1"><a href="#cb103-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb103-2"><a href="#cb103-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)    <span class="co"># for data wrangling</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: 'dplyr'</code></pre>
@@ -1286,7 +1285,7 @@ Attaching package: 'dplyr'</code></pre>
 
     intersect, setdiff, setequal, union</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)    <span class="co"># for data wrangling</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb107"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb107-1"><a href="#cb107-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyr)    <span class="co"># for data wrangling</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>
 Attaching package: 'tidyr'</code></pre>
@@ -1305,12 +1304,12 @@ Attaching package: 'tidyr'</code></pre>
 </ul>
 <p>We’ll also add annotations for the plotted time window and electrode of interest:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb111"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb111-1"><a href="#cb111-1" aria-hidden="true" tabindex="-1"></a>tmin <span class="ot">&lt;-</span> <span class="fl">0.15</span></span>
-<span id="cb111-2"><a href="#cb111-2" aria-hidden="true" tabindex="-1"></a>tmax <span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
-<span id="cb111-3"><a href="#cb111-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb111-4"><a href="#cb111-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_timecourse</span>(dat_epo, <span class="at">electrode =</span> <span class="st">"PO7"</span>, <span class="at">colour =</span> <span class="st">"epoch_labels"</span>) <span class="sc">+</span></span>
-<span id="cb111-5"><a href="#cb111-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> tmin, <span class="at">xmax =</span> tmax, <span class="at">ymin =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
-<span id="cb111-6"><a href="#cb111-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.7</span>, <span class="at">y =</span> <span class="dv">8</span>, <span class="at">label =</span> <span class="st">"Electrode PO8"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>tmin <span class="ot">&lt;-</span> <span class="fl">0.15</span></span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>tmax <span class="ot">&lt;-</span> <span class="fl">0.2</span></span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot_timecourse</span>(dat_epo, <span class="at">electrode =</span> <span class="st">"PO7"</span>, <span class="at">colour =</span> <span class="st">"epoch_labels"</span>) <span class="sc">+</span></span>
+<span id="cb110-5"><a href="#cb110-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"rect"</span>, <span class="at">xmin =</span> tmin, <span class="at">xmax =</span> tmax, <span class="at">ymin =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">ymax =</span> <span class="cn">Inf</span>, <span class="at">alpha =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb110-6"><a href="#cb110-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">annotate</span>(<span class="st">"text"</span>, <span class="at">x =</span> <span class="fl">0.7</span>, <span class="at">y =</span> <span class="dv">8</span>, <span class="at">label =</span> <span class="st">"Electrode PO8"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning in parse_for_tc(data, time_lim = time_lim, electrode = electrode, :
 colour argument is kept for compatability, please use the `mapping` argument
@@ -1335,7 +1334,7 @@ deprectated in v0.9.0 of eegUtils</code></pre>
 <p>As we see, face voltages were more negative on average.</p>
 <p>Plotting all electrodes:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a><span class="fu">erp_scalp</span>(dat_epo, <span class="at">colour =</span> <span class="st">"epoch_labels"</span>, <span class="at">size =</span> <span class="fl">0.6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="fu">erp_scalp</span>(dat_epo, <span class="at">colour =</span> <span class="st">"epoch_labels"</span>, <span class="at">size =</span> <span class="fl">0.6</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1349,16 +1348,16 @@ deprectated in v0.9.0 of eegUtils</code></pre>
 <h3 class="anchored" data-anchor-id="scalp-topography">Scalp Topography</h3>
 <p><strong>Scalp topography</strong> shows the distribution of voltages on the scalp, either for a single condition or (more typically) for the difference between conditions. This requires some wrangling of the data: we want a data frame with a column of electrode names and a vector of amplitudes. The following code block does this in the <code>tidyverse</code> style:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>dat_epo <span class="sc">%&gt;%</span></span>
-<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(time <span class="sc">&gt;=</span> tmin <span class="sc">&amp;</span> time <span class="sc">&lt;</span> tmax) <span class="sc">%&gt;%</span></span>
-<span id="cb116-4"><a href="#cb116-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(time, epoch, participant_id, recording, event_type)) <span class="sc">%&gt;%</span></span>
-<span id="cb116-5"><a href="#cb116-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>epoch_labels, <span class="at">names_to =</span> <span class="st">"electrode"</span>, <span class="at">values_to =</span> <span class="st">"amplitude"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb116-6"><a href="#cb116-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(electrode, epoch_labels) <span class="sc">%&gt;%</span></span>
-<span id="cb116-7"><a href="#cb116-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">amplitude =</span> <span class="fu">mean</span>(amplitude), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
-<span id="cb116-8"><a href="#cb116-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_split</span>(epoch_labels) <span class="ot">-&gt;</span> dats_topo</span>
-<span id="cb116-9"><a href="#cb116-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb116-10"><a href="#cb116-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dats_topo[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb115"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb115-1"><a href="#cb115-1" aria-hidden="true" tabindex="-1"></a>dat_epo <span class="sc">%&gt;%</span></span>
+<span id="cb115-2"><a href="#cb115-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb115-3"><a href="#cb115-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(time <span class="sc">&gt;=</span> tmin <span class="sc">&amp;</span> time <span class="sc">&lt;</span> tmax) <span class="sc">%&gt;%</span></span>
+<span id="cb115-4"><a href="#cb115-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(time, epoch, participant_id, recording, event_type)) <span class="sc">%&gt;%</span></span>
+<span id="cb115-5"><a href="#cb115-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(<span class="sc">-</span>epoch_labels, <span class="at">names_to =</span> <span class="st">"electrode"</span>, <span class="at">values_to =</span> <span class="st">"amplitude"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb115-6"><a href="#cb115-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(electrode, epoch_labels) <span class="sc">%&gt;%</span></span>
+<span id="cb115-7"><a href="#cb115-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarize</span>(<span class="at">amplitude =</span> <span class="fu">mean</span>(amplitude), <span class="at">.groups =</span> <span class="st">"drop"</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb115-8"><a href="#cb115-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_split</span>(epoch_labels) <span class="ot">-&gt;</span> dats_topo</span>
+<span id="cb115-9"><a href="#cb115-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb115-10"><a href="#cb115-10" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dats_topo[[<span class="dv">1</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 3
   electrode epoch_labels amplitude
@@ -1370,7 +1369,7 @@ deprectated in v0.9.0 of eegUtils</code></pre>
 5 CPz       car             -1.42 
 6 Cz        car             -0.778</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dats_topo[[<span class="dv">2</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb117"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb117-1"><a href="#cb117-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dats_topo[[<span class="dv">2</span>]])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 6 × 3
   electrode epoch_labels amplitude
@@ -1385,11 +1384,11 @@ deprectated in v0.9.0 of eegUtils</code></pre>
 </div>
 <p>We can then create a new data frame that has the difference between face amplitudes and car amplitudes:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>dat_topo <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">electrode =</span> dats_topo[[<span class="dv">1</span>]]<span class="sc">$</span>electrode,</span>
-<span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">amplitude =</span> dats_topo[[<span class="dv">2</span>]]<span class="sc">$</span>amplitude <span class="sc">-</span> dats_topo[[<span class="dv">1</span>]]<span class="sc">$</span>amplitude</span>
-<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat_topo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>dat_topo <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">electrode =</span> dats_topo[[<span class="dv">1</span>]]<span class="sc">$</span>electrode,</span>
+<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">amplitude =</span> dats_topo[[<span class="dv">2</span>]]<span class="sc">$</span>amplitude <span class="sc">-</span> dats_topo[[<span class="dv">1</span>]]<span class="sc">$</span>amplitude</span>
+<span id="cb119-4"><a href="#cb119-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb119-5"><a href="#cb119-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dat_topo)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>  electrode amplitude
 1        C3  1.466301
@@ -1402,12 +1401,12 @@ deprectated in v0.9.0 of eegUtils</code></pre>
 </div>
 <p>We can then create the topographic plot with <code>eegUtils</code>:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Arrange data frame to account for bug in topoplot</span></span>
-<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a>dat_topo <span class="ot">&lt;-</span> dat_topo <span class="sc">%&gt;%</span></span>
-<span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>electrode <span class="sc">%in%</span></span>
-<span id="cb122-4"><a href="#cb122-4" aria-hidden="true" tabindex="-1"></a>           <span class="fu">c</span>(<span class="st">"HEOG_left"</span>, <span class="st">"HEOG_right"</span>, <span class="st">"VEOG_lower"</span>))</span>
-<span id="cb122-5"><a href="#cb122-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb122-6"><a href="#cb122-6" aria-hidden="true" tabindex="-1"></a><span class="fu">topoplot</span>(dat_topo, <span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">6.0</span>, <span class="fl">6.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Arrange data frame to account for bug in topoplot</span></span>
+<span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a>dat_topo <span class="ot">&lt;-</span> dat_topo <span class="sc">%&gt;%</span></span>
+<span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(<span class="sc">!</span>electrode <span class="sc">%in%</span></span>
+<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a>           <span class="fu">c</span>(<span class="st">"HEOG_left"</span>, <span class="st">"HEOG_right"</span>, <span class="st">"VEOG_lower"</span>))</span>
+<span id="cb121-5"><a href="#cb121-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb121-6"><a href="#cb121-6" aria-hidden="true" tabindex="-1"></a><span class="fu">topoplot</span>(dat_topo, <span class="at">limits =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">6.0</span>, <span class="fl">6.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Attempting to add standard electrode locations...</code></pre>
 </div>
