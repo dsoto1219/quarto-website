@@ -8,7 +8,7 @@
 
 <meta name="author" content="Daniel Soto">
 
-<title>Decision Trees – Machine Learning Notes</title>
+<title>Decision Trees – Daniel Soto’s Portfolio</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -119,7 +119,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <div class="navbar-container container-fluid">
       <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="../index.html">
-    <span class="navbar-title">Machine Learning Notes</span>
+    <span class="navbar-title">Daniel Soto’s Portfolio</span>
     </a>
   </div>
             <div id="quarto-search" class="" title="Search"></div>
@@ -137,10 +137,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span class="menu-text">About</span></a>
   </li>  
   <li class="nav-item dropdown ">
-    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-models" role="link" data-bs-toggle="dropdown" aria-expanded="false">
- <span class="menu-text">Models</span>
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-machine-learning-notes" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">Machine Learning Notes</span>
     </a>
-    <ul class="dropdown-menu" aria-labelledby="nav-menu-models">    
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-machine-learning-notes">    
         <li>
     <a class="dropdown-item" href="../models/datasets.html">
  <span class="dropdown-text">Data and Research Question</span></a>
@@ -164,6 +164,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li>
     <a class="dropdown-item" href="../models/knn.html">
  <span class="dropdown-text">K-Nearest Neighbors</span></a>
+  </li>  
+    </ul>
+  </li>
+  <li class="nav-item dropdown ">
+    <a class="nav-link dropdown-toggle" href="#" id="nav-menu-eegs" role="link" data-bs-toggle="dropdown" aria-expanded="false">
+ <span class="menu-text">EEGs</span>
+    </a>
+    <ul class="dropdown-menu" aria-labelledby="nav-menu-eegs">    
+        <li>
+    <a class="dropdown-item" href="../eegs/eeg-seminar.html">
+ <span class="dropdown-text">N170</span></a>
   </li>  
     </ul>
   </li>
@@ -496,11 +507,11 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 5 × 9
   cost_complexity tree_depth min_n .metric .estimator  mean     n std_err
             &lt;dbl&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;   &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt;
-1      0.00000218          7   122 roc_auc binary     0.661    10  0.0161
-2      0.0000408           8   147 roc_auc binary     0.661    10  0.0168
-3      0.00000579          9   125 roc_auc binary     0.659    10  0.0159
-4      0.000108           10   120 roc_auc binary     0.659    10  0.0159
-5      0.000515            5     5 roc_auc binary     0.659    10  0.0152
+1      0.00000579          9   125 roc_auc binary     0.667    10  0.0118
+2      0.000108           10   120 roc_auc binary     0.666    10  0.0121
+3      0.0000408           8   147 roc_auc binary     0.665    10  0.0116
+4      0.00000148          6    34 roc_auc binary     0.664    10  0.0127
+5      0.00000218          7   122 roc_auc binary     0.664    10  0.0118
 # ℹ 1 more variable: .config &lt;chr&gt;</code></pre>
 </div>
 </div>
@@ -530,7 +541,7 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 1 × 4
   cost_complexity tree_depth min_n .config         
             &lt;dbl&gt;      &lt;int&gt; &lt;int&gt; &lt;chr&gt;           
-1      0.00000218          7   122 pre0_mod05_post0</code></pre>
+1      0.00000579          9   125 pre0_mod10_post0</code></pre>
 </div>
 </div>
 <p>But we don’t commit yet: we want to check how this performs first.</p>
@@ -548,9 +559,9 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 3 × 6
   .metric     .estimator  mean     n std_err .config        
   &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;          
-1 accuracy    binary     0.698    10 0.0107  pre0_mod0_post0
-2 brier_class binary     0.212    10 0.00194 pre0_mod0_post0
-3 roc_auc     binary     0.661    10 0.0161  pre0_mod0_post0</code></pre>
+1 accuracy    binary     0.702    10 0.00986 pre0_mod0_post0
+2 brier_class binary     0.212    10 0.00179 pre0_mod0_post0
+3 roc_auc     binary     0.667    10 0.0118  pre0_mod0_post0</code></pre>
 </div>
 </div>
 <p>Looks good, time to lock it in.</p>
@@ -574,9 +585,9 @@ Model: decision_tree()
 Decision Tree Model Specification (classification)
 
 Main Arguments:
-  cost_complexity = 2.18264472839749e-06
-  tree_depth = 7
-  min_n = 122
+  cost_complexity = 5.79044398060248e-06
+  tree_depth = 9
+  min_n = 125
 
 Engine-Specific Arguments:
   parms = list(prior = c(0.5, 0.5))
@@ -616,11 +627,11 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 5 × 4
   .metric     .estimator .estimate .config        
   &lt;chr&gt;       &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;          
-1 accuracy    binary        0.689  pre0_mod0_post0
-2 kap         binary        0.0744 pre0_mod0_post0
-3 sensitivity binary        0.693  pre0_mod0_post0
+1 accuracy    binary        0.692  pre0_mod0_post0
+2 kap         binary        0.0757 pre0_mod0_post0
+3 sensitivity binary        0.696  pre0_mod0_post0
 4 specificity binary        0.608  pre0_mod0_post0
-5 roc_auc     binary        0.691  pre0_mod0_post0</code></pre>
+5 roc_auc     binary        0.689  pre0_mod0_post0</code></pre>
 </div>
 </div>
 <p>Comparing these to the CV metrics from the sanity-check section, we see they are in about the same ballpark. Thus, the model generalizes.</p>
@@ -638,13 +649,13 @@ Computational engine: rpart </code></pre>
 <pre><code># A tibble: 4,899 × 4
    WeaponCarryingSchool .pred_class .pred_1 .pred_0
    &lt;fct&gt;                &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt;
- 1 0                    0             0.341   0.659
- 2 0                    0             0.470   0.530
- 3 0                    0             0.341   0.659
- 4 0                    0             0.341   0.659
- 5 0                    0             0.341   0.659
+ 1 0                    0             0.339   0.661
+ 2 0                    1             0.530   0.470
+ 3 0                    0             0.339   0.661
+ 4 0                    0             0.339   0.661
+ 5 0                    0             0.339   0.661
  6 0                    1             0.521   0.479
- 7 0                    1             0.538   0.462
+ 7 0                    0             0.394   0.606
  8 1                    1             0.893   0.107
  9 0                    1             0.734   0.266
 10 0                    1             0.521   0.479
