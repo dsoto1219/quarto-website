@@ -668,7 +668,7 @@ We'll load it:
 
 group_file <- here(bids_dir, "derivatives/eegUtils/group_task-N170_trials.csv")
 dat_group <- read.csv(group_file)
-head(dat_group
+head(dat_group)
 ```
 
 
