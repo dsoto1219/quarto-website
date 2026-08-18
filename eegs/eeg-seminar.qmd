@@ -603,7 +603,7 @@ Then, we combine all of our data frames into one big data frame, adding an ID co
 
 library(dplyr)
 
-dat_group <- dplyr::bind_rows(dats_group, .id = "participant")
+dat_group <- bind_rows(dats_group, .id = "participant")
 head(dat_group)
 ```
 
