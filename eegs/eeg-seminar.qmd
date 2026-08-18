@@ -697,6 +697,7 @@ First, load required packages:
 #| label: load-plot-packages
 
 library(ggplot2)
+library(dplyr)    # for data wrangling
 library(tidyr)    # for data wrangling
 ```
 We'll start by plotting results for a single subject, subject 001.
