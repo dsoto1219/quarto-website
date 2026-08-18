@@ -331,3 +331,17 @@ Now, we can save the baseline-corrected epochs.
 epo_file <- here(deriv_dir, "sub-001_task-N170_desc-epoched_eeg.rds")
 saveRDS(dat_basl, epo_file)
 ```
+## Removing Artifacts
+
+### Independent Component Analysis
+
+With the baseline-corrected epoch data, we can run Independent Component Analysis (ICA) to separate our EEG recordings into a number of additive sub-components.
+The seminar decides to separate into the 15 most important components:
+
+```{r}
+#| label: run-ica
+
+n_components <- 15
+ica <- run_ICA(dat_epo, method = "fastica", pca = n_components)
+```
+
