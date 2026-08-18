@@ -86,6 +86,7 @@ set_file <- here(bids_dir, "sub-001/eeg/sub-001_task-N170_eeg.set")
 
 stopifnot(file.exists(set_file))
 ```
+
 `eegUtils` has functions for importing raw EEG data from various file formats into R, including the `.set` format used by ERP CORE.
 
 ```{r}
@@ -93,7 +94,7 @@ stopifnot(file.exists(set_file))
 #| output: false
 
 # Needed these packages for `import_set` to work
-pak::pak("R.matlab", "hdf5r") 
+pak::pak("R.matlab", "hdf5r")
 ```
 
 ```{r}
