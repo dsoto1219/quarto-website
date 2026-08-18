@@ -223,6 +223,10 @@ window.Quarto = {
     <a class="dropdown-item" href="../eegs/eeg-seminar.html">
  <span class="dropdown-text">N170</span></a>
   </li>  
+        <li>
+    <a class="dropdown-item" href="../eegs/ds004408.html">
+ <span class="dropdown-text">ds004408</span></a>
+  </li>  
     </ul>
   </li>
 </ul>
@@ -1500,7 +1504,7 @@ deprectated in v0.9.0 of eegUtils</code></pre>
     }
       var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
       var mailtoRegex = new RegExp(/^mailto:/);
-        var filterRegex = new RegExp("https:\/\/dsoto1219\.github\.io\/quarto-website\/");
+        var filterRegex = new RegExp('/' + window.location.host + '/');
       var isInternal = (href) => {
           return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
       }
