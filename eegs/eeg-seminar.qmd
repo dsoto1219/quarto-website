@@ -672,3 +672,92 @@ mod_lmm <- lmer(amplitude ~ condition +
 summary(mod_lmm)
 ```
 Our conclusion is that, in the population from which the ERP CORE participants were drawn, face images (as compared to car images) elicit more negative voltages in the N170 time range.
+
+## Making Plots
+
+### Time Course
+
+First, load required packages:
+
+```{r}
+#| label: load-plot-packages
+
+library(ggplot2)
+library(tidyr)    # for data wrangling
+```
+We'll start by plotting results for a single subject, subject 001.
+We'll use a **time course plot**:
+
+- X-axis: Time
+- Y-axis: ERP amplitude (one electrode or ROI average)
+- Colors: Average ERP wave forms in different conditions
+
+We'll also add annotations for the plotted time window and electrode of interest:
+
+```{r}
+#| label: plot-time-course
+
+tmin <- 0.15
+tmax <- 0.2
+
+plot_timecourse(dat_epo, electrode = "PO7", colour = "epoch_labels") +
+  annotate("rect", xmin = tmin, xmax = tmax, ymin = -Inf, ymax = Inf, alpha = 0.2) +
+  annotate("text", x = 0.7, y = 8, label = "Electrode PO8")
+```
+
+As we see, face voltages were more negative on average.
+
+Plotting all electrodes:
+
+```{r}
+#| label: sub-001-all-electrodes
+
+erp_scalp(dat_epo, colour = "epoch_labels", size = 0.6)
+```
+
+### Scalp Topography
+
+**Scalp topography** shows the distribution of voltages on the scalp, either for a single condition or (more typically) for the difference between conditions.
+This requires some wrangling of the data: we want a data frame with a column of electrode names and a vector of amplitudes.
+The following code block does this in the `tidyverse` style:
+
+```{r}
+#| label: dat-epo-wrangling
+
+dat_epo %>%
+  as.data.frame() %>%
+  filter(time >= tmin & time < tmax) %>%
+  select(-c(time, epoch, participant_id, recording, event_type)) %>%
+  pivot_longer(-epoch_labels, names_to = "electrode", values_to = "amplitude") %>%
+  group_by(electrode, epoch_labels) %>%
+  summarize(amplitude = mean(amplitude), .groups = "drop") %>%
+  group_split(epoch_labels) -> dats_topo
+
+head(dats_topo[[1]])
+head(dats_topo[[2]])
+```
+
+We can then create a new data frame that has the difference between face amplitudes and car amplitudes:
+
+```{r}
+#| label: dat-topo-diffs
+
+dat_topo <- data.frame(
+  electrode = dats_topo[[1]]$electrode,
+  amplitude = dats_topo[[2]]$amplitude - dats_topo[[1]]$amplitude
+)
+head(dat_topo)
+```
+
+We can then create the topographic plot with `eegUtils`:
+
+```{r}
+#| label: topoplot
+
+# Arrange data frame to account for bug in topoplot
+dat_topo <- dat_topo %>%
+  filter(!electrode %in%
+           c("HEOG_left", "HEOG_right", "VEOG_lower"))
+
+topoplot(dat_topo, limits = c(-6.0, 6.0))
+```
