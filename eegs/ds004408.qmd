@@ -1,0 +1,12 @@
+---
+title: "ds004408"
+author: "Daniel Soto"
+---
+
+In this file, we replicate two studies that use the [`ds004408` dataset](https://huggingface.co/datasets/EEGDash/ds004408).
+
+```{python}
+x = 1
+
+print(x)
+```
