@@ -83,7 +83,8 @@ So, we retrieve this `.set` file for subject 1:
 
 bids_dir <- here("eegs", "data/n170")
 set_file <- here(bids_dir, "sub-001/eeg/sub-001_task-N170_eeg.set")
-file.exists(set_file)
+
+stopifnot(file.exists(set_file))
 ```
 `eegUtils` has functions for importing raw EEG data from various file formats into R, including the `.set` format used by ERP CORE.
 
