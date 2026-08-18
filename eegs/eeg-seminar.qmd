@@ -615,3 +615,60 @@ group_file <- here(bids_dir, "derivatives/eegUtils/group_task-N170_trials.csv")
 write.csv(dat_group, group_file, row.names = FALSE)
 ```
 
+## Statistical Modeling
+
+We'll start by modeling data for a single subject, just to get a feel for things.
+Let us load the required packages:
+
+```{r}
+#| label: load-stat-packages
+
+library(lme4)
+library(lmerTest)
+```
+
+Then, we'll start with a simple student's $t$-test for the difference between `"car"` trials and `"face"` trials:
+
+```{r}
+#| label: t-test
+
+t.test(amplitude ~ condition, data = dat_trials)
+```
+From this (unlike in the seminar), we conclude that for subject 001, face images (as compared to car images) elicit more negative voltages in the N170 time range.
+
+### Linear Regression
+
+The N170 `amplitude` is predicted by an intercept and the `condition` effect (faces vs. cars)
+
+The intercept is the average N170 voltage in car trials.
+
+```{r}
+#| label: linear-regression
+
+mod <- lm(amplitude ~ condition, dat_trials)
+summary(mod)
+```
+
+### Linear mixed-effects model
+
+Modeling data from all participants requires a more model:
+
+- Trials from the same participant are correlated with one another (due to individual differences, differences in cap position and conductance, etc.)
+- Idea of linear mixed effects models is to fit a separate linear regression, like in the previous section, for each participant and average the regression coefficients.
+
+We will apply our methods to the `dat_group` data frame from last section.
+
+In our model formula, we want to capture fixed intercept and predictor effects *across* subjects.
+As for random effects (in parentheses), we want to capture subject-specific variation in the intercept and in the predictor effect.
+In the linear model, this looks like:
+
+```{r}
+#| label: lmer-model
+
+mod_lmm <- lmer(amplitude ~ condition + 
+                  (condition | participant) + 
+                  (1 | stimulus),
+                dat_group)
+summary(mod_lmm)
+```
+Our conclusion is that, in the population from which the ERP CORE participants were drawn, face images (as compared to car images) elicit more negative voltages in the N170 time range.
