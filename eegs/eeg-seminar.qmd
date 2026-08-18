@@ -591,6 +591,7 @@ Then, we apply the pipeline function to each `.set` file, returning a list of da
 
 ```{r}
 #| label: dats-group
+#| eval: false
 
 dats_group <- lapply(set_files, run_pipeline)
 ```
