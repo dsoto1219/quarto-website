@@ -8,4 +8,4 @@
 .DS_Store
 .quarto
 
-./docs/eegs/data/
+/eegs/data/
