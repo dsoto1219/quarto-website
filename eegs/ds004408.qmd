@@ -4,3 +4,10 @@ author: "Daniel Soto"
 ---
 
 In this file, we replicate two studies that use the [`ds004408` dataset](https://openneuro.org/datasets/ds004408/versions/1.0.8).
+
+```{r}
+library(here)
+
+dir <- here("eegs", "data/ds004408")
+stopifnot(dir.exists(dir))
+```
