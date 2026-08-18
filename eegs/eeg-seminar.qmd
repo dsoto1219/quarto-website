@@ -4,7 +4,9 @@ author: "Daniel Soto"
 ---
 
 These are my notes and completed exercises taken from [this 2022 seminar on EEG data analysis in R](https://alexenge.github.io/eegSeminaR/). 
+
 Citation:
+
 > Enge A (2023). eegSeminaR: A Seminar on Analyzing EEG Data in R. https://github.com/alexenge/eegSeminaR, https://alexenge.github.io/eegSeminaR/.
 
 
