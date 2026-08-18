@@ -1,9 +1,6 @@
 project:
   type: website
   output-dir: docs
-  resources:
-    - R/
-    - data/
 
 website:
   title: "Daniel Soto's Portfolio"
