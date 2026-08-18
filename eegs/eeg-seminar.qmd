@@ -526,3 +526,92 @@ Finally, we save the single trial data for later:
 trials_file <- here(deriv_dir, "sub-001_task-N170_trials.csv")
 write.csv(dat_trials, trials_file, row.names = FALSE)
 ```
+
+### Building a Pipeline
+
+The seminar defines a custom pipeline function, combining all of our processing steps that we have done, with:
+
+- Input parameters: The EEG data (.set) file + all processing options
+- Return value: A data frame with single trial mean ERP amplitudes (as above)
+
+```{r}
+#| label: custom-pipeline-func
+
+run_pipeline <- function(set_file,
+                         montage = "biosemi64",
+                         reref_chans = "average",
+                         reref_exclude = c("HEOG_left", "HEOG_right", "VEOG_lower"),
+                         filter_low_freq = 0.1,
+                         filter_high_freq = 30.0,
+                         downsample_factor = 4.0,
+                         event_codes = c(1:80),
+                         epoch_labels = c(rep("face", 40), rep("car", 40)),
+                         epoch_time_lim = c(-0.2, 0.8),
+                         baseline = c(-0.2, 0.0),
+                         artifact_threshold = c(-100.0, 100.0),
+                         erp_roi = c("P7", "P8", "P9", "P10", "PO7", "PO8"),
+                         erp_time_lim = c(0.15, 0.2)) {
+
+  # From Vignette 3: Preprocessing
+  dat <- import_set(set_file)
+  dat <- electrode_locations(dat, montage = montage, overwrite = TRUE)
+  dat <- eeg_reference(dat, reref_chans, reref_exclude)
+  dat <- eeg_downsample(dat, downsample_factor)
+
+  # From Vignette 4: Creating epochs
+  dat <- epoch_data(dat, event_codes, epoch_time_lim, baseline, epoch_labels)
+  dat <- ar_thresh(dat, artifact_threshold, reject = TRUE)
+
+  # From Vignette 6: Extracting amplitudes
+  dat <- as.data.frame(dat)
+  dat$roi <- rowMeans(dat[roi])
+  tmin <- min(erp_time_lim)
+  tmax <- max(erp_time_lim)
+  dat <- subset(dat, time >= tmin & time < tmax)
+  dat <- aggregate(roi ~ epoch + event_type + epoch_labels, dat, mean)
+  names(dat) <- c("epoch", "stimulus", "condition", "amplitude")
+  
+  return(dat)
+}
+```
+
+With this, we find all `.set` EEG files inside our BIDS directory (including sub-directories).
+
+```{r}
+#| label: list-all-set-files
+
+(set_files <- list.files(
+  bids_dir,
+  pattern = "\\.set$",
+  recursive = TRUE,
+  full.names = TRUE
+))
+```
+Then, we apply the pipeline function to each `.set` file, returning a list of data frames, one for each participant:
+
+```{r}
+#| label: dats-group
+
+dats_group <- lapply(set_files, run_pipeline)
+```
+
+Then, we combine all of our data frames into one big data frame, adding an ID column to keep track of which trials belong to which participant:
+
+```{r}
+#| label: dat-group-bind-rows
+
+library(dplyr)
+
+dat_group <- dplyr::bind_rows(dats_group, .id = "participant")
+head(dat_group)
+```
+
+Finally, we save for later:
+
+```{r}
+#| label: save-dat-group
+
+group_file <- here(bids_dir, "derivatives/eegUtils/group_task-N170_trials.csv")
+write.csv(dat_group, group_file, row.names = FALSE)
+```
+
