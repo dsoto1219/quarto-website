@@ -602,17 +602,18 @@ Then, we combine all of our data frames into one big data frame, adding an ID co
 
 ```{r}
 #| label: dat-group-bind-rows
+#| eval: false
 
 library(dplyr)
 
 dat_group <- bind_rows(dats_group, .id = "participant")
-head(dat_group)
 ```
 
 Finally, we save for later:
 
 ```{r}
 #| label: save-dat-group
+#| eval: false
 
 group_file <- here(bids_dir, "derivatives/eegUtils/group_task-N170_trials.csv")
 write.csv(dat_group, group_file, row.names = FALSE)
@@ -660,6 +661,16 @@ Modeling data from all participants requires a more model:
 - Idea of linear mixed effects models is to fit a separate linear regression, like in the previous section, for each participant and average the regression coefficients.
 
 We will apply our methods to the `dat_group` data frame from last section.
+We'll load it:
+
+```{r}
+#| label: load-dat-group
+
+group_file <- here(bids_dir, "derivatives/eegUtils/group_task-N170_trials.csv")
+dat_group <- read.csv(group_file)
+head(dat_group
+```
+
 
 In our model formula, we want to capture fixed intercept and predictor effects *across* subjects.
 As for random effects (in parentheses), we want to capture subject-specific variation in the intercept and in the predictor effect.
