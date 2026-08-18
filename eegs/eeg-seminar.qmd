@@ -438,3 +438,91 @@ corr_file <- here(deriv_dir, "sub-001_task-N170_desc-corrected_eeg.rds")
 saveRDS(dat_rej, corr_file)
 ```
 
+## Extracting Amplitudes
+
+### Selecting Region of Interest
+
+We can't just measure a single EEG electrode. 
+For one thing, single measurements are noisy and spatially imprecise.
+Thus, averaging across nearby electrodes boosts our signal-to-noise ratio.
+For another, their measurements are not well-defined without relationships to other electrodes.
+Altogether, this leads to us defining the **region of interest (ROI)**, "the set of electrodes where we expect our ERP component of interest to be maximal."
+
+First, we convert our epoched data to a data frame for subsetting / averages.
+
+```{r}
+#| label: epoched-data-frame
+
+dat_frame <- as.data.frame(dat_epo)
+str(dat_frame)
+```
+Now, we know from prior N170 research that the face-sensitive N170 is strongest over bilateral posterior-occipitotemporal scalp, so we'll summarize the EEG from the six electrodes covering that region:
+
+| Left Hemisphere | Right Hemisphere |
+| ---- | ----- |
+| P7   | P8    |
+| P9   | P10   |
+| PO7  | PO8   |
+
+In particular, we have
+
+- P7, P8 = left/right parietal
+- P9, P10 = farther lateral/inferior left/right posterior sites
+- PO7, PO8 = left/right parieto-occipital
+
+With this, we create a new "virtual" channel, a column in the data frame, containing the average signal in the ROI:
+
+```{r}
+#| label: virtual-channel
+
+roi <- c("P7", "P8", "P9", "P10", "PO7", "PO8")
+dat_frame$roi <- rowMeans(dat_frame[roi])
+```
+
+### Select Time Window
+
+ERP components unfold on the time scale of 10 ms to multiples 100s of ms.
+Here, we want to select the time window for where we expect our component to be — in our case, around 170 ms for the N170.
+
+```{r}
+#| label: select-time-window
+
+tmin <- 0.15
+tmax <- 0.2
+
+dat_frame <- subset(dat_frame, time >= tmin & time < tmax)
+```
+
+Averaging across this time window gets us one value, the mean ERP amplitude, per trial:
+
+```{r}
+#| label: averaging-time-window
+
+dat_trials <- aggregate(
+  roi ~ epoch + event_type + epoch_labels,
+  dat_frame,
+  mean
+)
+names(dat_trials) <- c("epoch", "stimulus", "condition", "amplitude")
+str(dat_trials)
+```
+We can make a quick box plot comparing the single trial mean ERP amplitudes for faces vs. cars:
+
+```{r}
+#| label: dat-trials-boxplot
+
+ggplot(dat_trials, aes(x = condition, y = amplitude)) +
+  geom_boxplot() +
+  labs(x = NULL, y = "N170 amplitude (µV)") +
+  theme_minimal()
+```
+
+We’ll quantify this effect using statistical modeling in Vignette 7. 
+Finally, we save the single trial data for later:
+
+```{r}
+#| label: save-trials-file
+
+trials_file <- here(deriv_dir, "sub-001_task-N170_trials.csv")
+write.csv(dat_trials, trials_file, row.names = FALSE)
+```
