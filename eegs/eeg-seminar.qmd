@@ -345,3 +345,96 @@ n_components <- 15
 ica <- run_ICA(dat_epo, method = "fastica", pca = n_components)
 ```
 
+With this, we can plot scalp distributions of the extracted ICA components. 
+In particular, eye-blink and vertical eye movement components will have a very strong signal at the forehead (`Comp001``Comp001`), and vertical eye movement components will have opposite polarities left-frontal vs. right-frontal (maybe `Comp008` and/or `Comp009`).
+
+```{r}
+#| label: ica-topoplot
+
+topoplot(
+  ica,
+  component = 1:n_components,
+  limits = c(-20, 20),
+  chan_marker = "none",
+  scaling=0.4
+)
+```
+
+We can also automatically detect "bad" components based on their correlation with the electrooculogram (EOG), the part that measures eye-movement signals.
+We set a threshold of `0.6`:
+
+```{r}
+#| label: eog-corr
+
+heog <- c("HEOG_left", "HEOG_right")
+veog <- c("FP2", "VEOG_lower")
+bad_components <- ar_eogcor(ica, dat_epo, heog, veog, threshold = 0.6)
+bad_components
+```
+
+Weirdly, in the seminar, it ends up being components 001 and 009 that are outliers, but here we see we get components 001 and 006 are the outliers.
+I chalk this up to the potential differences that may have come from us using different R package sources for the data we use.
+
+Regardless, with this, we can remove the "bad" ICA components from the actual (epoched) data:
+
+```{r}
+#| label: remove-bad-ica-comps
+
+dat_icacorr <- apply_ica(dat_epo, ica, comps = bad_components)
+```
+The seminar provides useful helper functions to compare the uncorrected and corrected epochs visually:
+
+```{r}
+#| label: bad-comp-removal-visual
+
+extract_epoch <- function(epochs, epoch_no, electrode) {
+  epoch_ixs <- epochs$timings$epoch == epoch_no
+  data.frame(
+    time = unique(epochs$timings$time),
+    amplitude = epochs$signals[epoch_ixs, electrode][[1]]
+  )
+}
+
+compare_epochs <- function(uncorr_epochs,
+                           corr_epochs,
+                           epoch_no,
+                           electrode) {
+  require(ggplot2)
+  n_samples <- length(unique(uncorr_epochs$timings$time))
+  epochs <- list(uncorr_epochs, corr_epochs) |>
+    lapply(extract_epoch, epoch_no, electrode) |>
+    do.call(what = "rbind")
+  epochs$type <- rep(c("uncorrected", "corrected"), each = n_samples) |>
+    factor(levels = c("uncorrected", "corrected"))
+  ggplot(epochs, aes(x = time, y = amplitude, color = type)) +
+    geom_line() +
+    labs(x = "Time (s)", y = "Amplitude (µV)", color = NULL) +
+    ggtitle(paste0("Epoch #", epoch_no, ", channel ", electrode)) +
+    theme_minimal()
+}
+
+compare_epochs(dat_epo, dat_icacorr, epoch_no = 103, electrode = "FP1")
+```
+
+### Artifact Rejection
+
+ICA may not be able to correct all eye movements or other artifacts.
+Additionally, we want to reject all epochs where at least one channel exceeds an absolute voltage thresheld, like ±100 µV.
+
+```{r}
+#| label: artifact-rejection
+
+dat_rej <- ar_thresh(dat_icacorr, threshold = c(100, -100), reject = TRUE)
+```
+
+Thresholds in practice should be chosen carefully, as rejecting many epochs reduces statistical power. 
+More sophisticated thresholding approaches exist, e.g. via a moving window.
+Save artifact-corrected epochs for later:
+
+```{r}
+#| label: save-artifact-corr-epoch-dat
+
+corr_file <- here(deriv_dir, "sub-001_task-N170_desc-corrected_eeg.rds")
+saveRDS(dat_rej, corr_file)
+```
+
