@@ -597,7 +597,7 @@ Then, we apply the pipeline function to each `.set` file, returning a list of da
 #| label: dats-group
 #| eval: false
 
-dats_group <- lapply(set_files, run_pipeline)
+dat_group <- lapply(set_files, run_pipeline)
 ```
 
 Then, we combine all of our data frames into one big data frame, adding an ID column to keep track of which trials belong to which participant:
