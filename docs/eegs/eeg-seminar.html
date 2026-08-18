@@ -8,7 +8,7 @@
 
 <meta name="author" content="Daniel Soto">
 
-<title>EEG Seminar Notes – Daniel Soto’s Portfolio</title>
+<title>eegSeminaR Notes – Daniel Soto’s Portfolio</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -224,6 +224,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#creating-epochs" id="toc-creating-epochs" class="nav-link" data-scroll-target="#creating-epochs">Creating Epochs</a>
   <ul class="collapse">
   <li><a href="#event-codes" id="toc-event-codes" class="nav-link" data-scroll-target="#event-codes">Event Codes</a></li>
+  <li><a href="#construct-epochs" id="toc-construct-epochs" class="nav-link" data-scroll-target="#construct-epochs">Construct Epochs</a></li>
+  <li><a href="#baseline-correction" id="toc-baseline-correction" class="nav-link" data-scroll-target="#baseline-correction">Baseline Correction</a></li>
+  </ul></li>
+  <li><a href="#removing-artifacts" id="toc-removing-artifacts" class="nav-link" data-scroll-target="#removing-artifacts">Removing Artifacts</a>
+  <ul class="collapse">
+  <li><a href="#independent-component-analysis" id="toc-independent-component-analysis" class="nav-link" data-scroll-target="#independent-component-analysis">Independent Component Analysis</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -233,7 +239,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">EEG Seminar Notes</h1>
+<h1 class="title">eegSeminaR Notes</h1>
 </div>
 
 
@@ -256,7 +262,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>These are my notes and completed exercises taken from <a href="https://alexenge.github.io/eegSeminaR/">this 2022 seminar on EEG data analysis in R</a>.</p>
+<p>These are my notes and completed exercises taken from <a href="https://alexenge.github.io/eegSeminaR/">this 2022 seminar on EEG data analysis in R</a>. Citation: &gt; Enge A (2023). eegSeminaR: A Seminar on Analyzing EEG Data in R. https://github.com/alexenge/eegSeminaR, https://alexenge.github.io/eegSeminaR/.</p>
 <section id="setting-up-data" class="level2">
 <h2 class="anchored" data-anchor-id="setting-up-data">Setting Up Data</h2>
 <p>Though they use the data at <code>alexenge/erpcore</code>, we will be downloading the data using the <code>osfr</code> package, as the <code>erpcore</code> R package seems to be broken.</p>
@@ -457,8 +463,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <pre><code>Warning: Ignoring 3 observations</code></pre>
 </div>
 <div class="cell-output-display">
-<div class="plotly html-widget html-fill-item" id="htmlwidget-fc2908e07d38c01d2773" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-fc2908e07d38c01d2773">{"x":{"visdat":{"c0e83d526cd2":["function () ","plotlyVisDat"]},"cur_data":"c0e83d526cd2","attrs":{"c0e83d526cd2":{"x":{},"y":{},"z":{},"text":{},"mode":"text+markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"cart_x"},"yaxis":{"title":"cart_y"},"zaxis":{"title":"cart_z"}},"hovermode":"closest","showlegend":false},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-26.25,-46.329999999999998,-68.719999999999999,-57.490000000000002,-61.140000000000001,-79.349999999999994,-46.329999999999998,-68.719999999999999,-62.32,-49.93,-34.530000000000001,-26.25,0,0,0,26.25,0,46.329999999999998,68.719999999999999,57.490000000000002,0,0,61.140000000000001,79.349999999999994,46.329999999999998,68.719999999999999,62.32,49.93,34.530000000000001,26.25],"y":[80.790000000000006,57.210000000000001,49.93,30.57,0,0,-57.210000000000001,-49.93,-45.280000000000001,-68.719999999999999,-74.049999999999997,-80.790000000000006,-84.950000000000003,-61.140000000000001,-33.210000000000001,80.790000000000006,61.140000000000001,57.210000000000001,49.93,30.57,33.210000000000001,0,0,0,-57.210000000000001,-49.93,-45.280000000000001,-68.719999999999999,-74.049999999999997,-80.790000000000006],"z":[-2.9700000000000002,42.5,-2.9700000000000002,54.640000000000001,59.049999999999997,30.460000000000001,42.5,-2.9700000000000002,-35.920000000000002,-2.9700000000000002,23.43,-2.9700000000000002,-2.9700000000000002,59.049999999999997,78.239999999999995,-2.9700000000000002,59.049999999999997,42.5,-2.9700000000000002,54.640000000000001,78.239999999999995,85,59.049999999999997,30.460000000000001,42.5,-2.9700000000000002,-35.920000000000002,-2.9700000000000002,23.43,-2.9700000000000002],"text":["FP1","F3","F7","FC3","C3","C5","P3","P7","P9","PO7","PO3","O1","Oz","Pz","CPz","FP2","Fz","F4","F8","FC4","FCz","Cz","C4","C6","P4","P8","P10","PO8","PO4","O2"],"mode":"text+markers","type":"scatter3d","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<div class="plotly html-widget html-fill-item" id="htmlwidget-b6b3266a3321bb6508da" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-b6b3266a3321bb6508da">{"x":{"visdat":{"10584417a5a8e":["function () ","plotlyVisDat"]},"cur_data":"10584417a5a8e","attrs":{"10584417a5a8e":{"x":{},"y":{},"z":{},"text":{},"mode":"text+markers","alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"scatter3d"}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":"cart_x"},"yaxis":{"title":"cart_y"},"zaxis":{"title":"cart_z"}},"hovermode":"closest","showlegend":false},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"x":[-26.25,-46.329999999999998,-68.719999999999999,-57.490000000000002,-61.140000000000001,-79.349999999999994,-46.329999999999998,-68.719999999999999,-62.32,-49.93,-34.530000000000001,-26.25,0,0,0,26.25,0,46.329999999999998,68.719999999999999,57.490000000000002,0,0,61.140000000000001,79.349999999999994,46.329999999999998,68.719999999999999,62.32,49.93,34.530000000000001,26.25],"y":[80.790000000000006,57.210000000000001,49.93,30.57,0,0,-57.210000000000001,-49.93,-45.280000000000001,-68.719999999999999,-74.049999999999997,-80.790000000000006,-84.950000000000003,-61.140000000000001,-33.210000000000001,80.790000000000006,61.140000000000001,57.210000000000001,49.93,30.57,33.210000000000001,0,0,0,-57.210000000000001,-49.93,-45.280000000000001,-68.719999999999999,-74.049999999999997,-80.790000000000006],"z":[-2.9700000000000002,42.5,-2.9700000000000002,54.640000000000001,59.049999999999997,30.460000000000001,42.5,-2.9700000000000002,-35.920000000000002,-2.9700000000000002,23.43,-2.9700000000000002,-2.9700000000000002,59.049999999999997,78.239999999999995,-2.9700000000000002,59.049999999999997,42.5,-2.9700000000000002,54.640000000000001,78.239999999999995,85,59.049999999999997,30.460000000000001,42.5,-2.9700000000000002,-35.920000000000002,-2.9700000000000002,23.43,-2.9700000000000002],"text":["FP1","F3","F7","FC3","C3","C5","P3","P7","P9","PO7","PO3","O1","Oz","Pz","CPz","FP2","Fz","F4","F8","FC4","FCz","Cz","C4","C6","P4","P8","P10","PO8","PO4","O2"],"mode":"text+markers","type":"scatter3d","marker":{"color":"rgba(31,119,180,1)","line":{"color":"rgba(31,119,180,1)"}},"error_y":{"color":"rgba(31,119,180,1)"},"error_x":{"color":"rgba(31,119,180,1)"},"line":{"color":"rgba(31,119,180,1)"},"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
@@ -613,9 +619,101 @@ $after
 </div>
 <section id="event-codes" class="level3">
 <h3 class="anchored" data-anchor-id="event-codes">Event Codes</h3>
-<p>Significant “events,” (e.g.&nbsp;stimuli, responses) are marked in the EEG recording by unique <strong>event codes</strong>. The meaning of these codes are explained in a specific file in BIDS:</p>
+<p>Significant “events,” (e.g.&nbsp;stimuli, responses) are marked in the EEG recording by unique <strong>event codes</strong>. In this experiment, event codes between 1-40 mean the stimulus was a face, while event codes between 41-80 mean the stimulus was a car. Note that in my case, the <code>task-N170_events.json</code> file did not exist in the directory where the N170 data got downloaded, but that is ok because we still know from the paper that this convention was used. We can hard-code these events as epoch labels as follows:</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>events_file <span class="ot">&lt;-</span> <span class="fu">here</span>(bids_dir)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>event_codes <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">80</span>)</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>epoch_labels <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(event_codes <span class="sc">&lt;=</span> <span class="dv">40</span>, <span class="st">"face"</span>, <span class="st">"car"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="construct-epochs" class="level3">
+<h3 class="anchored" data-anchor-id="construct-epochs">Construct Epochs</h3>
+<p>Now, knowing event codes, we can “cut out” our epochs around them. For the epoch data, we want to include between 100-200 ms before the stimulus onset as a baseline period.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>dat_epo <span class="ot">&lt;-</span> <span class="fu">epoch_data</span>(</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>  dat_downs,</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a>  event_codes,</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">time_lim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.2</span>, <span class="fl">0.8</span>),</span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">epoch_labels =</span> epoch_labels</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Adjusting output limits to match sampling rate.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Output limits:  -0.19921875 0.80078125</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>No baseline removal performed.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Creating 160 epochs.</code></pre>
+</div>
+</div>
+<p>To plot these epochs, we use an “ERP image,” with:</p>
+<ul>
+<li>X-axis: Time relative to stimulus onset</li>
+<li>Y-axis: Trial number (or any other sorting, e.g.&nbsp;by reaction time)</li>
+<li>Colors: EEG amplitude</li>
+</ul>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">erp_image</span>(dat_epo, <span class="at">electrode =</span> <span class="st">"PO8"</span>, <span class="at">smoothing =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="eeg-seminar_files/figure-html/erp-image-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="baseline-correction" class="level3">
+<h3 class="anchored" data-anchor-id="baseline-correction">Baseline Correction</h3>
+<p>Trials will differ in their overall amplitude, i.e.&nbsp;due to drifts and slow artifacts. This can hide more subtle differences between conditions. The solution to this is to subtract the average activity during the pre-stimulus baseline:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb49"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a>dat_basl <span class="ot">&lt;-</span> <span class="fu">rm_baseline</span>(dat_epo, <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.2</span>, <span class="fl">0.0</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Baseline: -0.2 - 0s</code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">erp_image</span>(dat_basl, <span class="at">electrode =</span> <span class="st">"PO4"</span>, <span class="at">smoothing =</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="eeg-seminar_files/figure-html/remove-baseline-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can confirm that the average voltage during the baseline window is actually zero given an epoch and channel:</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract baseline time points (baseline meaning before onset, thus t &lt; 0.0) at </span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="co"># epoch 42</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>inds <span class="ot">&lt;-</span> <span class="fu">which</span>(dat_basl<span class="sc">$</span>timings<span class="sc">$</span>epoch <span class="sc">==</span> <span class="dv">42</span> <span class="sc">&amp;</span> dat_basl<span class="sc">$</span>timings<span class="sc">$</span>time <span class="sc">&lt;</span> <span class="fl">0.0</span>)</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="fu">mean</span>(dat_basl<span class="sc">$</span>signals<span class="sc">$</span>FP1[inds]) <span class="co"># close enough to 0</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 5.04796e-16</code></pre>
+</div>
+</div>
+<p>Now, we can save the baseline-corrected epochs.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>epo_file <span class="ot">&lt;-</span> <span class="fu">here</span>(deriv_dir, <span class="st">"sub-001_task-N170_desc-epoched_eeg.rds"</span>)</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(dat_basl, epo_file)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+</section>
+<section id="removing-artifacts" class="level2">
+<h2 class="anchored" data-anchor-id="removing-artifacts">Removing Artifacts</h2>
+<section id="independent-component-analysis" class="level3">
+<h3 class="anchored" data-anchor-id="independent-component-analysis">Independent Component Analysis</h3>
+<p>With the baseline-corrected epoch data, we can run Independent Component Analysis (ICA) to separate our EEG recordings into a number of additive sub-components.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>n_components <span class="ot">&lt;-</span> <span class="dv">15</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>ica <span class="ot">&lt;-</span> <span class="fu">run_ICA</span>(dat_epo, <span class="at">method =</span> <span class="st">"fastica"</span>, <span class="at">pca =</span> n_components)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Reducing data to 15 dimensions using PCA.</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Running fastica (ica).</code></pre>
+</div>
 </div>
 
 
